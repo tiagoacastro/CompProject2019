@@ -24,14 +24,15 @@ TOKEN :
     | < RIGHTBRACKET : "}" >
     | < LEFTPARENTHESES : "(" >
     | < RIGHTPARENTHESES : ")" >
-    | < LEFTSQUAREBRACKETS : "[" >
-    | < RIGHTSQUAREBRACKETS : "]" >
+    | < LEFTSQUAREBRACKET : "[" >
+    | < RIGHTSQUAREBRACKET : "]" >
     | < INTARRAY : "int[]" >
     | < INT : "int" >
     | < BOOLEAN : "boolean" >
     | < STRINGARRAY : "String[]" >
     | < VOID : "void" >
     | < COLON : "," >
+    | < DOT : "." >
     | < SEMICOLON : ";" >
     | < PUBLIC : "public" >
     | < STATIC : "static" >
@@ -41,6 +42,13 @@ TOKEN :
     | < WHILE : "while" >  
     | < RETURN: "return" >
     | < EQUALS: "=" >    
+    | < COMMERCIALE: "&&" >
+    | < MINOR: "<" >
+    | < PLUS: "+" >
+    | < MINUS: "-" >
+    | < ASTERISC: "*" >
+    | < SLASH: "/" >
+    | < LENGTH: "length" >
     | < IDENTIFIER : (["a" - "z"] | ["A" - "Z"])+ (["a" - "z"] | ["A" - "Z"] | ["0" - "9"])* >
 }
 // definição da produção
@@ -95,11 +103,24 @@ void statement() : {}
     (expression() <SEMICOLON>) |
     (<IDENTIFIER>(
         (<EQUALS> expression() <SEMICOLON>) |
-        (<LEFTSQUAREBRACKETS> expression() <RIGHTSQUAREBRACKETS> <EQUALS> expression() <SEMICOLON>))
+        (<LEFTSQUAREBRACKET> expression() <RIGHTSQUAREBRACKET> <EQUALS> expression() <SEMICOLON>))
     )
 }
 
 void expression() : {}
 {
     <EXTENDS>
+}
+
+void expression2() : {}
+{
+    (expression()
+    (
+        ((<COMMERCIAL0> | <MINOR> | <PLUS> | <MINUS> | <ASTERISC> | <SLASH>) expression()) |
+        (<LEFTSQUAREBRACKET> expression() <RIGHTSQUAREBRACKET>) |
+        (<DOT> <LENGTH>) |
+        (<DOT> <IDENTIFIER> <LEFTPARENTHESES> (expression() (<COMMA> expression())*)? <RIGHTPARENTHESES>) |
+
+
+    ))
 }
