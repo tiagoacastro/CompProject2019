@@ -5,25 +5,99 @@ public class Exemplo {
         // criação do objecto utilizando o constructor com argumento para
         // ler do standard input (teclado)
         Exemplo parser = new Exemplo(System.in);
-        parser.Class();
+        parser.program();
     }
 }
 PARSER_END(Exemplo)
 // símbolos que não devem ser considerados na análise
 SKIP :
 {
-    " " | "\t" | "\r"
+    " " | "\t" | "\r" | "\n"
 }
 // definição dos tokens (símbolos terminais)
 TOKEN :
 {
     < INTEGER : (["0" - "9"])+ >
-    | < LF : "\n" >
     | < CLASS : "class" >
+    | < EXTENDS : "extends" >
+    | < LEFTBRACKET : "{" >
+    | < RIGHTBRACKET : "}" >
+    | < LEFTPARENTHESES : "(" >
+    | < RIGHTPARENTHESES : ")" >
+    | < LEFTSQUAREBRACKETS : "[" >
+    | < RIGHTSQUAREBRACKETS : "]" >
+    | < INTARRAY : "int[]" >
+    | < INT : "int" >
+    | < BOOLEAN : "boolean" >
+    | < STRINGARRAY : "String[]" >
+    | < VOID : "void" >
+    | < COLON : "," >
+    | < SEMICOLON : ";" >
+    | < PUBLIC : "public" >
+    | < STATIC : "static" >
+    | < MAIN : "main" >
+    | < IF : "if" >    
+    | < ELSE : "else" >      
+    | < WHILE : "while" >  
+    | < RETURN: "return" >
+    | < EQUALS: "=" >    
     | < IDENTIFIER : (["a" - "z"] | ["A" - "Z"])+ (["a" - "z"] | ["A" - "Z"] | ["0" - "9"])* >
 }
 // definição da produção
-void Class() : {}
+void program() : {}
 {
-    
+    classDeclaration() <EOF>
+}
+
+void classDeclaration() : {}
+{
+    <CLASS> <IDENTIFIER> (<EXTENDS> <IDENTIFIER>)? 
+    <LEFTBRACKET> 
+        (varDeclaration())*
+        (<PUBLIC> (mainDeclaration() | methodDeclaration()))*
+    <RIGHTBRACKET>
+}
+
+void mainDeclaration() : {} 
+{
+    <STATIC> <VOID> <MAIN> <LEFTPARENTHESES> <STRINGARRAY> <IDENTIFIER> <RIGHTPARENTHESES>
+    <LEFTBRACKET>
+        (LOOKAHEAD(2) varDeclaration())*
+        (statement())*
+    <RIGHTBRACKET>
+}
+
+void varDeclaration() : {}
+{
+    type() <IDENTIFIER> <SEMICOLON>
+}
+
+void methodDeclaration() : {}
+{
+    type() <IDENTIFIER> <LEFTPARENTHESES> (type() <IDENTIFIER> ( <COLON> type() <IDENTIFIER>)*)? <RIGHTPARENTHESES>
+    <LEFTBRACKET>
+        (LOOKAHEAD(2) varDeclaration())*
+        (statement())*
+        <RETURN> expression() <SEMICOLON>
+    <RIGHTBRACKET>
+}
+
+void type() : {}
+{
+    <INTARRAY> | <INT> | <BOOLEAN> | <IDENTIFIER>
+}
+
+void statement() : {}
+{
+    (<LEFTBRACKET> (statement())* <RIGHTBRACKET>) |   
+    (<IF> <LEFTPARENTHESES> expression() <RIGHTPARENTHESES> statement() <ELSE> statement()) |
+    (<WHILE> <LEFTPARENTHESES> expression() <RIGHTPARENTHESES> statement()) |
+    (expression() <SEMICOLON>) |
+    (<IDENTIFIER>((<EQUALS> expression() <SEMICOLON>) |
+    (<LEFTSQUAREBRACKETS> expression() <RIGHTSQUAREBRACKETS> <EQUALS> expression() <SEMICOLON>)))
+}
+
+void expression() : {}
+{
+    <EXTENDS>
 }
