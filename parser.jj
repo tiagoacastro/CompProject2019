@@ -116,10 +116,10 @@ void expression2() : {}
 {
     (expression()
     (
-        ((<COMMERCIAL0> | <MINOR> | <PLUS> | <MINUS> | <ASTERISC> | <SLASH>) expression()) |
-        (<LEFTSQUAREBRACKET> expression() <RIGHTSQUAREBRACKET>) |
-        (<DOT> <LENGTH>) |
-        (<DOT> <IDENTIFIER> <LEFTPARENTHESES> (expression() (<COMMA> expression())*)? <RIGHTPARENTHESES>) |
+        ((<COMMERCIALE> | <MINOR> | <PLUS> | <MINUS> | <ASTERISC> | <SLASH>) expression()) |
+        (<LEFTSQUAREBRACKET> expression() <RIGHTSQUAREBRACKET>) 
+        //(<DOT> <LENGTH>) |
+        //(<DOT> <IDENTIFIER> <LEFTPARENTHESES> (expression() (<COLON> expression())*)? <RIGHTPARENTHESES>)
 
 
     ))
