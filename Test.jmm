@@ -1,0 +1,24 @@
+class Test extends Test2 {
+    int[] ola;
+    int adeus;
+    boolean ateamanha;
+
+    public static void main(String[] args) {
+        int i;
+        int[] j;
+        boolean k;
+        Test2 l;
+
+        if (extends) {
+            ola = extends;
+        }
+        else {
+            l = extends;
+        }
+
+        while (extends) {
+            i = extends;
+            k[extends] = extends;
+        }
+    }
+}

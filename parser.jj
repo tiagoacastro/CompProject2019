@@ -93,8 +93,10 @@ void statement() : {}
     (<IF> <LEFTPARENTHESES> expression() <RIGHTPARENTHESES> statement() <ELSE> statement()) |
     (<WHILE> <LEFTPARENTHESES> expression() <RIGHTPARENTHESES> statement()) |
     (expression() <SEMICOLON>) |
-    (<IDENTIFIER>((<EQUALS> expression() <SEMICOLON>) |
-    (<LEFTSQUAREBRACKETS> expression() <RIGHTSQUAREBRACKETS> <EQUALS> expression() <SEMICOLON>)))
+    (<IDENTIFIER>(
+        (<EQUALS> expression() <SEMICOLON>) |
+        (<LEFTSQUAREBRACKETS> expression() <RIGHTSQUAREBRACKETS> <EQUALS> expression() <SEMICOLON>))
+    )
 }
 
 void expression() : {}
