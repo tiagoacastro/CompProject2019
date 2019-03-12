@@ -49,6 +49,11 @@ TOKEN :
     | < ASTERISC: "*" >
     | < SLASH: "/" >
     | < LENGTH: "length" >
+    | < TRUE: "true" >
+    | < FALSE: "false" >
+    | < THIS: "this" >
+    | < NEW: "new" >
+    | < EXCLAMATION: "!" >
     | < IDENTIFIER : (["a" - "z"] | ["A" - "Z"])+ (["a" - "z"] | ["A" - "Z"] | ["0" - "9"])* >
 }
 // definição da produção
@@ -117,10 +122,20 @@ void expression2() : {}
     (expression()
     (
         ((<COMMERCIALE> | <MINOR> | <PLUS> | <MINUS> | <ASTERISC> | <SLASH>) expression()) |
-        (<LEFTSQUAREBRACKET> expression() <RIGHTSQUAREBRACKET>) 
-        //(<DOT> <LENGTH>) |
-        //(<DOT> <IDENTIFIER> <LEFTPARENTHESES> (expression() (<COLON> expression())*)? <RIGHTPARENTHESES>)
+        (<LEFTSQUAREBRACKET> expression() <RIGHTSQUAREBRACKET>) |
+        (<DOT> ((<LENGTH>) | (<IDENTIFIER> <LEFTPARENTHESES> (expression() (<COLON> expression())*)? <RIGHTPARENTHESES>) )) |
+        (<INTEGER>) |
+        (<TRUE>) |
+        (<FALSE>) |
+        (<IDENTIFIER>) |
+        (<THIS>) |
+        (<NEW> ((<INT> <LEFTSQUAREBRACKET> expression() <RIGHTSQUAREBRACKET>) | (<IDENTIFIER> <LEFTPARENTHESES> <RIGHTPARENTHESES>) )) |
+        (<EXCLAMATION> expression()) |
+        (<LEFTPARENTHESES> expression() <RIGHTPARENTHESES>)
 
+
+    //RENAME PARA JJT
+    //MUDAR VOID PARA SIMPLE NODE QUE É O ROOT NO PROGRAM     RETURN JJT THIS   DUMP NA TREE
 
     ))
 }
