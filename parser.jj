@@ -114,16 +114,8 @@ void statement() : {}
 
 void expression() : {}
 {
-    <EXTENDS>
-}
-
-void expression2() : {}
-{
     (expression()
     (
-        ((<COMMERCIALE> | <MINOR> | <PLUS> | <MINUS> | <ASTERISC> | <SLASH>) expression()) |
-        (<LEFTSQUAREBRACKET> expression() <RIGHTSQUAREBRACKET>) |
-        (<DOT> ((<LENGTH>) | (<IDENTIFIER> <LEFTPARENTHESES> (expression() (<COLON> expression())*)? <RIGHTPARENTHESES>) )) |
         (<INTEGER>) |
         (<TRUE>) |
         (<FALSE>) |
@@ -138,4 +130,19 @@ void expression2() : {}
     //MUDAR VOID PARA SIMPLE NODE QUE É O ROOT NO PROGRAM     RETURN JJT THIS   DUMP NA TREE
 
     ))
+}
+
+void expression2() : {}
+{
+    expression3() ((<COMMERCIALE> | <MINOR> | <PLUS> | <MINUS> | <ASTERISC> | <SLASH>) expression3())*
+}
+
+void expression3() : {}
+{
+    expression4() ((<LEFTSQUAREBRACKET> expression() <RIGHTSQUAREBRACKET>) expression4())*
+}
+
+void expression4() : {}
+{
+    expression5() ((<DOT> ((<LENGTH>) | (<IDENTIFIER> <LEFTPARENTHESES> (expression() (<COLON> expression())*)? <RIGHTPARENTHESES>) )) expression5())*
 }
