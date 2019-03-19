@@ -4,7 +4,8 @@ public class Exemplo {
     public static void main(String args[]) throws ParseException {
         // criação do objecto utilizando o constructor com argumento para
         // ler do standard input (teclado)
-        Exemplo parser = new Exemplo(System.in);
+        FileInputStream file = new FileInputStream("Test.jmm");
+        Exemplo parser = new Exemplo(file);
         parser.program();
     }
 }
@@ -104,7 +105,7 @@ void statement() : {}
     (<LEFTBRACKET> (statement())* <RIGHTBRACKET>) |   
     (<IF> <LEFTPARENTHESES> expression() <RIGHTPARENTHESES> statement() <ELSE> statement()) |
     (<WHILE> <LEFTPARENTHESES> expression() <RIGHTPARENTHESES> statement()) |
-    (expression() <SEMICOLON>) |
+    LOOKAHEAD(expression() <SEMICOLON>) (expression() <SEMICOLON>) |
     (<IDENTIFIER>(
         (<EQUALS> expression() <SEMICOLON>) |
         (<LEFTSQUAREBRACKET> expression() <RIGHTSQUAREBRACKET> <EQUALS> expression() <SEMICOLON>))
@@ -120,7 +121,7 @@ void expression() : {}
 
 void expression2() : {}
 {
-    expression3() ((<LEFTSQUAREBRACKET> expression() <RIGHTSQUAREBRACKET>))*
+    expression3() (<LEFTSQUAREBRACKET> expression() <RIGHTSQUAREBRACKET>)*
 }
 
 void expression3() : {}

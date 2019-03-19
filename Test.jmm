@@ -9,16 +9,16 @@ class Test extends Test2 {
         boolean k;
         Test2 l;
 
-        if (extends) {
-            ola = extends;
+        if (i < 10) {
+            ola = 11 + 1;
         }
         else {
-            l = extends;
+            l = j[k+1];
         }
 
-        while (extends) {
-            i = extends;
-            k[extends] = extends;
+        while (i < 10) {
+            i = i + 1;
+            k[3+3] = j/3+7;
         }
     }
 }
