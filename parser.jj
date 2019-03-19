@@ -114,22 +114,11 @@ void statement() : {}
 
 void expression() : {}
 {
-    (expression()
-    (
-        (<INTEGER>) |
-        (<TRUE>) |
-        (<FALSE>) |
-        (<IDENTIFIER>) |
-        (<THIS>) |
-        (<NEW> ((<INT> <LEFTSQUAREBRACKET> expression() <RIGHTSQUAREBRACKET>) | (<IDENTIFIER> <LEFTPARENTHESES> <RIGHTPARENTHESES>) )) |
-        (<EXCLAMATION> expression()) |
-        (<LEFTPARENTHESES> expression() <RIGHTPARENTHESES>)
-
+    expression2()
+        
 
     //RENAME PARA JJT
-    //MUDAR VOID PARA SIMPLE NODE QUE É O ROOT NO PROGRAM     RETURN JJT THIS   DUMP NA TREE
-
-    ))
+    //MUDAR VOID PARA SIMPLE NODE QUE É O ROOT NO PROGRAM     RETURN JJT THIS   DUMP NA TREE    
 }
 
 void expression2() : {}
@@ -139,10 +128,23 @@ void expression2() : {}
 
 void expression3() : {}
 {
-    expression4() ((<LEFTSQUAREBRACKET> expression() <RIGHTSQUAREBRACKET>) expression4())*
+    expression4() ((<LEFTSQUAREBRACKET> expression2() <RIGHTSQUAREBRACKET>))*
 }
 
 void expression4() : {}
 {
-    expression5() ((<DOT> ((<LENGTH>) | (<IDENTIFIER> <LEFTPARENTHESES> (expression() (<COLON> expression())*)? <RIGHTPARENTHESES>) )) expression5())*
+    expressionfinal() ((<DOT> ((<LENGTH>) | (<IDENTIFIER> <LEFTPARENTHESES> (expression2() (<COLON> expression2())*)? <RIGHTPARENTHESES>) )) expressionfinal())*
+}
+
+void expressionfinal() : {}
+{
+    (<INTEGER>) |
+    (<TRUE>) |
+    (<FALSE>) |
+    (<IDENTIFIER>) |
+    (<THIS>) |
+    (<EXCLAMATION> expressionfinal() |
+    (<LEFTPARENTHESES> expression2() <RIGHTPARENTHESES>) |
+    (<NEW> ((<INT> <LEFTSQUAREBRACKET> expression2() <RIGHTSQUAREBRACKET>) | (<IDENTIFIER> <LEFTPARENTHESES> <RIGHTPARENTHESES>) ))
+
 }
