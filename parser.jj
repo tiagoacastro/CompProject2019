@@ -26,7 +26,6 @@ TOKEN :
     | < RIGHTPARENTHESES : ")" >
     | < LEFTSQUAREBRACKET : "[" >
     | < RIGHTSQUAREBRACKET : "]" >
-    | < INTARRAY : "int[]" >
     | < INT : "int" >
     | < BOOLEAN : "boolean" >
     | < STRINGARRAY : "String[]" >
@@ -97,7 +96,7 @@ void methodDeclaration() : {}
 
 void type() : {}
 {
-    <INTARRAY> | <INT> | <BOOLEAN> | <IDENTIFIER>
+    <INT>[<LEFTSQUAREBRACKET><RIGHTSQUAREBRACKET>] | <BOOLEAN> | <IDENTIFIER>
 }
 
 void statement() : {}
@@ -114,26 +113,19 @@ void statement() : {}
 
 void expression() : {}
 {
-    expression2()
-        
-
+    expression2() ((<COMMERCIALE> | <MINOR> | <PLUS> | <MINUS> | <ASTERISC> | <SLASH>) expression2())*
     //RENAME PARA JJT
-    //MUDAR VOID PARA SIMPLE NODE QUE É O ROOT NO PROGRAM     RETURN JJT THIS   DUMP NA TREE    
+    //MUDAR VOID PARA SIMPLE NODE QUE É O ROOT NO PROGRAM     RETURN JJT THIS   DUMP NA TREE
 }
 
 void expression2() : {}
 {
-    expression3() ((<COMMERCIALE> | <MINOR> | <PLUS> | <MINUS> | <ASTERISC> | <SLASH>) expression3())*
+    expression3() ((<LEFTSQUAREBRACKET> expression() <RIGHTSQUAREBRACKET>))*
 }
 
 void expression3() : {}
 {
-    expression4() ((<LEFTSQUAREBRACKET> expression2() <RIGHTSQUAREBRACKET>))*
-}
-
-void expression4() : {}
-{
-    expressionfinal() ((<DOT> ((<LENGTH>) | (<IDENTIFIER> <LEFTPARENTHESES> (expression2() (<COLON> expression2())*)? <RIGHTPARENTHESES>) )) expressionfinal())*
+    expressionfinal() ((<DOT> ((<LENGTH>) | (<IDENTIFIER> <LEFTPARENTHESES> (expression() (<COLON> expression())*)? <RIGHTPARENTHESES>) )) expressionfinal())*
 }
 
 void expressionfinal() : {}
@@ -143,8 +135,7 @@ void expressionfinal() : {}
     (<FALSE>) |
     (<IDENTIFIER>) |
     (<THIS>) |
-    (<EXCLAMATION> expressionfinal() |
-    (<LEFTPARENTHESES> expression2() <RIGHTPARENTHESES>) |
-    (<NEW> ((<INT> <LEFTSQUAREBRACKET> expression2() <RIGHTSQUAREBRACKET>) | (<IDENTIFIER> <LEFTPARENTHESES> <RIGHTPARENTHESES>) ))
-
+    (<EXCLAMATION> expressionfinal()) |
+    (<LEFTPARENTHESES> expression() <RIGHTPARENTHESES>) |
+    (<NEW> ((<INT> <LEFTSQUAREBRACKET> expression() <RIGHTSQUAREBRACKET>) | (<IDENTIFIER> <LEFTPARENTHESES> <RIGHTPARENTHESES>) ))
 }
