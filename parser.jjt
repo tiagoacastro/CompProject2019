@@ -119,17 +119,25 @@ void statement() : {}
 
 void expression() : {}
 {
-    expression2() ((<COMMERCIALE> | <MINOR> | <PLUS> | <MINUS> | <ASTERISC> | <SLASH>) expression2())*
-    //RENAME PARA JJT
-    //MUDAR VOID PARA SIMPLE NODE QUE É O ROOT NO PROGRAM     RETURN JJT THIS   DUMP NA TREE
+    expression2() ((<COMMERCIALE> {jjtThis.Op = MyConstants.COMMERCIALE;} | <MINOR> {jjtThis.Op = MyConstants.MINOR;}) expression2())*
 }
 
 void expression2() : {}
 {
-    expression3() (<LEFTSQUAREBRACKET> expression() <RIGHTSQUAREBRACKET>)*
+    expression3() ((<PLUS> {jjtThis.Op = MyConstants.ADD;} | <MINUS> {jjtThis.Op = MyConstants.MINUS;}) expression3())*
 }
 
 void expression3() : {}
+{
+    expression4() ((<ASTERISC> {jjtThis.Op = MyConstants.ASTERISC;} | <SLASH> {jjtThis.Op = MyConstants.SLASH;}) expression4())*
+}
+
+void expression4() : {}
+{
+    expression5() (<LEFTSQUAREBRACKET> expression() <RIGHTSQUAREBRACKET>)*
+}
+
+void expression5() : {}
 {
     expressionfinal() ((<DOT> ((<LENGTH>) | (<IDENTIFIER> <LEFTPARENTHESES> (expression() (<COLON> expression())*)? <RIGHTPARENTHESES>) )) expressionfinal())*
 }

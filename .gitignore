@@ -11,3 +11,4 @@ javacc-6.0
 
 # Exceptions
 !MyConstants.java
+!SimpleNode.java
