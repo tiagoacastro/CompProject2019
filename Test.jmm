@@ -9,8 +9,8 @@ class Test extends Test2 {
         boolean k;
         Test2 l;
 
-        if (i < 10) {
-            ola = 11 + 1;
+        if (i < 10 && i) {
+            ola = 11 + 1 * 2;
         }
         else {
             l = j[k+1];

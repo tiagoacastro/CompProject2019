@@ -4,9 +4,13 @@ public class Exemplo {
     public static void main(String args[]) throws ParseException {
         // criação do objecto utilizando o constructor com argumento para
         // ler do standard input (teclado)
-        FileInputStream file = new FileInputStream("Test.jmm");
-        Exemplo parser = new Exemplo(file);
-        parser.program();
+        try {
+            java.io.FileInputStream file = new java.io.FileInputStream("Test.jmm");
+            Exemplo parser = new Exemplo(file);
+            parser.program();
+        } catch (java.io.FileNotFoundException e) {
+            System.out.println(e);
+        }
     }
 }
 PARSER_END(Exemplo)
