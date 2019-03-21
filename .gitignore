@@ -8,3 +8,6 @@ javacc-6.0
 *.java
 *.class
 *.jj
+
+# Exceptions
+!MyConstants.java
