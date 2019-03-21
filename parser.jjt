@@ -87,7 +87,7 @@ void mainDeclaration() : {}
 
 void varDeclaration() : {}
 {
-    type() <IDENTIFIER> <SEMICOLON>
+    type() <IDENTIFIER> {jjtThis.Op = JmmParserConstants.IDENTIFIER;} <SEMICOLON>
 }
 
 void methodDeclaration() : {}
@@ -102,7 +102,9 @@ void methodDeclaration() : {}
 
 void type() : {}
 {
-    <INT>[<LEFTSQUAREBRACKET><RIGHTSQUAREBRACKET>] | <BOOLEAN> | <IDENTIFIER>
+    <INT>{jjtThis.Op = JmmParserConstants.INT;}[<LEFTSQUAREBRACKET> {jjtThis.Op = JmmParserConstants.LEFTSQUAREBRACKET;} <RIGHTSQUAREBRACKET> {jjtThis.Op = JmmParserConstants.RIGHTSQUAREBRACKET;}] | 
+    <BOOLEAN> {jjtThis.Op = JmmParserConstants.BOOLEAN;} | 
+    <IDENTIFIER> {jjtThis.Op = JmmParserConstants.IDENTIFIER;}
 }
 
 void statement() : {}
@@ -158,8 +160,8 @@ void expression5() : {}
 {
     expressionfinal() ((
             <DOT> (
-                (<LENGTH>) | 
-                (<IDENTIFIER> <LEFTPARENTHESES> (expression() (<COLON> expression())*)? <RIGHTPARENTHESES>) 
+                (<LENGTH> {jjtThis.Op = JmmParserConstants.LENGTH;}) | 
+                (<IDENTIFIER> {jjtThis.Op = JmmParserConstants.IDENTIFIER;} <LEFTPARENTHESES> (expression() (<COLON> expression())*)? <RIGHTPARENTHESES>) 
             )
         ) 
         expressionfinal()
@@ -168,12 +170,12 @@ void expression5() : {}
 
 void expressionfinal() : {}
 {
-    (<INTEGER>) |
-    (<TRUE>) |
-    (<FALSE>) |
-    (<IDENTIFIER>) |
-    (<THIS>) |
-    (<EXCLAMATION> expressionfinal()) |
+    (<INTEGER> {jjtThis.Op = JmmParserConstants.INTEGER;}) |
+    (<TRUE> {jjtThis.Op = JmmParserConstants.TRUE;}) |
+    (<FALSE> {jjtThis.Op = JmmParserConstants.FALSE;}) |
+    (<IDENTIFIER> {jjtThis.Op = JmmParserConstants.IDENTIFIER;}) |
+    (<THIS> {jjtThis.Op = JmmParserConstants.THIS;}) |
+    (<EXCLAMATION> {jjtThis.Op = JmmParserConstants.EXCLAMATION;} expressionfinal()) |
     (<LEFTPARENTHESES> expression() <RIGHTPARENTHESES>) |
-    (<NEW> ((<INT> <LEFTSQUAREBRACKET> expression() <RIGHTSQUAREBRACKET>) | (<IDENTIFIER> <LEFTPARENTHESES> <RIGHTPARENTHESES>) ))
+    (<NEW> {jjtThis.Op = JmmParserConstants.NEW;} ((<INT> {jjtThis.Op = JmmParserConstants.INT;} <LEFTSQUAREBRACKET> expression() <RIGHTSQUAREBRACKET>) | (<IDENTIFIER> {jjtThis.Op = JmmParserConstants.IDENTIFIER;} <LEFTPARENTHESES> <RIGHTPARENTHESES>) ))
 }

@@ -67,12 +67,13 @@ class SimpleNode implements Node {
      out its children. */
 
   public void dump(String prefix) {
-    System.out.print(toString(prefix));
+    System.out.print(toString(prefix)); //.replaceAll("[a-zA-Z0-9_-]", "")
 
-    if(this.Op != 0)
-      System.out.print(" [ "+JmmParserConstants.tokenImage[this.Op].replaceAll("\"", "")+" ]");
+    if(this.Op != 0) // {
+      System.out.print(" [ " + JmmParserConstants.tokenImage[this.Op].replaceAll("\"", "") + " ]");
 
     System.out.println();
+    // }
 
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
