@@ -10,7 +10,6 @@ class SimpleNode implements Node {
   protected JmmParser parser;
 
   // added
-  public int val;
   public int Op=0;
 
   public SimpleNode(int i) {
@@ -68,12 +67,12 @@ class SimpleNode implements Node {
      out its children. */
 
   public void dump(String prefix) {
-    System.out.println(toString(prefix));
+    System.out.print(toString(prefix));
 
     if(this.Op != 0)
-      System.out.println("\t[ "+MyConstants.ops[this.Op-1]+" ]");
-    if(children == null)
-      System.out.println("\t[ "+this.val+" ]");
+      System.out.print(" [ "+JmmParserConstants.tokenImage[this.Op].replaceAll("\"", "")+" ]");
+
+    System.out.println();
 
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
