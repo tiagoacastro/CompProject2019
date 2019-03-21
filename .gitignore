@@ -7,3 +7,4 @@ javacc-6.0
 # java
 *.java
 *.class
+*.jj
