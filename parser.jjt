@@ -1,19 +1,20 @@
-PARSER_BEGIN(Exemplo)
+PARSER_BEGIN(JmmParser)
 // código Java que invoca o parser
-public class Exemplo {
+public class JmmParser {
     public static void main(String args[]) throws ParseException {
         // criação do objecto utilizando o constructor com argumento para
         // ler do standard input (teclado)
         try {
             java.io.FileInputStream file = new java.io.FileInputStream("Test.jmm");
-            Exemplo parser = new Exemplo(file);
-            parser.program();
+            JmmParser parser = new JmmParser(file);
+            SimpleNode root = parser.program();
+            root.dump("");
         } catch (java.io.FileNotFoundException e) {
             System.out.println(e);
         }
     }
 }
-PARSER_END(Exemplo)
+PARSER_END(JmmParser)
 // símbolos que não devem ser considerados na análise
 SKIP :
 {
@@ -61,9 +62,9 @@ TOKEN :
     | < IDENTIFIER : (["a" - "z"] | ["A" - "Z"])+ (["a" - "z"] | ["A" - "Z"] | ["0" - "9"])* >
 }
 // definição da produção
-void program() : {}
+SimpleNode program() : {}
 {
-    classDeclaration() <EOF>
+    classDeclaration() <EOF> {return jjtThis;}
 }
 
 void classDeclaration() : {}
