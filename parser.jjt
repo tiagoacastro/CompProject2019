@@ -67,7 +67,7 @@ SimpleNode program() : {}
     classDeclaration() <EOF> {return jjtThis;}
 }
 
-void classDeclaration() : {}
+void classDeclaration() #VOID: {}
 {
     <CLASS> <IDENTIFIER> (<EXTENDS> <IDENTIFIER>)? 
     <LEFTBRACKET> 
@@ -76,7 +76,7 @@ void classDeclaration() : {}
     <RIGHTBRACKET>
 }
 
-void mainDeclaration() : {} 
+void mainDeclaration() #VOID: {} 
 {
     <STATIC> <VOID> <MAIN> <LEFTPARENTHESES> <STRINGARRAY> <IDENTIFIER> <RIGHTPARENTHESES>
     <LEFTBRACKET>
@@ -85,12 +85,12 @@ void mainDeclaration() : {}
     <RIGHTBRACKET>
 }
 
-void varDeclaration() : {}
+void varDeclaration() #VOID: {}
 {
-    type() <IDENTIFIER> {jjtThis.Op = JmmParserConstants.IDENTIFIER;} <SEMICOLON>
+    type() <IDENTIFIER> <SEMICOLON>
 }
 
-void methodDeclaration() : {}
+void methodDeclaration() #VOID: {}
 {
     type() <IDENTIFIER> <LEFTPARENTHESES> (type() <IDENTIFIER> ( <COLON> type() <IDENTIFIER>)*)? <RIGHTPARENTHESES>
     <LEFTBRACKET>
@@ -100,14 +100,14 @@ void methodDeclaration() : {}
     <RIGHTBRACKET>
 }
 
-void type() : {}
+void type() #VOID: {}                                    //HALF DONE
 {
-    <INT>{jjtThis.Op = JmmParserConstants.INT;}[<LEFTSQUAREBRACKET> {jjtThis.Op = JmmParserConstants.LEFTSQUAREBRACKET;} <RIGHTSQUAREBRACKET> {jjtThis.Op = JmmParserConstants.RIGHTSQUAREBRACKET;}] | 
-    <BOOLEAN> {jjtThis.Op = JmmParserConstants.BOOLEAN;} | 
-    <IDENTIFIER> {jjtThis.Op = JmmParserConstants.IDENTIFIER;}
+    (<INT> [<LEFTSQUAREBRACKET> <RIGHTSQUAREBRACKET>]) | 
+    (<BOOLEAN> #BOOLEAN) | 
+    (<IDENTIFIER> #IDENTIFIER)
 }
 
-void statement() : {}
+void statement() #VOID: {}                               //NOT DONE
 {
     (<LEFTBRACKET> (statement())* <RIGHTBRACKET>) |   
     (<IF> <LEFTPARENTHESES> expression() <RIGHTPARENTHESES> statement() <ELSE> statement()) |
@@ -119,63 +119,63 @@ void statement() : {}
     )
 }
 
-void expression() : {}
+void expression() #VOID: {}                              //DONE
 {
     expression2() ((
-            <COMMERCIALE> {jjtThis.Op = JmmParserConstants.COMMERCIALE;} | 
-            <MINOR> {jjtThis.Op = JmmParserConstants.MINOR;}
+            (<COMMERCIALE> #COMMERCIALE) | 
+            (<MINOR> #MINOR)
         ) 
         expression2()
     )*
 }
 
-void expression2() : {}
+void expression2() #VOID: {}                        //DONE
 {
     expression3() ((
-            <PLUS> {jjtThis.Op = JmmParserConstants.PLUS;} | 
-            <MINUS> {jjtThis.Op = JmmParserConstants.MINUS;}
+            (<PLUS> #PLUS) | 
+            (<MINUS> #MINUS)
         ) 
         expression3()
     )*
 }
 
-void expression3() : {}
+void expression3() #VOID: {}                        //DONE
 {
     expression4() ((
-            <ASTERISC> {jjtThis.Op = JmmParserConstants.ASTERISC;} | 
-            <SLASH> {jjtThis.Op = JmmParserConstants.SLASH;}
+            (<ASTERISC> #ASTERISC) | 
+            (<SLASH> #SLASH)
         ) 
         expression4()
     )*
 }
 
-void expression4() : {}
+void expression4() #VOID: {}                        //DIDNT PUT BRACKETS
 {
     expression5() (
         <LEFTSQUAREBRACKET> expression() <RIGHTSQUAREBRACKET>
     )*
 }
 
-void expression5() : {}
+void expression5() #VOID: {}                             //NOT DONE
 {
     expressionfinal() ((
             <DOT> (
-                (<LENGTH> {jjtThis.Op = JmmParserConstants.LENGTH;}) | 
-                (<IDENTIFIER> {jjtThis.Op = JmmParserConstants.IDENTIFIER;} <LEFTPARENTHESES> (expression() (<COLON> expression())*)? <RIGHTPARENTHESES>) 
+                (<LENGTH>) | 
+                (<IDENTIFIER> <LEFTPARENTHESES> (expression() (<COLON> expression())*)? <RIGHTPARENTHESES>) 
             )
         ) 
         expressionfinal()
     )*
 }
 
-void expressionfinal() : {}
+void expressionfinal() #VOID: {}                    //HALF DONE
 {
-    (<INTEGER> {jjtThis.Op = JmmParserConstants.INTEGER;}) |
-    (<TRUE> {jjtThis.Op = JmmParserConstants.TRUE;}) |
-    (<FALSE> {jjtThis.Op = JmmParserConstants.FALSE;}) |
-    (<IDENTIFIER> {jjtThis.Op = JmmParserConstants.IDENTIFIER;}) |
-    (<THIS> {jjtThis.Op = JmmParserConstants.THIS;}) |
-    (<EXCLAMATION> {jjtThis.Op = JmmParserConstants.EXCLAMATION;} expressionfinal()) |
+    (<INTEGER> #INTEGER)|
+    (<TRUE> #TRUE) |
+    (<FALSE> #FALSE) |
+    (<IDENTIFIER> #IDENTIFIER) |
+    (<THIS> #THIS) |
+    (<EXCLAMATION> #EXCLAMATION expressionfinal()) |
     (<LEFTPARENTHESES> expression() <RIGHTPARENTHESES>) |
-    (<NEW> {jjtThis.Op = JmmParserConstants.NEW;} ((<INT> {jjtThis.Op = JmmParserConstants.INT;} <LEFTSQUAREBRACKET> expression() <RIGHTSQUAREBRACKET>) | (<IDENTIFIER> {jjtThis.Op = JmmParserConstants.IDENTIFIER;} <LEFTPARENTHESES> <RIGHTPARENTHESES>) ))
+    (<NEW> ((<INT> <LEFTSQUAREBRACKET> expression() <RIGHTSQUAREBRACKET>) | (<IDENTIFIER> <LEFTPARENTHESES> <RIGHTPARENTHESES>) ))
 }

@@ -10,7 +10,7 @@ class Test extends Test2 {
         Test2 l;
 
         if (i < 10 && i) {
-            ola = 11 + 1 * 2;
+            ola = 11 + 1 * 2;  
         }
         else {
             l = j[k+1];
@@ -18,7 +18,7 @@ class Test extends Test2 {
 
         while (i < 10) {
             i = i + 1;
-            k[3+3] = j/3+7;
+            k[3+3] = j/3-7;
         }
     }
 }
