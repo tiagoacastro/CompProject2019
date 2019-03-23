@@ -151,7 +151,7 @@ class SimpleNode implements Node {
      out its children. */
 
   public void dump(String prefix) {
-    if(this.id != 1)
+
       System.out.println(toString(prefix));
 
     if (children != null) {

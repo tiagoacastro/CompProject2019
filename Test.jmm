@@ -25,9 +25,14 @@ class Test extends Test2 {
     public int ola(int adeus, int[] pars) {
         boolean bool;
         int[] coiso;
-        bool = true;
+        Duris d;
+        int[] d2;
 
-        if (bool) {
+        bool = true;
+        d = new Duris();
+        d2 = new int[6];
+
+        if (!bool) {
             bool = false;
         }
         else {

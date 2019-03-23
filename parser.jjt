@@ -67,7 +67,7 @@ SimpleNode program() : {}
     classDeclaration() <EOF> {return jjtThis;}
 }
 
-void classDeclaration() #VOID: {}
+void classDeclaration() #void: {}
 {
     <CLASS> <IDENTIFIER> (<EXTENDS> #EXTENDS <IDENTIFIER>)? 
     <LEFTBRACKET> 
@@ -76,7 +76,7 @@ void classDeclaration() #VOID: {}
     <RIGHTBRACKET>
 }
 
-void mainDeclaration() #VOID: {} 
+void mainDeclaration() #void: {} 
 {
     <STATIC> <VOID> <MAIN> <LEFTPARENTHESES> <STRINGARRAY> <IDENTIFIER> <RIGHTPARENTHESES>
     <LEFTBRACKET>
@@ -85,12 +85,12 @@ void mainDeclaration() #VOID: {}
     <RIGHTBRACKET>
 }
 
-void varDeclaration() #VOID: {}
+void varDeclaration() #void: {}
 {
     type() <IDENTIFIER> <SEMICOLON>
 }
 
-void methodDeclaration() #VOID: {}
+void methodDeclaration() #void: {}
 {
     type() <IDENTIFIER> <LEFTPARENTHESES> (type() <IDENTIFIER> ( <COLON> type() <IDENTIFIER>)*)? <RIGHTPARENTHESES>
     <LEFTBRACKET>
@@ -100,26 +100,26 @@ void methodDeclaration() #VOID: {}
     <RIGHTBRACKET>
 }
 
-void type() #VOID: {}                                    
+void type() #void: {}                                    
 {
     (<INT> #INT [<LEFTSQUAREBRACKET> #LEFTSQUAREBRACKET <RIGHTSQUAREBRACKET> #RIGHTSQUAREBRACKET]) | 
     (<BOOLEAN> #BOOLEAN) | 
     (<IDENTIFIER> #IDENTIFIER)
 }
 
-void statement() #VOID: {}                               
+void statement() #void: {}                               
 {
     (<LEFTBRACKET> (statement())* <RIGHTBRACKET>) |   
     (<IF> <LEFTPARENTHESES> expression() <RIGHTPARENTHESES> statement() <ELSE> statement()) |
     (whileStatement()) |
-    ((LOOKAHEAD(2) <IDENTIFIER> (<LEFTSQUAREBRACKET> expression() <RIGHTSQUAREBRACKET>)? <EQUALS> #EQUALS)? expression() <SEMICOLON>)
+    ((LOOKAHEAD(2) <IDENTIFIER> (<LEFTSQUAREBRACKET> expression() <RIGHTSQUAREBRACKET>)? <EQUALS>)? expression() <SEMICOLON>)
 }
 
-void whileStatement() #VOID: {}
+void whileStatement() #void: {}
 {
     <WHILE> #WHILE
     try {
-        <LEFTPARENTHESES> #LEFTPARENTHESES expression() <RIGHTPARENTHESES> #RIGHTPARENTHESES
+        <LEFTPARENTHESES> expression() <RIGHTPARENTHESES>
     }
     catch (ParseException e) {
         System.out.println(e.toString());
@@ -131,44 +131,44 @@ void whileStatement() #VOID: {}
     statement()
 }
 
-void expression() #VOID: {}
+void expression() #void: {}
 {
     expression2() ((
-            (<COMMERCIALE> #COMMERCIALE) | 
-            (<MINOR> #MINOR)
+            (<COMMERCIALE> #COMMERCIALE(2)) | 
+            (<MINOR> #MINOR(2))
         ) 
         expression2()
     )*
 }
 
-void expression2() #VOID: {}                        
+void expression2() #void: {}                        
 {
     expression3() ((
-            (<PLUS> #PLUS) | 
-            (<MINUS> #MINUS)
+            (<PLUS> #PLUS(2)) | 
+            (<MINUS> #MINUS(2))
         ) 
         expression3()
     )*
 }
 
-void expression3() #VOID: {}                        
+void expression3() #void: {}                        
 {
     expression4() ((
-            (<ASTERISC> #ASTERISC) | 
-            (<SLASH> #SLASH)
+            (<ASTERISC> #ASTERISC(2)) | 
+            (<SLASH> #SLASH(2))
         ) 
         expression4()
     )*
 }
 
-void expression4() #VOID: {}                        
+void expression4() #void: {}                        
 {
     expression5() (
-        <LEFTSQUAREBRACKET> expression() <RIGHTSQUAREBRACKET>
+        <LEFTSQUAREBRACKET> #LEFTSQUAREBRACKET expression() <RIGHTSQUAREBRACKET> #RIGHTSQUAREBRACKET
     )*
 }
 
-void expression5() #VOID: {}                             
+void expression5() #void: {}                             
 {
     expressionfinal() ((
             <DOT> (
@@ -180,14 +180,14 @@ void expression5() #VOID: {}
     )*
 }
 
-void expressionfinal() #VOID: {}                    
+void expressionfinal() #void: {}                                //MISSING STUFF              
 {
     (<INTEGER> #INTEGER)|
     (<TRUE> #TRUE) |
     (<FALSE> #FALSE) |
     (<IDENTIFIER> #IDENTIFIER) |
     (<THIS> #THIS) |
-    (<EXCLAMATION> #EXCLAMATION expressionfinal()) |
+    (<EXCLAMATION> #EXCLAMATION(1) expressionfinal()) |
     (<LEFTPARENTHESES> expression() <RIGHTPARENTHESES>) |
     (<NEW> ((<INT> <LEFTSQUAREBRACKET> expression() <RIGHTSQUAREBRACKET>) | (<IDENTIFIER> <LEFTPARENTHESES> <RIGHTPARENTHESES>) ))
 }
