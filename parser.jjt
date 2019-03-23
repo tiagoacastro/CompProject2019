@@ -100,14 +100,14 @@ void methodDeclaration() #VOID: {}
     <RIGHTBRACKET>
 }
 
-void type() #VOID: {}                                    //HALF DONE
+void type() #VOID: {}                                    
 {
-    (<INT> [<LEFTSQUAREBRACKET> <RIGHTSQUAREBRACKET>]) | 
+    (<INT> #INT [<LEFTSQUAREBRACKET> #LEFTSQUAREBRACKET <RIGHTSQUAREBRACKET> #RIGHTSQUAREBRACKET]) | 
     (<BOOLEAN> #BOOLEAN) | 
     (<IDENTIFIER> #IDENTIFIER)
 }
 
-void statement() #VOID: {}                               //NOT DONE
+void statement() #VOID: {}                               
 {
     (<LEFTBRACKET> (statement())* <RIGHTBRACKET>) |   
     (<IF> <LEFTPARENTHESES> expression() <RIGHTPARENTHESES> statement() <ELSE> statement()) |
@@ -139,7 +139,7 @@ void expression() #VOID: {}
     )*
 }
 
-void expression2() #VOID: {}                        //DONE
+void expression2() #VOID: {}                        
 {
     expression3() ((
             (<PLUS> #PLUS) | 
@@ -149,7 +149,7 @@ void expression2() #VOID: {}                        //DONE
     )*
 }
 
-void expression3() #VOID: {}                        //DONE
+void expression3() #VOID: {}                        
 {
     expression4() ((
             (<ASTERISC> #ASTERISC) | 
@@ -159,14 +159,14 @@ void expression3() #VOID: {}                        //DONE
     )*
 }
 
-void expression4() #VOID: {}                        //DIDNT PUT BRACKETS
+void expression4() #VOID: {}                        
 {
     expression5() (
         <LEFTSQUAREBRACKET> expression() <RIGHTSQUAREBRACKET>
     )*
 }
 
-void expression5() #VOID: {}                             //NOT DONE
+void expression5() #VOID: {}                             
 {
     expressionfinal() ((
             <DOT> (
@@ -178,7 +178,7 @@ void expression5() #VOID: {}                             //NOT DONE
     )*
 }
 
-void expressionfinal() #VOID: {}                    //HALF DONE
+void expressionfinal() #VOID: {}                    
 {
     (<INTEGER> #INTEGER)|
     (<TRUE> #TRUE) |
