@@ -119,9 +119,8 @@ void statement() #VOID: {}                               //NOT DONE
     )
 }
 
-void whileStatement() : {}
-{   
-    
+void whileStatement() #VOID: {}
+{     
     try {
         <WHILE> <LEFTPARENTHESES> expression() <RIGHTPARENTHESES> statement()
         }
@@ -134,7 +133,7 @@ void whileStatement() : {}
     }
 }
 
-void expression() : {}
+void expression() #VOID: {}
 {
     expression2() ((
             (<COMMERCIALE> #COMMERCIALE) | 
