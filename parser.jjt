@@ -125,7 +125,8 @@ void whileStatement() #VOID: {}
         Token t;
         do {
             t = getNextToken();
-        } while (t.kind != RIGHTPARENTHESES);
+        } while (t.kind != RIGHTBRACKET);
+        return;
     }
     statement()
 }
