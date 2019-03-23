@@ -111,12 +111,27 @@ void statement() : {}
 {
     (<LEFTBRACKET> (statement())* <RIGHTBRACKET>) |   
     (<IF> <LEFTPARENTHESES> expression() <RIGHTPARENTHESES> statement() <ELSE> statement()) |
-    (<WHILE> <LEFTPARENTHESES> expression() <RIGHTPARENTHESES> statement()) |
+    (whileStatement()) |
     LOOKAHEAD(expression() <SEMICOLON>) (expression() <SEMICOLON>) |
     (<IDENTIFIER>(
         (<EQUALS> expression() <SEMICOLON>) |
         (<LEFTSQUAREBRACKET> expression() <RIGHTSQUAREBRACKET> <EQUALS> expression() <SEMICOLON>))
     )
+}
+
+void whileStatement() : {}
+{   
+    
+    try {
+        <WHILE> <LEFTPARENTHESES> expression() <RIGHTPARENTHESES> statement()
+        }
+      catch (ParseException e) {
+        System.out.println(e.toString());
+        Token t;
+        do {
+          t = getNextToken();
+        } while (t.kind != RIGHTPARENTHESES);
+    }
 }
 
 void expression() : {}
