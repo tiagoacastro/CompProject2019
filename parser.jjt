@@ -69,7 +69,7 @@ SimpleNode program() : {}
 
 void classDeclaration() #void: {}
 {
-    <CLASS> <IDENTIFIER> (<EXTENDS> #EXTENDS <IDENTIFIER>)? 
+    <CLASS> <IDENTIFIER>(<EXTENDS> <IDENTIFIER>)? 
     <LEFTBRACKET> 
         (varDeclaration())*
         (<PUBLIC> (mainDeclaration() | methodDeclaration()))*
@@ -164,7 +164,7 @@ void expression3() #void: {}
 void expression4() #void: {}                        
 {
     expression5() (
-        <LEFTSQUAREBRACKET> #LEFTSQUAREBRACKET expression() <RIGHTSQUAREBRACKET> #RIGHTSQUAREBRACKET
+        <LEFTSQUAREBRACKET> expression() <RIGHTSQUAREBRACKET>
     )*
 }
 
@@ -180,7 +180,7 @@ void expression5() #void: {}
     )*
 }
 
-void expressionfinal() #void: {}                                //MISSING STUFF              
+void expressionfinal() #void: {}                                            
 {
     (<INTEGER> #INTEGER)|
     (<TRUE> #TRUE) |
