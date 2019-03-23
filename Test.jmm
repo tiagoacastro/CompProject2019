@@ -21,4 +21,21 @@ class Test extends Test2 {
             k[3+3] = j/3-7;
         }
     }
+
+    public int ola(int adeus, int[] pars) {
+        boolean bool;
+        int[] coiso;
+        bool = true;
+
+        if (bool) {
+            bool = false;
+        }
+        else {
+            bool = true;
+        }
+
+        pars = coiso[2+i*pars[2]];
+
+        return adeus;
+    }
 }
