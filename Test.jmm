@@ -10,7 +10,8 @@ class Test extends Test2 {
         Test2 l;
 
         if (i < 10 && i) {
-            ola = 11[1] + 1 * 2;  
+            ola = 11[1] + 1 * 2;
+            a[0] = 1;
         }
         else {
             l = j[k+1];
