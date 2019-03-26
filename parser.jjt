@@ -133,42 +133,42 @@ void whileStatement() #void: {}
 
 void expression() #void: {}
 {
-    expression2() ((
-            (<COMMERCIALE> #COMMERCIALE(2)) | 
-            (<MINOR> #MINOR(2))
-        ) 
-        expression2()
+    expression2() (
+        <COMMERCIALE> expression2() #COMMERCIALE(2)
     )*
 }
 
-void expression2() #void: {}                        
+void expression2() #void: {}
 {
-    expression3() ((
-            (<PLUS> #PLUS(2)) | 
-            (<MINUS> #MINUS(2))
-        ) 
-        expression3()
+    expression3() (
+        <MINOR> expression3() #MINOR(2)
     )*
 }
 
 void expression3() #void: {}                        
 {
-    expression4() ((
-            (<ASTERISC> #ASTERISC(2)) | 
-            (<SLASH> #SLASH(2))
-        ) 
-        expression4()
+    expression4() (
+        (<PLUS> expression4() #PLUS(2)) | 
+        (<MINUS> expression4() #MINUS(2))
     )*
 }
 
 void expression4() #void: {}                        
 {
     expression5() (
+        (<ASTERISC> expression5() #ASTERISC(2)) | 
+        (<SLASH> expression5() #SLASH(2))
+    )*
+}
+
+void expression5() #void: {}                        
+{
+    expression6() (
         <LEFTSQUAREBRACKET> expression() <RIGHTSQUAREBRACKET>
     )*
 }
 
-void expression5() #void: {}                             
+void expression6() #void: {}                             
 {
     expressionfinal() ((
             <DOT> (
@@ -187,7 +187,7 @@ void expressionfinal() #void: {}
     (<FALSE> #FALSE) |
     (<IDENTIFIER> #IDENTIFIER) |
     (<THIS> #THIS) |
-    (<EXCLAMATION> #EXCLAMATION(1) expressionfinal()) |
+    (<EXCLAMATION> expressionfinal() #EXCLAMATION(1)) |
     (<LEFTPARENTHESES> expression() <RIGHTPARENTHESES>) |
     (<NEW> ((<INT> <LEFTSQUAREBRACKET> expression() <RIGHTSQUAREBRACKET>) | (<IDENTIFIER> <LEFTPARENTHESES> <RIGHTPARENTHESES>) ))
 }
