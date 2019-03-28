@@ -10,7 +10,7 @@ public class JmmParser {
         // criação do objecto utilizando o constructor com argumento para
         // ler do standard input (teclado)
         try {
-            java.io.FileInputStream file = new java.io.FileInputStream("Test.jmm");
+            java.io.FileInputStream file = new java.io.FileInputStream("test-files/" + args[0] + ".jmm");
             JmmParser parser = new JmmParser(file);
             SimpleNode root = parser.program();
             root.dump("");
@@ -21,6 +21,7 @@ public class JmmParser {
 }
 PARSER_END(JmmParser)
 // símbolos que não devem ser considerados na análise
+// comentarios: <"//" (~["\r", "\n"])*>
 SKIP :
 {
     " " | "\t" | "\r" | "\n"
@@ -64,7 +65,7 @@ TOKEN :
     | < THIS: "this" >
     | < NEW: "new" >
     | < EXCLAMATION: "!" >
-    | < IDENTIFIER : (["a" - "z"] | ["A" - "Z"])+ (["a" - "z"] | ["A" - "Z"] | ["0" - "9"])* >
+    | < IDENTIFIER : (["a" - "z"] | ["A" - "Z"])+ (["a" - "z"] | ["A" - "Z"] | ["0" - "9"] | "_")* >
 }
 // definição da produção
 SimpleNode program() : {}
@@ -83,7 +84,7 @@ void classDeclaration() : {Token t;}
 
 void mainDeclaration() : {Token t;} 
 {
-    <STATIC> #STATIC <VOID> #VOID <MAIN> <LEFTPARENTHESES> <STRINGARRAY> #STRINGARRAY t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER <RIGHTPARENTHESES>
+    <STATIC> #STATIC <VOID> #VOID <MAIN> <LEFTPARENTHESES> <STRINGARRAY> #STRINGARRAY t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER(1) <RIGHTPARENTHESES>
     <LEFTBRACKET>
         methodBody()
     <RIGHTBRACKET>
