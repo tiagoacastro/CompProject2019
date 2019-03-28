@@ -1,3 +1,5 @@
+options {MULTI=true;}
+
 PARSER_BEGIN(JmmParser)
 // código Java que invoca o parser
 public class JmmParser {
@@ -67,59 +69,64 @@ SimpleNode program() : {}
     classDeclaration() <EOF> {return jjtThis;}
 }
 
-void classDeclaration() #void: {}
+void classDeclaration() : {Token t;}
 {
-    <CLASS> <IDENTIFIER>(<EXTENDS> <IDENTIFIER>)? 
+    <CLASS> t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER [<EXTENDS> (t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER) #EXTENDS]
     <LEFTBRACKET> 
         (varDeclaration())*
-        (<PUBLIC> (mainDeclaration() | methodDeclaration()))*
+        (<PUBLIC> (mainDeclaration() | methodDeclaration()) #PUBLIC)*
     <RIGHTBRACKET>
 }
 
-void mainDeclaration() #void: {} 
+void mainDeclaration() : {Token t;} 
 {
-    <STATIC> <VOID> <MAIN> <LEFTPARENTHESES> <STRINGARRAY> <IDENTIFIER> <RIGHTPARENTHESES>
+    <STATIC> #STATIC <VOID> #VOID <MAIN> <LEFTPARENTHESES> <STRINGARRAY> #STRINGARRAY t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER <RIGHTPARENTHESES>
     <LEFTBRACKET>
         (LOOKAHEAD(2) varDeclaration())*
         (statement())*
     <RIGHTBRACKET>
 }
 
-void varDeclaration() #void: {}
+void varDeclaration() : {Token t;}
 {
-    type() <IDENTIFIER> <SEMICOLON>
+    type() t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER <SEMICOLON>
 }
 
-void methodDeclaration() #void: {}
+void methodDeclaration() : {Token t;}
 {
-    type() <IDENTIFIER> <LEFTPARENTHESES> (type() <IDENTIFIER> ( <COLON> type() <IDENTIFIER>)*)? <RIGHTPARENTHESES>
+    type() t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER <LEFTPARENTHESES> (parameterDeclaration() ( <COLON> parameterDeclaration())*)? <RIGHTPARENTHESES>
     <LEFTBRACKET>
         (LOOKAHEAD(2) varDeclaration())*
         (statement())*
-        <RETURN> expression() <SEMICOLON>
+        <RETURN> expression() #RETURN <SEMICOLON>
     <RIGHTBRACKET>
 }
 
-void type() #void: {}                                    
+void parameterDeclaration() : {Token t;}
+{
+    type() t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER
+}
+
+void type() #void: {Token t;}                                    
 {
     (<INT> #INT [<LEFTSQUAREBRACKET> #LEFTSQUAREBRACKET <RIGHTSQUAREBRACKET> #RIGHTSQUAREBRACKET]) | 
     (<BOOLEAN> #BOOLEAN) | 
-    (<IDENTIFIER> #IDENTIFIER)
+    (t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER)
 }
 
-void statement() #void: {}                               
+void statement() #void: {Token t;}                               
 {
     (<LEFTBRACKET> (statement())* <RIGHTBRACKET>) |   
-    (<IF> <LEFTPARENTHESES> expression() <RIGHTPARENTHESES> statement() <ELSE> statement()) |
+    (<IF> condition() body() #IF(2) <ELSE> statement() #ELSE) |
     (whileStatement()) |
-    ((LOOKAHEAD(2) <IDENTIFIER> (<LEFTSQUAREBRACKET> expression() <RIGHTSQUAREBRACKET>)? <EQUALS>)? expression() <SEMICOLON>)
+    (expression() <SEMICOLON>)
 }
 
 void whileStatement() #void: {}
 {
-    <WHILE> #WHILE
+    <WHILE>
     try {
-        <LEFTPARENTHESES> expression() <RIGHTPARENTHESES>
+        condition()
     }
     catch (ParseException e) {
         System.out.println(e.toString());
@@ -128,66 +135,96 @@ void whileStatement() #void: {}
             t = getNextToken();
         } while (t.kind != RIGHTPARENTHESES);
     }
+    body()
+    #WHILE(2)
+}
+
+void condition() : {}
+{
+    <LEFTPARENTHESES> expression() <RIGHTPARENTHESES>
+}
+
+void body() : {}
+{
     statement()
 }
 
 void expression() #void: {}
 {
-    expression2() (
-        <COMMERCIALE> expression2() #COMMERCIALE(2)
-    )*
+    expression2() [<EQUALS> expression2() #EQUALS(2)]
 }
 
 void expression2() #void: {}
 {
     expression3() (
-        <MINOR> expression3() #MINOR(2)
+        <COMMERCIALE> expression3() #COMMERCIALE(2)
     )*
 }
 
-void expression3() #void: {}                        
+void expression3() #void: {}
 {
     expression4() (
-        (<PLUS> expression4() #PLUS(2)) | 
-        (<MINUS> expression4() #MINUS(2))
+        <MINOR> expression4() #MINOR(2)
     )*
 }
 
 void expression4() #void: {}                        
 {
     expression5() (
-        (<ASTERISC> expression5() #ASTERISC(2)) | 
-        (<SLASH> expression5() #SLASH(2))
+        (<PLUS> expression5() #PLUS(2)) | 
+        (<MINUS> expression5() #MINUS(2))
     )*
 }
 
 void expression5() #void: {}                        
 {
     expression6() (
-        <LEFTSQUAREBRACKET> expression() <RIGHTSQUAREBRACKET>
+        (<ASTERISC> expression6() #ASTERISC(2)) | 
+        (<SLASH> expression6() #SLASH(2))
     )*
 }
 
-void expression6() #void: {}                             
+void expression6() #void: {}                        
 {
-    expressionfinal() ((
-            <DOT> (
-                (<LENGTH>) | 
-                (<IDENTIFIER> <LEFTPARENTHESES> (expression() (<COLON> expression())*)? <RIGHTPARENTHESES>) 
-            )
+    expression7() (
+        array() #array(2)
+    )*
+}
+
+void expression7() #void: {}                             
+{
+    expressionfinal() (
+        <DOT> (
+            (<LENGTH> #LENGTH) | 
+            (functionCall()) 
         ) 
-        expressionfinal()
+        #DOT(2)
     )*
 }
 
-void expressionfinal() #void: {}                                            
+void functionCall() : {Token t;}
 {
-    (<INTEGER> #INTEGER)|
+    t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER <LEFTPARENTHESES> (parameters())? <RIGHTPARENTHESES>
+}
+
+void parameters() : {}
+{
+    expression() (<COLON> expression())*
+}
+
+void expressionfinal() #void: {Token t;}                                            
+{
+    (t=<INTEGER> {jjtThis.name = t.image;}#INTEGER)|
     (<TRUE> #TRUE) |
     (<FALSE> #FALSE) |
-    (<IDENTIFIER> #IDENTIFIER) |
+    (t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER) |
     (<THIS> #THIS) |
-    (<EXCLAMATION> expressionfinal() #EXCLAMATION(1)) |
+    (<EXCLAMATION> expressionfinal() #EXCLAMATION) |
     (<LEFTPARENTHESES> expression() <RIGHTPARENTHESES>) |
-    (<NEW> ((<INT> <LEFTSQUAREBRACKET> expression() <RIGHTSQUAREBRACKET>) | (<IDENTIFIER> <LEFTPARENTHESES> <RIGHTPARENTHESES>) ))
+    (<NEW> ((<INT> #INT array() #NEW(2)) | ((t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER) #NEW <LEFTPARENTHESES> <RIGHTPARENTHESES>) ))
+}
+
+void array() #void: {}
+{
+    <LEFTSQUAREBRACKET> expression() <RIGHTSQUAREBRACKET>
 }
