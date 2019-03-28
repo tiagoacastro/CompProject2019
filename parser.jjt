@@ -1,4 +1,7 @@
-options {MULTI=true;}
+options {
+    MULTI=true;
+    LOOKAHEAD=1;
+}
 
 PARSER_BEGIN(JmmParser)
 // código Java que invoca o parser
@@ -82,8 +85,7 @@ void mainDeclaration() : {Token t;}
 {
     <STATIC> #STATIC <VOID> #VOID <MAIN> <LEFTPARENTHESES> <STRINGARRAY> #STRINGARRAY t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER <RIGHTPARENTHESES>
     <LEFTBRACKET>
-        (LOOKAHEAD(2) varDeclaration())*
-        (statement())*
+        methodBody()
     <RIGHTBRACKET>
 }
 
@@ -96,10 +98,15 @@ void methodDeclaration() : {Token t;}
 {
     type() t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER <LEFTPARENTHESES> (parameterDeclaration() ( <COLON> parameterDeclaration())*)? <RIGHTPARENTHESES>
     <LEFTBRACKET>
-        (LOOKAHEAD(2) varDeclaration())*
-        (statement())*
+        methodBody()
         <RETURN> expression() #RETURN <SEMICOLON>
     <RIGHTBRACKET>
+}
+
+void methodBody() : {}
+{
+    (LOOKAHEAD(2) varDeclaration())*
+    (statement())*
 }
 
 void parameterDeclaration() : {Token t;}
