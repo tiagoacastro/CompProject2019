@@ -10,7 +10,7 @@ public class JmmParser {
         // criação do objecto utilizando o constructor com argumento para
         // ler do standard input (teclado)
         try {
-            java.io.FileInputStream file = new java.io.FileInputStream("test-files/" + args[0] + ".jmm");
+            java.io.FileInputStream file = new java.io.FileInputStream("test-files/" + args[0]);
             JmmParser parser = new JmmParser(file);
             SimpleNode root = parser.program();
             root.dump("");
