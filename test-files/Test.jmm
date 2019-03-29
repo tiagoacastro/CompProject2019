@@ -45,6 +45,7 @@ class Test extends Test2 {
         }
         else {
             bool = true;
+            ola = 3;
         }
 
         pars = coiso[2+i*pars[2]];
