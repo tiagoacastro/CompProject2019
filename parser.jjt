@@ -138,7 +138,7 @@ void statement() #void: {Token t;}
     (expression() <SEMICOLON>)
 }
 
-void whileStatement() #void: {Token t;}
+void whileStatement() #void: {Token t, t1;}
 {
     t=<WHILE>
     try {
@@ -147,8 +147,8 @@ void whileStatement() #void: {Token t;}
     catch (ParseException e) {
         System.out.println(e.toString());
         do {
-            t = getNextToken();
-        } while (t.kind != RIGHTPARENTHESES);
+            t1 = getNextToken();
+        } while (t1.kind != RIGHTPARENTHESES);
     }
     body()
     {jjtThis.index = t.kind;}#WHILE(2)
