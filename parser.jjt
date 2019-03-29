@@ -81,9 +81,9 @@ SimpleNode program() : {}
     classDeclaration() <EOF> {return jjtThis;}
 }
 
-void classDeclaration() : {Token t;}
+void classDeclaration() : {Token t, t1;}
 {
-    <CLASS> t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER [t=<EXTENDS> (t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER) {jjtThis.index = t.kind;}#EXTENDS]
+    <CLASS> t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER [t1=<EXTENDS> (t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER) {jjtThis.index = t1.kind;}#EXTENDS(1)]
     <LEFTBRACKET> 
         (varDeclaration())*
         (t=<PUBLIC> (mainDeclaration() | methodDeclaration()) {jjtThis.index = t.kind;}#PUBLIC(1))*
