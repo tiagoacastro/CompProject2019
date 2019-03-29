@@ -31,10 +31,15 @@ SKIP :
     | < "//"(~["\r","\n"])* >
     | < "/*" > : MLCOMMENT
 }
+//SKIP multi-lined comments
 <MLCOMMENT> SKIP :
 {
   < "*/" > : DEFAULT
 | < ~[] >   
+}
+//global variable for error count
+TOKEN_MGR_DECLS : {
+    int errors = 0;
 }
 // definição dos tokens (símbolos terminais)
 TOKEN :
@@ -146,6 +151,7 @@ void whileStatement() #void: {Token t, t1;}
     }
     catch (ParseException e) {
         System.out.println(e.toString());
+        {token_source.errors++; if(token_source.errors==10){System.out.println("10 errors found, stopping program!"); System.exit(-1);}}
         do {
             t1 = getNextToken();
         } while (t1.kind != RIGHTPARENTHESES);
