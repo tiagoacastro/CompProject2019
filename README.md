@@ -1,2 +1,3 @@
 # FEUP-COMP
-Repository to host code developed for COMP course project with my partner Tiago Castro (@tiagoacastro), Duarte Oliveira(@DuarteOliveira8) and Pedro Gonçalves(@pedrocssg) @FEUP
+To run our project, please use : sh run.sh parser JmmParser file_name
+Note: when writing file_name, do not use extension
