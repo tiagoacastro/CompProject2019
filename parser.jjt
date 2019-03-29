@@ -29,9 +29,9 @@ SKIP :
     | "\r" 
     | "\n"
     | < "//"(~["\r","\n"])* >
-    | < "/*" > : ML_COMMENT_STATE
+    | < "/*" > : MLCOMMENT
 }
-<ML_COMMENT_STATE> SKIP :
+<MLCOMMENT> SKIP :
 {
   < "*/" > : DEFAULT
 | < ~[] >   

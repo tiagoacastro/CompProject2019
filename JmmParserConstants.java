@@ -82,7 +82,7 @@ public interface JmmParserConstants {
   /** Lexical state. */
   int DEFAULT = 0;
   /** Lexical state. */
-  int ML_COMMENT_STATE = 1;
+  int MLCOMMENT = 1;
 
   /** Literal token values. */
   String[] tokenImage = {
