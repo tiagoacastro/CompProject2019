@@ -8,7 +8,7 @@ public class SimpleNode implements Node {
     protected int id;
     protected Object value;
     protected JmmParser parser;
-    protected int index = 0;
+    protected int index = -1;
     protected String name = null;
 
     public SimpleNode(int i) {
@@ -71,7 +71,7 @@ public class SimpleNode implements Node {
     public String toString() {
         String print;
 
-        if (index == 0)
+        if (index == -1)
             print = JmmParserTreeConstants.jjtNodeName[id];
         else
             print = JmmParserConstants.tokenImage[index].replaceAll("\"", "");

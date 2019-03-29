@@ -123,14 +123,14 @@ void parameterDeclaration() : {Token t;}
     type() t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER
 }
 
-void type() #void: {Token t;}                                    
+void type() #void: {Token t;}
 {
     (t=<INT> {jjtThis.index = t.kind;}#INT [t=<LEFTSQUAREBRACKET> {jjtThis.index = t.kind;}#LEFTSQUAREBRACKET t=<RIGHTSQUAREBRACKET> {jjtThis.index = t.kind;}#RIGHTSQUAREBRACKET]) | 
     (t=<BOOLEAN> {jjtThis.index = t.kind;}#BOOLEAN) | 
     (t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER)
 }
 
-void statement() #void: {Token t;}                               
+void statement() #void: {Token t;}
 {
     (<LEFTBRACKET> (statement())* <RIGHTBRACKET>) |   
     (t=<IF> condition() body() {jjtThis.index = t.kind;}#IF(2) t=<ELSE> statement() {jjtThis.index = t.kind;}#ELSE) |
