@@ -9,82 +9,80 @@ public interface JmmParserConstants {
   /** End of File. */
   int EOF = 0;
   /** RegularExpression Id. */
-  int INTEGER = 5;
+  int INTEGER = 9;
   /** RegularExpression Id. */
-  int CLASS = 6;
+  int CLASS = 10;
   /** RegularExpression Id. */
-  int EXTENDS = 7;
+  int EXTENDS = 11;
   /** RegularExpression Id. */
-  int LEFTBRACKET = 8;
+  int LEFTBRACKET = 12;
   /** RegularExpression Id. */
-  int RIGHTBRACKET = 9;
+  int RIGHTBRACKET = 13;
   /** RegularExpression Id. */
-  int LEFTPARENTHESES = 10;
+  int LEFTPARENTHESES = 14;
   /** RegularExpression Id. */
-  int RIGHTPARENTHESES = 11;
+  int RIGHTPARENTHESES = 15;
   /** RegularExpression Id. */
-  int LEFTSQUAREBRACKET = 12;
+  int LEFTSQUAREBRACKET = 16;
   /** RegularExpression Id. */
-  int RIGHTSQUAREBRACKET = 13;
+  int RIGHTSQUAREBRACKET = 17;
   /** RegularExpression Id. */
-  int INT = 14;
+  int INT = 18;
   /** RegularExpression Id. */
-  int BOOLEAN = 15;
+  int BOOLEAN = 19;
   /** RegularExpression Id. */
-  int STRINGARRAY = 16;
+  int STRINGARRAY = 20;
   /** RegularExpression Id. */
-  int VOID = 17;
+  int VOID = 21;
   /** RegularExpression Id. */
-  int COLON = 18;
+  int COLON = 22;
   /** RegularExpression Id. */
-  int DOT = 19;
+  int DOT = 23;
   /** RegularExpression Id. */
-  int SEMICOLON = 20;
+  int SEMICOLON = 24;
   /** RegularExpression Id. */
-  int PUBLIC = 21;
+  int PUBLIC = 25;
   /** RegularExpression Id. */
-  int STATIC = 22;
+  int STATIC = 26;
   /** RegularExpression Id. */
-  int MAIN = 23;
+  int MAIN = 27;
   /** RegularExpression Id. */
-  int IF = 24;
+  int IF = 28;
   /** RegularExpression Id. */
-  int ELSE = 25;
+  int ELSE = 29;
   /** RegularExpression Id. */
-  int WHILE = 26;
+  int WHILE = 30;
   /** RegularExpression Id. */
-  int RETURN = 27;
+  int RETURN = 31;
   /** RegularExpression Id. */
-  int EQUALS = 28;
+  int EQUALS = 32;
   /** RegularExpression Id. */
-  int COMMERCIALE = 29;
+  int COMMERCIALE = 33;
   /** RegularExpression Id. */
-  int MINOR = 30;
+  int MINOR = 34;
   /** RegularExpression Id. */
-  int PLUS = 31;
+  int ADDSUB = 35;
   /** RegularExpression Id. */
-  int MINUS = 32;
+  int MULDIV = 36;
   /** RegularExpression Id. */
-  int ASTERISC = 33;
+  int LENGTH = 37;
   /** RegularExpression Id. */
-  int SLASH = 34;
+  int TRUE = 38;
   /** RegularExpression Id. */
-  int LENGTH = 35;
+  int FALSE = 39;
   /** RegularExpression Id. */
-  int TRUE = 36;
+  int THIS = 40;
   /** RegularExpression Id. */
-  int FALSE = 37;
+  int NEW = 41;
   /** RegularExpression Id. */
-  int THIS = 38;
+  int EXCLAMATION = 42;
   /** RegularExpression Id. */
-  int NEW = 39;
-  /** RegularExpression Id. */
-  int EXCLAMATION = 40;
-  /** RegularExpression Id. */
-  int IDENTIFIER = 41;
+  int IDENTIFIER = 43;
 
   /** Lexical state. */
   int DEFAULT = 0;
+  /** Lexical state. */
+  int ML_COMMENT_STATE = 1;
 
   /** Literal token values. */
   String[] tokenImage = {
@@ -93,6 +91,10 @@ public interface JmmParserConstants {
     "\"\\t\"",
     "\"\\r\"",
     "\"\\n\"",
+    "<token of kind 5>",
+    "\"/*\"",
+    "\"*/\"",
+    "<token of kind 8>",
     "<INTEGER>",
     "\"class\"",
     "\"extends\"",
@@ -119,10 +121,8 @@ public interface JmmParserConstants {
     "\"=\"",
     "\"&&\"",
     "\"<\"",
-    "\"+\"",
-    "\"-\"",
-    "\"*\"",
-    "\"/\"",
+    "<ADDSUB>",
+    "<MULDIV>",
     "\"length\"",
     "\"true\"",
     "\"false\"",

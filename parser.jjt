@@ -24,7 +24,17 @@ PARSER_END(JmmParser)
 // comentarios: <"//" (~["\r", "\n"])*>
 SKIP :
 {
-    " " | "\t" | "\r" | "\n"
+    " " 
+    | "\t" 
+    | "\r" 
+    | "\n"
+    | < "//"(~["\r","\n"])* >
+    | < "/*" > : ML_COMMENT_STATE
+}
+<ML_COMMENT_STATE> SKIP :
+{
+  < "*/" > : DEFAULT
+| < ~[] >   
 }
 // definição dos tokens (símbolos terminais)
 TOKEN :
@@ -55,10 +65,8 @@ TOKEN :
     | < EQUALS: "=" >    
     | < COMMERCIALE: "&&" >
     | < MINOR: "<" >
-    | < PLUS: "+" >
-    | < MINUS: "-" >
-    | < ASTERISC: "*" >
-    | < SLASH: "/" >
+    | < ADDSUB: "+" | "-" >
+    | < MULDIV: "*" | "/" >
     | < LENGTH: "length" >
     | < TRUE: "true" >
     | < FALSE: "false" >
@@ -75,16 +83,16 @@ SimpleNode program() : {}
 
 void classDeclaration() : {Token t;}
 {
-    <CLASS> t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER [<EXTENDS> (t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER) #EXTENDS]
+    <CLASS> t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER [t=<EXTENDS> (t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER) {jjtThis.index = t.kind;}#EXTENDS]
     <LEFTBRACKET> 
         (varDeclaration())*
-        (<PUBLIC> (mainDeclaration() | methodDeclaration()) #PUBLIC)*
+        (t=<PUBLIC> (mainDeclaration() | methodDeclaration()) {jjtThis.index = t.kind;}#PUBLIC(1))*
     <RIGHTBRACKET>
 }
 
 void mainDeclaration() : {Token t;} 
 {
-    <STATIC> #STATIC <VOID> #VOID <MAIN> <LEFTPARENTHESES> <STRINGARRAY> #STRINGARRAY t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER(1) <RIGHTPARENTHESES>
+    t=<STATIC> {jjtThis.index = t.kind;}#STATIC t=<VOID> {jjtThis.index = t.kind;}#VOID <MAIN> <LEFTPARENTHESES> t=<STRINGARRAY> {jjtThis.index = t.kind;}#STRINGARRAY t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER(1) <RIGHTPARENTHESES>
     <LEFTBRACKET>
         methodBody()
     <RIGHTBRACKET>
@@ -100,7 +108,7 @@ void methodDeclaration() : {Token t;}
     type() t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER <LEFTPARENTHESES> (parameterDeclaration() ( <COLON> parameterDeclaration())*)? <RIGHTPARENTHESES>
     <LEFTBRACKET>
         methodBody()
-        <RETURN> expression() #RETURN <SEMICOLON>
+        t=<RETURN> expression() {jjtThis.index = t.kind;}#RETURN(1) <SEMICOLON>
     <RIGHTBRACKET>
 }
 
@@ -117,34 +125,33 @@ void parameterDeclaration() : {Token t;}
 
 void type() #void: {Token t;}                                    
 {
-    (<INT> #INT [<LEFTSQUAREBRACKET> #LEFTSQUAREBRACKET <RIGHTSQUAREBRACKET> #RIGHTSQUAREBRACKET]) | 
-    (<BOOLEAN> #BOOLEAN) | 
+    (t=<INT> {jjtThis.index = t.kind;}#INT [t=<LEFTSQUAREBRACKET> {jjtThis.index = t.kind;}#LEFTSQUAREBRACKET t=<RIGHTSQUAREBRACKET> {jjtThis.index = t.kind;}#RIGHTSQUAREBRACKET]) | 
+    (t=<BOOLEAN> {jjtThis.index = t.kind;}#BOOLEAN) | 
     (t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER)
 }
 
 void statement() #void: {Token t;}                               
 {
     (<LEFTBRACKET> (statement())* <RIGHTBRACKET>) |   
-    (<IF> condition() body() #IF(2) <ELSE> statement() #ELSE) |
+    (t=<IF> condition() body() {jjtThis.index = t.kind;}#IF(2) t=<ELSE> statement() {jjtThis.index = t.kind;}#ELSE) |
     (whileStatement()) |
     (expression() <SEMICOLON>)
 }
 
-void whileStatement() #void: {}
+void whileStatement() #void: {Token t;}
 {
-    <WHILE>
+    t=<WHILE>
     try {
         condition()
     }
     catch (ParseException e) {
         System.out.println(e.toString());
-        Token t;
         do {
             t = getNextToken();
         } while (t.kind != RIGHTPARENTHESES);
     }
     body()
-    #WHILE(2)
+    {jjtThis.index = t.kind;}#WHILE(2)
 }
 
 void condition() : {}
@@ -157,38 +164,36 @@ void body() : {}
     statement()
 }
 
-void expression() #void: {}
+void expression() #void: {Token t;}
 {
-    expression2() [<EQUALS> expression2() #EQUALS(2)]
+    expression2() [t=<EQUALS> expression2() {jjtThis.index = t.kind;}#EQUALS(2)]
 }
 
-void expression2() #void: {}
+void expression2() #void: {Token t;}
 {
     expression3() (
-        <COMMERCIALE> expression3() #COMMERCIALE(2)
+        t=<COMMERCIALE> expression3() {jjtThis.index = t.kind;}#COMMERCIALE(2)
     )*
 }
 
-void expression3() #void: {}
+void expression3() #void: {Token t;}
 {
     expression4() (
-        <MINOR> expression4() #MINOR(2)
+        t=<MINOR> expression4() {jjtThis.index = t.kind;}#MINOR(2)
     )*
 }
 
-void expression4() #void: {}                        
+void expression4() #void: {Token t;}                        
 {
     expression5() (
-        (<PLUS> expression5() #PLUS(2)) | 
-        (<MINUS> expression5() #MINUS(2))
+        t=<ADDSUB> expression5() {jjtThis.name = t.image;}#ADDSUB(2)
     )*
 }
 
-void expression5() #void: {}                        
+void expression5() #void: {Token t;}                        
 {
     expression6() (
-        (<ASTERISC> expression6() #ASTERISC(2)) | 
-        (<SLASH> expression6() #SLASH(2))
+        t=<MULDIV> expression6() {jjtThis.name = t.image;}#MULDIV(2)
     )*
 }
 
@@ -199,14 +204,14 @@ void expression6() #void: {}
     )*
 }
 
-void expression7() #void: {}                             
+void expression7() #void: {Token t;}                             
 {
     expressionfinal() (
-        <DOT> (
-            (<LENGTH> #LENGTH) | 
+        t=<DOT> (
+            (t=<LENGTH> {jjtThis.index = t.kind;}#LENGTH) | 
             (functionCall()) 
         ) 
-        #DOT(2)
+        {jjtThis.index = t.kind;}#DOT(2)
     )*
 }
 
@@ -220,16 +225,16 @@ void parameters() : {}
     expression() (<COLON> expression())*
 }
 
-void expressionfinal() #void: {Token t;}                                            
+void expressionfinal() #void: {Token t, t1;}                                            
 {
     (t=<INTEGER> {jjtThis.name = t.image;}#INTEGER)|
-    (<TRUE> #TRUE) |
-    (<FALSE> #FALSE) |
+    (t=<TRUE> {jjtThis.index = t.kind;}#TRUE) |
+    (t=<FALSE> {jjtThis.index = t.kind;}#FALSE) |
     (t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER) |
-    (<THIS> #THIS) |
-    (<EXCLAMATION> expressionfinal() #EXCLAMATION) |
+    (t=<THIS> {jjtThis.index = t.kind;}#THIS) |
+    (t=<EXCLAMATION> expressionfinal() {jjtThis.index = t.kind;}#EXCLAMATION) |
     (<LEFTPARENTHESES> expression() <RIGHTPARENTHESES>) |
-    (<NEW> ((<INT> #INT array() #NEW(2)) | ((t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER) #NEW <LEFTPARENTHESES> <RIGHTPARENTHESES>) ))
+    (t1=<NEW> (((t=<INT> {jjtThis.index = t.kind;}#INT) array() #array(2) {jjtThis.index = t1.kind;}#NEW(1)) | ((t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER) {jjtThis.index = t1.kind;}#NEW(1) <LEFTPARENTHESES> <RIGHTPARENTHESES>) ))
 }
 
 void array() #void: {}

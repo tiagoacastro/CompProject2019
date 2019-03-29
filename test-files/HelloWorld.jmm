@@ -1,5 +1,11 @@
 class HelloWorld {
 	public static void main(String[] args) {
 		ioPlus.printHelloWorld();
+		/* ola */
+		j = i+1;
+		/*
+		serere
+		*/
+		k = 3+2;
 	}
 }

@@ -8,7 +8,7 @@ public class SimpleNode implements Node {
     protected int id;
     protected Object value;
     protected JmmParser parser;
-
+    protected int index = 0;
     protected String name = null;
 
     public SimpleNode(int i) {
@@ -69,122 +69,6 @@ public class SimpleNode implements Node {
      */
 
     public String toString() {
-        int index = 0;
-
-        switch (JmmParserTreeConstants.jjtNodeName[id]) {
-        case "INTEGER":
-            index = 5;
-            break;
-        case "CLASS":
-            index = 6;
-            break;
-        case "EXTENDS":
-            index = 7;
-            break;
-        case "LEFTBRACKET":
-            index = 8;
-            break;
-        case "RIGHTBRACKET":
-            index = 9;
-            break;
-        case "LEFTPARENTHESES":
-            index = 10;
-            break;
-        case "RIGHTPARENTHESES":
-            index = 11;
-            break;
-        case "LEFTSQUAREBRACKET":
-            index = 12;
-            break;
-        case "RIGHTSQUAREBRACKET":
-            index = 13;
-            break;
-        case "INT":
-            index = 14;
-            break;
-        case "BOOLEAN":
-            index = 15;
-            break;
-        case "STRINGARRAY":
-            index = 16;
-            break;
-        case "VOID":
-            index = 17;
-            break;
-        case "COLON":
-            index = 18;
-            break;
-        case "DOT":
-            index = 19;
-            break;
-        case "SEMICOLON":
-            index = 20;
-            break;
-        case "PUBLIC":
-            index = 21;
-            break;
-        case "STATIC":
-            index = 22;
-            break;
-        case "MAIN":
-            index = 23;
-            break;
-        case "IF":
-            index = 24;
-            break;
-        case "ELSE":
-            index = 25;
-            break;
-        case "WHILE":
-            index = 26;
-            break;
-        case "RETURN":
-            index = 27;
-            break;
-        case "EQUALS":
-            index = 28;
-            break;
-        case "COMMERCIALE":
-            index = 29;
-            break;
-        case "MINOR":
-            index = 30;
-            break;
-        case "PLUS":
-            index = 31;
-            break;
-        case "MINUS":
-            index = 32;
-            break;
-        case "ASTERISC":
-            index = 33;
-            break;
-        case "SLASH":
-            index = 34;
-            break;
-        case "LENGTH":
-            index = 35;
-            break;
-        case "TRUE":
-            index = 36;
-            break;
-        case "FALSE":
-            index = 37;
-            break;
-        case "THIS":
-            index = 38;
-            break;
-        case "NEW":
-            index = 39;
-            break;
-        case "EXCLAMATION":
-            index = 40;
-            break;
-        case "IDENTIFIER":
-            index = 41;
-            break;
-        }
-
         String print;
 
         if (index == 0)

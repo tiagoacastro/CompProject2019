@@ -14,3 +14,5 @@ javacc-6.0
 !JmmParserConstants.java
 !ASTIDENTIFIER.java
 !ASTINTEGER.java
+!ASTADDSUB.java
+!ASTMULDIV.java
