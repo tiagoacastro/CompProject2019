@@ -13,3 +13,5 @@
 !ASTINTEGER.java
 !ASTADDSUB.java
 !ASTMULDIV.java
+!SymbolTable.java
+!Symbol.java
