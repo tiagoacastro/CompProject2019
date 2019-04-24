@@ -8,6 +8,22 @@ public class SymbolTable {
     private HashMap<String, Symbol> symbols; //Identifier -> Type
 
     /**
+     * SymbolTable default constructor
+     */
+    public SymbolTable() {
+        symbols = new HashMap<>();
+    }
+
+    /**
+     * SymbolTable constructor
+     * @param parent
+     */
+    public SymbolTable(SymbolTable parent) {
+        this.parent = parent;
+        symbols = new HashMap<>();
+    }
+
+    /**
      * Sets symbol table parent
      * @param parent parent table
      */
@@ -17,17 +33,11 @@ public class SymbolTable {
 
     /**
      * adds symbol
-     * @param type symbol type
-     * @param identifier symbol identifier
+     * @param symbol symbol
      * @return returns true if the symbol was added, false if it already exists
      */
-    public boolean addSymbol(String type, String identifier, Symbol.Access access){
-        if(symbolDefined(identifier))
-            return false;
-        else {
-            symbols.put(identifier, new Symbol(type, identifier, access));
-            return true;
-        }
+    public void addSymbol(Symbol symbol){
+        symbols.put(symbol.getIdentifier(), symbol);
     }
 
     /**

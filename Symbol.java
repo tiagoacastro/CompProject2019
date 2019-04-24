@@ -9,10 +9,10 @@ public class Symbol {
     /**
      * Access enum
      */
-    public enum Access {local, parameter, global} 
+    public static enum Access {local, parameter, global} 
 
     /**
-     * Symbol constructor
+     * Symbol constructor (TODO: retirar?)
      * @param type symbol type
      * @param identifier symbol identifier
      * @param access symbol access type
@@ -22,6 +22,20 @@ public class Symbol {
         this.identifier = identifier; 
         this.access = access;
     } 
+
+    /**
+     * Symbol constructor
+     * @param access symbol access type
+     */
+    public Symbol(Access access){
+        this.access = access;
+    } 
+    
+    /**
+     * Setter for type
+     * @param type
+     */
+    public void setType(String type) {this.type = type;} 
     
     /**
      * Getter for type
@@ -29,11 +43,23 @@ public class Symbol {
      */
     public String getType() {return this.type;} 
     
+    /**
+     * Setter for identifier
+     * @param identifier
+     */
+    public void setIdentifier(String identifier) {this.identifier = identifier;} 
+    
     /**s
      * Getter for identifier
      * @return identifier
      */
     public String getIdentifier() {return this.identifier;} 
+    
+    /**
+     * Setter for access (TODO: retirar?)
+     * @param access
+     */
+    public void setAccess(Access access) {this.access = access;} 
 
     /**
      * Getter for access type
