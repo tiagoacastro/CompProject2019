@@ -12,7 +12,18 @@ public class Symbol {
     public static enum Access {local, parameter, global} 
 
     /**
-     * Symbol constructor (TODO: retirar?)
+     * Symbol constructor
+     * @param type symbol type
+     * @param identifier symbol identifier
+     * @param access symbol access type
+     */
+    public Symbol(String type, Access access){ 
+        this.type = type;
+        this.access = access;
+    } 
+
+    /**
+     * Symbol constructor
      * @param type symbol type
      * @param identifier symbol identifier
      * @param access symbol access type
@@ -66,4 +77,9 @@ public class Symbol {
      * @return access type
      */
     public Access getAccess() {return this.access;} 
+
+    @Override
+    public String toString() {
+        return type + " " + identifier + " " + access;
+    }
 }  

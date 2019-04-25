@@ -5,18 +5,23 @@ options {
 
 PARSER_BEGIN(JmmParser)
 // código Java que invoca o parser
+import java.util.ArrayList;
 public class JmmParser {
+    static ArrayList<SymbolTable> symbolTables = new ArrayList<SymbolTable>();
+
     public static void main(String args[]) throws ParseException {
         // criação do objecto utilizando o constructor com argumento para
         // ler do standard input (teclado)
         try {
             java.io.FileInputStream file = new java.io.FileInputStream("test-files/" + args[0]);
             JmmParser parser = new JmmParser(file);
-            SymbolTable classTable = new SymbolTable();
-            SimpleNode root = parser.program(classTable);
+            SimpleNode root = parser.program();
             root.dump("");
         } catch (java.io.FileNotFoundException e) {
             System.out.println(e);
+        }
+        for (SymbolTable s : symbolTables) {
+            System.out.println(s.toString());
         }
     }
 }
@@ -81,27 +86,32 @@ TOKEN :
     | < IDENTIFIER : (["a" - "z"] | ["A" - "Z"])+ (["a" - "z"] | ["A" - "Z"] | ["0" - "9"] | "_")* >
 }
 // definição da produção
-SimpleNode program(SymbolTable classTable) : {}
+SimpleNode program() : {}
 {
-    classDeclaration(classTable) <EOF> {return jjtThis;}
+    classDeclaration() <EOF> {return jjtThis;}
 }
 
-void classDeclaration(SymbolTable classTable) : {Token t, t1;}
+void classDeclaration() : {Token t, t1; SymbolTable classTable;}
 {
+    {classTable = new SymbolTable();}
+    {symbolTables.add(classTable);}
     <CLASS> t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER [t1=<EXTENDS> (t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER) {jjtThis.index = t1.kind;}#EXTENDS(1)]
     <LEFTBRACKET> 
         (varDeclaration(classTable, Symbol.Access.global))*
-        (t=<PUBLIC> (mainDeclaration(classTable) | methodDeclaration()) {jjtThis.index = t.kind;}#PUBLIC(1))*
+        (t=<PUBLIC> (mainDeclaration(classTable) | methodDeclaration(classTable)) {jjtThis.index = t.kind;}#PUBLIC(1))*
     <RIGHTBRACKET>
 }
 
-void mainDeclaration(SymbolTable classTable) : {Token t; Symbol mainMethod;} 
+void mainDeclaration(SymbolTable classTable) : {Token t; Symbol mainMethod, mainParam; SymbolTable mainTable;} 
 {
-    {mainMethod = new Symbol(Symbol.Access.global);}
-    t=<STATIC> {jjtThis.index = t.kind;}#STATIC t=<VOID> {jjtThis.index = t.kind;}#VOID <MAIN> <LEFTPARENTHESES> t=<STRINGARRAY> {jjtThis.index = t.kind;}#STRINGARRAY t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER(1) <RIGHTPARENTHESES>
+    {mainMethod = new Symbol("void", "main", Symbol.Access.global); mainParam = new Symbol("String[]", Symbol.Access.parameter);}
+    {mainTable = new SymbolTable(classTable);}
+    {symbolTables.add(mainTable);}
+    t=<STATIC> {jjtThis.index = t.kind;}#STATIC t=<VOID> {jjtThis.index = t.kind;}#VOID <MAIN> <LEFTPARENTHESES> t=<STRINGARRAY> {jjtThis.index = t.kind;}#STRINGARRAY t=<IDENTIFIER> {jjtThis.name = t.image; mainParam.setIdentifier(t.image);}#IDENTIFIER(1) <RIGHTPARENTHESES>
     <LEFTBRACKET>
-        methodBody()
+        methodBody(mainTable)
     <RIGHTBRACKET>
+    {classTable.addSymbol(mainMethod);}
 }
 
 void varDeclaration(SymbolTable table, Symbol.Access access) : {Token t; Symbol var;}
@@ -111,27 +121,30 @@ void varDeclaration(SymbolTable table, Symbol.Access access) : {Token t; Symbol 
     {table.addSymbol(var);} 
 }
 
-void methodDeclaration() : {Token t; Symbol method;}
+void methodDeclaration(SymbolTable classTable) : {Token t; Symbol method; SymbolTable methodTable;}
 {
     {method = new Symbol(Symbol.Access.global);}
-    type(method) t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER <LEFTPARENTHESES> (parameterDeclaration() ( <COLON> parameterDeclaration())*)? <RIGHTPARENTHESES>
+    {methodTable = new SymbolTable(classTable);}
+    {symbolTables.add(methodTable);}
+    type(method) t=<IDENTIFIER> {jjtThis.name = t.image; method.setIdentifier(t.image);}#IDENTIFIER <LEFTPARENTHESES> (parameterDeclaration(methodTable) ( <COLON> parameterDeclaration(methodTable))*)? <RIGHTPARENTHESES>
     <LEFTBRACKET>
-        methodBody()
+        methodBody(methodTable)
         t=<RETURN> expression() {jjtThis.index = t.kind;}#RETURN(1) <SEMICOLON>
     <RIGHTBRACKET>
+    {classTable.addSymbol(method);}
 }
 
-void methodBody() : {SymbolTable methodTable;}
+void methodBody(SymbolTable methodTable) : {}
 {
-    {methodTable = new SymbolTable();}
     (LOOKAHEAD(2) varDeclaration(methodTable, Symbol.Access.local))*
     (statement())*
 }
 
-void parameterDeclaration() : {Token t; Symbol param;}
+void parameterDeclaration(SymbolTable methodTable) : {Token t; Symbol param;}
 {
     {param = new Symbol(Symbol.Access.parameter);}
-    type(param) t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER
+    type(param) t=<IDENTIFIER> {jjtThis.name = t.image; param.setIdentifier(t.image);}#IDENTIFIER
+    {methodTable.addSymbol(param);}
 }
 
 void type(Symbol symbol) #void: {Token t;}

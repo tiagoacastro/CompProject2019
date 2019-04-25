@@ -83,4 +83,13 @@ public class SymbolTable {
     public Symbol.Access getSymbolAccess(String identifier){
         return symbols.get(identifier).getAccess();
     }
+
+    @Override
+    public String toString() {
+        String res = "Table:\n";
+        for (String s : symbols.keySet()) {
+            res = res.concat(symbols.get(s).toString() + "\n");
+        }
+        return res;
+    }
 }
