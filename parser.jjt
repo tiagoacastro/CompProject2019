@@ -157,9 +157,17 @@ void type(Symbol symbol) #void: {Token t;}
 void statement() #void: {Token t;}
 {
     (<LEFTBRACKET> (statement())* <RIGHTBRACKET>) |   
-    (t=<IF> condition() body() {jjtThis.index = t.kind;}#IF(2) t=<ELSE> body() {jjtThis.index = t.kind;}#ELSE(1)) |
+    (ifStatement()) |
     (whileStatement()) |
     (expression() <SEMICOLON>)
+}
+
+void ifStatement() #void : {Token t;}
+{
+    t=<IF> condition() 
+    body() {jjtThis.index = t.kind;}#IF(2) 
+    t=<ELSE> 
+    body() {jjtThis.index = t.kind;}#ELSE(1)
 }
 
 void whileStatement() #void: {Token t, t1;}

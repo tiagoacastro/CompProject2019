@@ -1,5 +1,5 @@
 #!/bin/bash
-# sh run.sh parser_file_name parser_class_name test_class_name
+# sh run.sh parser_file_name parser_class_name test_file_name
 
 jjtree $1.jjt
 javacc $1.jj
