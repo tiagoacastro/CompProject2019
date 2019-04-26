@@ -83,6 +83,12 @@ public class Symbol {
      */
     public Access getAccess() {return this.access;} 
 
+    /**
+     * Setter for isInitialized
+     * @return access type
+     */
+    public void initialize() {this.isInitialized = true;} 
+
     @Override
     public String toString() {
         return type + " " + identifier + " " + access + (isMethod ? " method" : "");

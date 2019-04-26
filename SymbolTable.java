@@ -5,7 +5,7 @@ import java.util.HashMap;
  */
 public class SymbolTable {
     private SymbolTable parent;
-    private HashMap<String, Symbol> symbols; //Identifier -> Type
+    private HashMap<String, Symbol> symbols;
 
     /**
      * SymbolTable default constructor
@@ -21,6 +21,14 @@ public class SymbolTable {
     public SymbolTable(SymbolTable parent) {
         this.parent = parent;
         symbols = new HashMap<>();
+    }
+
+    /**
+     * Gets symbol table parent
+     * @return parent parent table
+     */
+    public SymbolTable getParent() {
+        return parent;
     }
 
     /**
@@ -48,13 +56,18 @@ public class SymbolTable {
     public boolean symbolDefined(String identifier){
         Symbol symbol = symbols.get(identifier);
 
-        if(symbol == null) {
-            if(this.parent == null){
-                return false;
-            } else
-                return this.parent.symbolDefined(identifier);
-        } else 
+        if(symbol == null)
+            return false;
+        else 
             return true;
+    }
+
+    /**
+     * Initializes identifier
+     * @param identifier token identifier
+     */
+    public void initializeSymbol(String identifier) {
+        symbols.get(identifier).initialize();
     }
 
     /**

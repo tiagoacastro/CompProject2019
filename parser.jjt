@@ -6,6 +6,7 @@ options {
 PARSER_BEGIN(JmmParser)
 // código Java que invoca o parser
 import java.util.ArrayList;
+
 public class JmmParser {
     static ArrayList<SymbolTable> symbolTables = new ArrayList<SymbolTable>();
 
