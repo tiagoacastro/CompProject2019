@@ -257,8 +257,8 @@ void expression7() #void: {Token t;}
 {
     expressionfinal() (
         t=<DOT> (
-            (t=<LENGTH> {jjtThis.index = t.kind;}#LENGTH) |
-            (functionCall())
+            (t=<LENGTH> {jjtThis.index = t.kind;}#LENGTH)
+            | (functionCall())
         )
         {jjtThis.index = t.kind;}#DOT(2)
     )*

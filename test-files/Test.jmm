@@ -7,7 +7,7 @@ class Test extends Test2 {
         int i;
         int[] j;
         boolean k;
-        Test2 l;
+        Test test;
 
         if (i < 10 && i) {
             ola = 11[1] + 1 * 2;
@@ -25,6 +25,9 @@ class Test extends Test2 {
             5=5;
             k[3+3] = j/3-7;
         }
+
+        test = new Test();
+        test.olaFun(1, j);
     }
 
     public int olaFun(int adeus, int[] pars) {
