@@ -1,17 +1,17 @@
-import java.util.HashMap;
+import java.util.Hashtable;
 
 /**
  * Symbol table class
  */
 public class SymbolTable {
     private SymbolTable parent;
-    private HashMap<String, Symbol> symbols;
+    private Hashtable<String, Symbol> symbols;
 
     /**
      * SymbolTable default constructor
      */
     public SymbolTable() {
-        symbols = new HashMap<>();
+        symbols = new Hashtable<>();
     }
 
     /**
@@ -20,7 +20,7 @@ public class SymbolTable {
      */
     public SymbolTable(SymbolTable parent) {
         this.parent = parent;
-        symbols = new HashMap<>();
+        symbols = new Hashtable<>();
     }
 
     /**
@@ -45,6 +45,10 @@ public class SymbolTable {
      * @return returns true if the symbol was added, false if it already exists
      */
     public void addSymbol(Symbol symbol){
+        if (symbols.containsKey(symbol.getIdentifier())) {
+            System.out.println("A symbol with that identifier already exists.");
+            return;
+        }
         symbols.put(symbol.getIdentifier(), symbol);
     }
 
@@ -99,7 +103,7 @@ public class SymbolTable {
 
     @Override
     public String toString() {
-        String res = "Table:\n";
+        String res = "table:\n";
         for (String s : symbols.keySet()) {
             res = res.concat(symbols.get(s).toString() + "\n");
         }

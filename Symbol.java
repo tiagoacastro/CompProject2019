@@ -5,7 +5,6 @@ public class Symbol {
     private String type; 
     private String identifier;
     private Access access; 
-    private boolean isMethod;
     private boolean isInitialized = false;
 
     /**
@@ -19,10 +18,9 @@ public class Symbol {
      * @param identifier symbol identifier
      * @param access symbol access type
      */
-    public Symbol(String type, Access access, boolean isMethod) { 
+    public Symbol(String type, Access access) { 
         this.type = type;
         this.access = access;
-        this.isMethod = isMethod;
     } 
 
     /**
@@ -31,20 +29,18 @@ public class Symbol {
      * @param identifier symbol identifier
      * @param access symbol access type
      */
-    public Symbol(String type, String identifier, Access access, boolean isMethod) { 
+    public Symbol(String type, String identifier, Access access) { 
         this.type = type; 
         this.identifier = identifier; 
         this.access = access;
-        this.isMethod = isMethod;
     } 
 
     /**
      * Symbol constructor
      * @param access symbol access type
      */
-    public Symbol(Access access, boolean isMethod) {
+    public Symbol(Access access) {
         this.access = access;
-        this.isMethod = isMethod;
     } 
     
     /**
@@ -91,6 +87,6 @@ public class Symbol {
 
     @Override
     public String toString() {
-        return type + " " + identifier + " " + access + (isMethod ? " method" : "");
+        return type + " " + identifier + " " + access;
     }
 }  

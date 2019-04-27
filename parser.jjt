@@ -5,10 +5,26 @@ options {
 
 PARSER_BEGIN(JmmParser)
 // código Java que invoca o parser
-import java.util.ArrayList;
+import java.util.Hashtable;
 
 public class JmmParser {
-    static ArrayList<SymbolTable> symbolTables = new ArrayList<SymbolTable>();
+    private SymbolTable classTable = new SymbolTable();
+    private Hashtable<String, SymbolTable> methods = new Hashtable<String, SymbolTable>();
+    static private JmmParser instance;
+
+    static JmmParser getInstance() {
+        return instance;
+    }
+
+    //TODO: retirar?
+    public SymbolTable getClassTable() {
+        return classTable;
+    }
+
+    //TODO: retirar?
+    public Hashtable<String, SymbolTable> getMethods() {
+        return methods;
+    }
 
     public static void main(String args[]) throws ParseException {
         // criação do objecto utilizando o constructor com argumento para
@@ -16,13 +32,29 @@ public class JmmParser {
         try {
             java.io.FileInputStream file = new java.io.FileInputStream("test-files/" + args[0]);
             JmmParser parser = new JmmParser(file);
+            instance = parser;
             SimpleNode root = parser.program();
             root.dump("");
+            root.createSymbolTable(parser.classTable);
+            parser.print();
         } catch (java.io.FileNotFoundException e) {
             System.out.println(e);
         }
-        for (SymbolTable s : symbolTables) {
-            System.out.println(s.toString());
+        
+    }
+
+    void addMethod(String identifier, SymbolTable table) {
+        if (methods.containsKey(identifier)) {
+            System.out.println("A method with that identifier already exists.");
+            return;
+        }
+        methods.put(identifier, table);
+    }
+
+    void print() {
+        System.out.println("class " + classTable.toString());
+        for (String s : methods.keySet()) {
+            System.out.println(s + " " + methods.get(s).toString());
         }
     }
 }
@@ -92,91 +124,76 @@ SimpleNode program() : {}
     classDeclaration() <EOF> {return jjtThis;}
 }
 
-void classDeclaration() : {Token t, t1; SymbolTable classTable;}
+void classDeclaration() : {Token t, t1;}
 {
-    {classTable = new SymbolTable();}
-    {symbolTables.add(classTable);}
     <CLASS> t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER [t1=<EXTENDS> (t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER) {jjtThis.index = t1.kind;}#EXTENDS(1)]
     <LEFTBRACKET> 
-        (varDeclaration(classTable, Symbol.Access.global))*
-        (t=<PUBLIC> (mainDeclaration(classTable) | methodDeclaration(classTable)) {jjtThis.index = t.kind;}#PUBLIC(1))*
+        (varDeclaration())*
+        (t=<PUBLIC> (mainDeclaration() | methodDeclaration()) {jjtThis.index = t.kind;}#PUBLIC(1))*
     <RIGHTBRACKET>
 }
 
-void mainDeclaration(SymbolTable classTable) : {Token t; Symbol mainMethod, mainParam; SymbolTable mainTable;} 
+void mainDeclaration() : {Token t;} 
 {
-    {mainMethod = new Symbol("void", "main", Symbol.Access.global, true); mainParam = new Symbol("String[]", Symbol.Access.parameter, false);}
-    {mainTable = new SymbolTable(classTable);}
-    {symbolTables.add(mainTable);}
-    t=<STATIC> {jjtThis.index = t.kind;}#STATIC t=<VOID> {jjtThis.index = t.kind;}#VOID <MAIN> <LEFTPARENTHESES> t=<STRINGARRAY> {jjtThis.index = t.kind;}#STRINGARRAY t=<IDENTIFIER> {jjtThis.name = t.image; mainParam.setIdentifier(t.image);}#IDENTIFIER(1) <RIGHTPARENTHESES>
+    t=<STATIC> {jjtThis.index = t.kind;}#STATIC t=<VOID> {jjtThis.index = t.kind;}#VOID <MAIN> <LEFTPARENTHESES> t=<STRINGARRAY> {jjtThis.index = t.kind;}#STRINGARRAY t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER(1) <RIGHTPARENTHESES>
     <LEFTBRACKET>
-        methodBody(mainTable)
+        methodBody()
     <RIGHTBRACKET>
-    {mainTable.addSymbol(mainParam);}
-    {classTable.addSymbol(mainMethod);}
 }
 
-void varDeclaration(SymbolTable table, Symbol.Access access) : {Token t; Symbol var;}
+void varDeclaration() : {Token t;}
 {
-    {var = new Symbol(access, false);}
-    type(var) t=<IDENTIFIER> {jjtThis.name = t.image; var.setIdentifier(t.image);}#IDENTIFIER <SEMICOLON>
-    {table.addSymbol(var);} 
+    type() t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER <SEMICOLON>
 }
 
-void methodDeclaration(SymbolTable classTable) : {Token t; Symbol method; SymbolTable methodTable;}
+void methodDeclaration() : {Token t;}
 {
-    {method = new Symbol(Symbol.Access.global, true);}
-    {methodTable = new SymbolTable(classTable);}
-    {symbolTables.add(methodTable);}
-    type(method) t=<IDENTIFIER> {jjtThis.name = t.image; method.setIdentifier(t.image);}#IDENTIFIER <LEFTPARENTHESES> (parameterDeclaration(methodTable) ( <COLON> parameterDeclaration(methodTable))*)? <RIGHTPARENTHESES>
+    type() t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER <LEFTPARENTHESES> (parameterDeclaration() ( <COLON> parameterDeclaration())*)? <RIGHTPARENTHESES>
     <LEFTBRACKET>
-        methodBody(methodTable)
-        t=<RETURN> expression(methodTable) {jjtThis.index = t.kind;}#RETURN(1) <SEMICOLON>
+        methodBody()
+        t=<RETURN> expression() {jjtThis.index = t.kind;}#RETURN(1) <SEMICOLON>
     <RIGHTBRACKET>
-    {classTable.addSymbol(method);}
 }
 
-void methodBody(SymbolTable methodTable) : {}
+void methodBody() : {}
 {
-    (LOOKAHEAD(2) varDeclaration(methodTable, Symbol.Access.local))*
-    (statement(methodTable))*
+    (LOOKAHEAD(2) varDeclaration())*
+    (statement())*
 }
 
-void parameterDeclaration(SymbolTable methodTable) : {Token t; Symbol param;}
+void parameterDeclaration() : {Token t;}
 {
-    {param = new Symbol(Symbol.Access.parameter, false);}
-    type(param) t=<IDENTIFIER> {jjtThis.name = t.image; param.setIdentifier(t.image);}#IDENTIFIER
-    {methodTable.addSymbol(param);}
+    type() t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER
 }
 
-void type(Symbol symbol) #void : {Token t;}
+void type() #void : {Token t;}
 {
-    (t=<INT> {jjtThis.index = t.kind;}#INT {symbol.setType("int");} [t=<LEFTSQUAREBRACKET> {jjtThis.index = t.kind;}#LEFTSQUAREBRACKET t=<RIGHTSQUAREBRACKET> {jjtThis.index = t.kind;}#RIGHTSQUAREBRACKET {symbol.setType("int[]");}]) | 
-    (t=<BOOLEAN> {jjtThis.index = t.kind;}#BOOLEAN {symbol.setType("boolean");}) | 
-    (t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER {symbol.setType(t.image);})
+    (t=<INT> {jjtThis.index = t.kind;}#INT [t=<LEFTSQUAREBRACKET> {jjtThis.index = t.kind;}#LEFTSQUAREBRACKET t=<RIGHTSQUAREBRACKET> {jjtThis.index = t.kind;}#RIGHTSQUAREBRACKET]) | 
+    (t=<BOOLEAN> {jjtThis.index = t.kind;}#BOOLEAN) | 
+    (t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER)
 }
 
-void statement(SymbolTable scopeTable) #void : {Token t;}
+void statement() #void : {Token t;}
 {
-    (<LEFTBRACKET> (statement(scopeTable))* <RIGHTBRACKET>)
-    | ifStatement(scopeTable)
-    | whileStatement(scopeTable)
-    | (expression(scopeTable) <SEMICOLON>)
+    (<LEFTBRACKET> (statement())* <RIGHTBRACKET>)
+    | ifStatement()
+    | whileStatement()
+    | (expression() <SEMICOLON>)
 }
 
-void ifStatement(SymbolTable ifTable) #void : {Token t;}
+void ifStatement() #void : {Token t;}
 {
-    t=<IF> condition(ifTable) 
-    body(ifTable) {jjtThis.index = t.kind;}#IF(2) 
+    t=<IF> condition() 
+    body() {jjtThis.index = t.kind;}#IF(2) 
     t=<ELSE> 
-    body(ifTable) {jjtThis.index = t.kind;}#ELSE(1)
+    body() {jjtThis.index = t.kind;}#ELSE(1)
 }
 
-void whileStatement(SymbolTable whileTable) #void: {Token t, t1;}
+void whileStatement() #void: {Token t, t1;}
 {
     t=<WHILE>
     try {
-        condition(whileTable)
+        condition()
     }
     catch (ParseException e) {
         System.out.println(e.toString());
@@ -185,94 +202,94 @@ void whileStatement(SymbolTable whileTable) #void: {Token t, t1;}
             t1 = getNextToken();
         } while (t1.kind != RIGHTPARENTHESES);
     }
-    body(whileTable)
+    body()
     {jjtThis.index = t.kind;}#WHILE(2)
 }
 
-void condition(SymbolTable scopeTable) : {}
+void condition() : {}
 {
-    <LEFTPARENTHESES> expression(scopeTable) <RIGHTPARENTHESES>
+    <LEFTPARENTHESES> expression() <RIGHTPARENTHESES>
 }
 
-void body(SymbolTable scopeTable) : {}
+void body() : {}
 {
-    statement(scopeTable)
+    statement()
 }
 
-void expression(SymbolTable scopeTable) #void: {Token t;}
+void expression() #void: {Token t;}
 {
-    expression2(scopeTable) [t=<EQUALS> expression2(scopeTable) {jjtThis.index = t.kind;}#EQUALS(2)]
+    expression2() [t=<EQUALS> expression2() {jjtThis.index = t.kind;}#EQUALS(2)]
 }
 
-void expression2(SymbolTable scopeTable) #void: {Token t;}
+void expression2() #void: {Token t;}
 {
-    expression3(scopeTable) (
-        t=<COMMERCIALE> expression3(scopeTable) {jjtThis.index = t.kind;}#COMMERCIALE(2)
+    expression3() (
+        t=<COMMERCIALE> expression3() {jjtThis.index = t.kind;}#COMMERCIALE(2)
     )*
 }
 
-void expression3(SymbolTable scopeTable) #void: {Token t;}
+void expression3() #void: {Token t;}
 {
-    expression4(scopeTable) (
-        t=<MINOR> expression4(scopeTable) {jjtThis.index = t.kind;}#MINOR(2)
+    expression4() (
+        t=<MINOR> expression4() {jjtThis.index = t.kind;}#MINOR(2)
     )*
 }
 
-void expression4(SymbolTable scopeTable) #void: {Token t;}                        
+void expression4() #void: {Token t;}                        
 {
-    expression5(scopeTable) (
-        t=<ADDSUB> expression5(scopeTable) {jjtThis.name = t.image;}#ADDSUB(2)
+    expression5() (
+        t=<ADDSUB> expression5() {jjtThis.name = t.image;}#ADDSUB(2)
     )*
 }
 
-void expression5(SymbolTable scopeTable) #void: {Token t;}                        
+void expression5() #void: {Token t;}                        
 {
-    expression6(scopeTable) (
-        t=<MULDIV> expression6(scopeTable) {jjtThis.name = t.image;}#MULDIV(2)
+    expression6() (
+        t=<MULDIV> expression6() {jjtThis.name = t.image;}#MULDIV(2)
     )*
 }
 
-void expression6(SymbolTable scopeTable) #void: {}                        
+void expression6() #void: {}                        
 {
-    expression7(scopeTable) (
-        array(scopeTable) #array(2)
+    expression7() (
+        array() #array(2)
     )*
 }
 
-void expression7(SymbolTable scopeTable) #void: {Token t;}                             
+void expression7() #void: {Token t;}                             
 {
-    expressionfinal(scopeTable) (
+    expressionfinal() (
         t=<DOT> (
             (t=<LENGTH> {jjtThis.index = t.kind;}#LENGTH) | 
-            (functionCall(scopeTable)) 
+            (functionCall()) 
         ) 
         {jjtThis.index = t.kind;}#DOT(2)
     )*
 }
 
-void functionCall(SymbolTable scopeTable) : {Token t;}
+void functionCall() : {Token t;}
 {
-    t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER <LEFTPARENTHESES> (parameters(scopeTable))? <RIGHTPARENTHESES>
+    t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER <LEFTPARENTHESES> (parameters())? <RIGHTPARENTHESES>
 }
 
-void parameters(SymbolTable scopeTable) : {}
+void parameters() : {}
 {
-    expression(scopeTable) (<COLON> expression(scopeTable))*
+    expression() (<COLON> expression())*
 }
 
-void expressionfinal(SymbolTable scopeTable) #void: {Token t, t1;}                                            
+void expressionfinal() #void: {Token t, t1;}                                            
 {
     (t=<INTEGER> {jjtThis.name = t.image;}#INTEGER)|
     (t=<TRUE> {jjtThis.index = t.kind;}#TRUE) |
     (t=<FALSE> {jjtThis.index = t.kind;}#FALSE) |
     (t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER) |
     (t=<THIS> {jjtThis.index = t.kind;}#THIS) |
-    (t=<EXCLAMATION> expressionfinal(scopeTable) {jjtThis.index = t.kind;}#EXCLAMATION) |
-    (<LEFTPARENTHESES> expression(scopeTable) <RIGHTPARENTHESES>) |
-    (t1=<NEW> (((t=<INT> {jjtThis.index = t.kind;}#INT) array(scopeTable) #array(2) {jjtThis.index = t1.kind;}#NEW(1)) | ((t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER) {jjtThis.index = t1.kind;}#NEW(1) <LEFTPARENTHESES> <RIGHTPARENTHESES>) ))
+    (t=<EXCLAMATION> expressionfinal() {jjtThis.index = t.kind;}#EXCLAMATION) |
+    (<LEFTPARENTHESES> expression() <RIGHTPARENTHESES>) |
+    (t1=<NEW> (((t=<INT> {jjtThis.index = t.kind;}#INT) array() #array(2) {jjtThis.index = t1.kind;}#NEW(1)) | ((t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER) {jjtThis.index = t1.kind;}#NEW(1) <LEFTPARENTHESES> <RIGHTPARENTHESES>) ))
 }
 
-void array(SymbolTable scopeTable) #void: {}
+void array() #void: {}
 {
-    <LEFTSQUAREBRACKET> expression(scopeTable) <RIGHTSQUAREBRACKET>
+    <LEFTSQUAREBRACKET> expression() <RIGHTSQUAREBRACKET>
 }
