@@ -20,5 +20,15 @@ class ASTmethodDeclaration extends SimpleNode {
             ((SimpleNode) children[i]).createSymbolTable(methodTable);
         }
     }
+
+    public void applySemanticAnalysis(SymbolTable table) {
+        SymbolTable methodTable = JmmParser.getInstance().getMethods().get(((SimpleNode)children[1]).name);
+
+        if (children == null) return;
+
+        for (int i = 0; i < children.length; i++) {
+            ((SimpleNode) children[i]).applySemanticAnalysis(methodTable);
+        }
+    }
 }
 /* JavaCC - OriginalChecksum=b04f5b8076581ed0e56b5afc5b9be9b0 (do not edit this line) */

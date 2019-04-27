@@ -113,6 +113,14 @@ public class SimpleNode implements Node {
             ((SimpleNode) children[i]).createSymbolTable(table);
         }
     }
+
+    public void applySemanticAnalysis(SymbolTable table) {
+        if (children == null) return;
+
+        for (int i = 0; i < children.length; i++) {
+            ((SimpleNode) children[i]).applySemanticAnalysis(table);
+        }
+    }
 }
 
 /* JavaCC - OriginalChecksum=2b7ec5aa5689d0e7377adde4da00c1d2 (do not edit this line) */

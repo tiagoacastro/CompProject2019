@@ -33,7 +33,8 @@ public class JmmParser {
             instance = parser;
             SimpleNode root = parser.program();
             root.dump("");
-            root.createSymbolTable(parser.classTable);
+            root.createSymbolTable(parser.getClassTable());
+            root.applySemanticAnalysis(parser.getClassTable());
             parser.print();
         } catch (java.io.FileNotFoundException e) {
             System.out.println(e);
