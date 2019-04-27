@@ -105,6 +105,14 @@ public class SimpleNode implements Node {
     public int getId() {
         return id;
     }
+
+    public void createSymbolTable(SymbolTable table) {
+        if (children == null) return;
+
+        for (int i = 0; i < children.length; i++) {
+            ((SimpleNode) children[i]).createSymbolTable(table);
+        }
+    }
 }
 
 /* JavaCC - OriginalChecksum=2b7ec5aa5689d0e7377adde4da00c1d2 (do not edit this line) */

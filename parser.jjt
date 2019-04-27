@@ -5,18 +5,53 @@ options {
 
 PARSER_BEGIN(JmmParser)
 // código Java que invoca o parser
+import java.util.Hashtable;
+
 public class JmmParser {
+    private SymbolTable classTable = new SymbolTable();
+    private Hashtable<String, SymbolTable> methods = new Hashtable<String, SymbolTable>();
+    static private JmmParser instance;
+
+    static JmmParser getInstance() {
+        return instance;
+    }
+
+    public SymbolTable getClassTable() {
+        return classTable;
+    }
+
+    public Hashtable<String, SymbolTable> getMethods() {
+        return methods;
+    }
+
     public static void main(String args[]) throws ParseException {
         // criação do objecto utilizando o constructor com argumento para
         // ler do standard input (teclado)
         try {
             java.io.FileInputStream file = new java.io.FileInputStream("test-files/" + args[0]);
             JmmParser parser = new JmmParser(file);
-            SymbolTable classTable = new SymbolTable();
-            SimpleNode root = parser.program(classTable);
+            instance = parser;
+            SimpleNode root = parser.program();
             root.dump("");
+            root.createSymbolTable(parser.classTable);
+            parser.print();
         } catch (java.io.FileNotFoundException e) {
             System.out.println(e);
+        }
+    }
+
+    void addMethod(String identifier, SymbolTable table) {
+        if (methods.containsKey(identifier)) {
+            System.out.println("A method with that identifier already exists.");
+            return;
+        }
+        methods.put(identifier, table);
+    }
+
+    void print() {
+        System.out.println("class " + classTable.toString());
+        for (String s : methods.keySet()) {
+            System.out.println(s + " " + methods.get(s).toString());
         }
     }
 }
@@ -24,9 +59,9 @@ PARSER_END(JmmParser)
 // símbolos que não devem ser considerados na análise
 SKIP :
 {
-    " " 
-    | "\t" 
-    | "\r" 
+    " "
+    | "\t"
+    | "\r"
     | "\n"
     | < "//"(~["\r","\n"])* >
     | < "/*" > : MLCOMMENT
@@ -35,7 +70,7 @@ SKIP :
 <MLCOMMENT> SKIP :
 {
   < "*/" > : DEFAULT
-| < ~[] >   
+| < ~[] >
 }
 //global variable for error count
 TOKEN_MGR_DECLS : {
@@ -63,11 +98,11 @@ TOKEN :
     | < PUBLIC : "public" >
     | < STATIC : "static" >
     | < MAIN : "main" >
-    | < IF : "if" >    
-    | < ELSE : "else" >      
-    | < WHILE : "while" >  
+    | < IF : "if" >
+    | < ELSE : "else" >
+    | < WHILE : "while" >
     | < RETURN: "return" >
-    | < EQUALS: "=" >    
+    | < EQUALS: "=" >
     | < COMMERCIALE: "&&" >
     | < MINOR: "<" >
     | < ADDSUB: "+" | "-" >
@@ -81,72 +116,74 @@ TOKEN :
     | < IDENTIFIER : (["a" - "z"] | ["A" - "Z"])+ (["a" - "z"] | ["A" - "Z"] | ["0" - "9"] | "_")* >
 }
 // definição da produção
-SimpleNode program(SymbolTable classTable) : {}
+SimpleNode program() : {}
 {
-    classDeclaration(classTable) <EOF> {return jjtThis;}
+    classDeclaration() <EOF> {return jjtThis;}
 }
 
-void classDeclaration(SymbolTable classTable) : {Token t, t1;}
+void classDeclaration() : {Token t, t1;}
 {
     <CLASS> t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER [t1=<EXTENDS> (t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER) {jjtThis.index = t1.kind;}#EXTENDS(1)]
-    <LEFTBRACKET> 
-        (varDeclaration(classTable, Symbol.Access.global))*
-        (t=<PUBLIC> (mainDeclaration(classTable) | methodDeclaration()) {jjtThis.index = t.kind;}#PUBLIC(1))*
+    <LEFTBRACKET>
+        (varDeclaration())*
+        (t=<PUBLIC> (mainDeclaration() | methodDeclaration()) {jjtThis.index = t.kind;}#PUBLIC(1))*
     <RIGHTBRACKET>
 }
 
-void mainDeclaration(SymbolTable classTable) : {Token t; Symbol mainMethod;} 
+void mainDeclaration() : {Token t;}
 {
-    {mainMethod = new Symbol(Symbol.Access.global);}
     t=<STATIC> {jjtThis.index = t.kind;}#STATIC t=<VOID> {jjtThis.index = t.kind;}#VOID <MAIN> <LEFTPARENTHESES> t=<STRINGARRAY> {jjtThis.index = t.kind;}#STRINGARRAY t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER(1) <RIGHTPARENTHESES>
     <LEFTBRACKET>
         methodBody()
     <RIGHTBRACKET>
 }
 
-void varDeclaration(SymbolTable table, Symbol.Access access) : {Token t; Symbol var;}
+void varDeclaration() : {Token t;}
 {
-    {var = new Symbol(access);}
-    type(var) t=<IDENTIFIER> {jjtThis.name = t.image; var.setIdentifier(t.image);}#IDENTIFIER <SEMICOLON>
-    {table.addSymbol(var);} 
+    type() t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER <SEMICOLON>
 }
 
-void methodDeclaration() : {Token t; Symbol method;}
+void methodDeclaration() : {Token t;}
 {
-    {method = new Symbol(Symbol.Access.global);}
-    type(method) t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER <LEFTPARENTHESES> (parameterDeclaration() ( <COLON> parameterDeclaration())*)? <RIGHTPARENTHESES>
+    type() t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER <LEFTPARENTHESES> (parameterDeclaration() ( <COLON> parameterDeclaration())*)? <RIGHTPARENTHESES>
     <LEFTBRACKET>
         methodBody()
         t=<RETURN> expression() {jjtThis.index = t.kind;}#RETURN(1) <SEMICOLON>
     <RIGHTBRACKET>
 }
 
-void methodBody() : {SymbolTable methodTable;}
+void methodBody() : {}
 {
-    {methodTable = new SymbolTable();}
-    (LOOKAHEAD(2) varDeclaration(methodTable, Symbol.Access.local))*
+    (LOOKAHEAD(2) varDeclaration())*
     (statement())*
 }
 
-void parameterDeclaration() : {Token t; Symbol param;}
+void parameterDeclaration() : {Token t;}
 {
-    {param = new Symbol(Symbol.Access.parameter);}
-    type(param) t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER
+    type() t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER
 }
 
-void type(Symbol symbol) #void: {Token t;}
+void type() #void : {Token t;}
 {
-    (t=<INT> {jjtThis.index = t.kind;}#INT {symbol.setType("int");} [t=<LEFTSQUAREBRACKET> {jjtThis.index = t.kind;}#LEFTSQUAREBRACKET t=<RIGHTSQUAREBRACKET> {jjtThis.index = t.kind;}#RIGHTSQUAREBRACKET {symbol.setType("int[]");}]) | 
-    (t=<BOOLEAN> {jjtThis.index = t.kind;}#BOOLEAN {symbol.setType("boolean");}) | 
-    (t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER {symbol.setType(t.image);})
+    (t=<INT> {jjtThis.index = t.kind;}#INT [t=<LEFTSQUAREBRACKET> {jjtThis.index = t.kind;}#LEFTSQUAREBRACKET t=<RIGHTSQUAREBRACKET> {jjtThis.index = t.kind;}#RIGHTSQUAREBRACKET]) |
+    (t=<BOOLEAN> {jjtThis.index = t.kind;}#BOOLEAN) |
+    (t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER)
 }
 
-void statement() #void: {Token t;}
+void statement() #void : {Token t;}
 {
-    (<LEFTBRACKET> (statement())* <RIGHTBRACKET>) |   
-    (t=<IF> condition() body() {jjtThis.index = t.kind;}#IF(2) t=<ELSE> body() {jjtThis.index = t.kind;}#ELSE(1)) |
-    (whileStatement()) |
-    (expression() <SEMICOLON>)
+    (<LEFTBRACKET> (statement())* <RIGHTBRACKET>)
+    | ifStatement()
+    | whileStatement()
+    | (expression() <SEMICOLON>)
+}
+
+void ifStatement() #void : {Token t;}
+{
+    t=<IF> condition()
+    body() {jjtThis.index = t.kind;}#IF(2)
+    t=<ELSE>
+    body() {jjtThis.index = t.kind;}#ELSE(1)
 }
 
 void whileStatement() #void: {Token t, t1;}
@@ -195,34 +232,34 @@ void expression3() #void: {Token t;}
     )*
 }
 
-void expression4() #void: {Token t;}                        
+void expression4() #void: {Token t;}
 {
     expression5() (
         t=<ADDSUB> expression5() {jjtThis.name = t.image;}#ADDSUB(2)
     )*
 }
 
-void expression5() #void: {Token t;}                        
+void expression5() #void: {Token t;}
 {
     expression6() (
         t=<MULDIV> expression6() {jjtThis.name = t.image;}#MULDIV(2)
     )*
 }
 
-void expression6() #void: {}                        
+void expression6() #void: {}
 {
     expression7() (
         array() #array(2)
     )*
 }
 
-void expression7() #void: {Token t;}                             
+void expression7() #void: {Token t;}
 {
     expressionfinal() (
         t=<DOT> (
-            (t=<LENGTH> {jjtThis.index = t.kind;}#LENGTH) | 
-            (functionCall()) 
-        ) 
+            (t=<LENGTH> {jjtThis.index = t.kind;}#LENGTH) |
+            (functionCall())
+        )
         {jjtThis.index = t.kind;}#DOT(2)
     )*
 }
@@ -237,7 +274,7 @@ void parameters() : {}
     expression() (<COLON> expression())*
 }
 
-void expressionfinal() #void: {Token t, t1;}                                            
+void expressionfinal() #void: {Token t, t1;}
 {
     (t=<INTEGER> {jjtThis.name = t.image;}#INTEGER)|
     (t=<TRUE> {jjtThis.index = t.kind;}#TRUE) |

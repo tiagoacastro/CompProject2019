@@ -5,6 +5,7 @@ public class Symbol {
     private String type; 
     private String identifier;
     private Access access; 
+    private boolean isInitialized = false;
 
     /**
      * Access enum
@@ -12,12 +13,23 @@ public class Symbol {
     public static enum Access {local, parameter, global} 
 
     /**
-     * Symbol constructor (TODO: retirar?)
+     * Symbol constructor
      * @param type symbol type
      * @param identifier symbol identifier
      * @param access symbol access type
      */
-    public Symbol(String type, String identifier, Access access){ 
+    public Symbol(String type, Access access) { 
+        this.type = type;
+        this.access = access;
+    } 
+
+    /**
+     * Symbol constructor
+     * @param type symbol type
+     * @param identifier symbol identifier
+     * @param access symbol access type
+     */
+    public Symbol(String type, String identifier, Access access) { 
         this.type = type; 
         this.identifier = identifier; 
         this.access = access;
@@ -27,7 +39,7 @@ public class Symbol {
      * Symbol constructor
      * @param access symbol access type
      */
-    public Symbol(Access access){
+    public Symbol(Access access) {
         this.access = access;
     } 
     
@@ -66,4 +78,15 @@ public class Symbol {
      * @return access type
      */
     public Access getAccess() {return this.access;} 
+
+    /**
+     * Setter for isInitialized
+     * @return access type
+     */
+    public void initialize() {this.isInitialized = true;} 
+
+    @Override
+    public String toString() {
+        return type + " " + identifier + " " + access;
+    }
 }  
