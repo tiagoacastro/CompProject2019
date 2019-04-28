@@ -1,3 +1,6 @@
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
 
 public class CodeGenerator {
@@ -13,11 +16,15 @@ public class CodeGenerator {
 
         String filename = this.root.value + ".j";
 
-        FileWriter fileWriter = new FileWriter(filename, false);
-        BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-
-        this.output = new PrintWriter(bufferedWriter);
-
+        FileWriter fileWriter;
+		try {
+            fileWriter = new FileWriter(filename, false);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+            this.output = new PrintWriter(bufferedWriter);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+        }
     }
 
     public void generate() {
