@@ -26,7 +26,7 @@ public class CodeGenerator {
 
     public void generate() {
         generateHeader();
-
+        generateGlobals();
         // outputs the final string builded to the file
         out.println(this.builder);
         out.close();
@@ -47,6 +47,28 @@ public class CodeGenerator {
             write(".super java/lan/Object");
             nl();
         }
+    }
+
+    private void generateGlobals() {
+        for(int i = 0; i < this.root.jjtGetNumChildren(); i++) {
+
+            if(this.root.getChild(i).getName().equals("varDeclaration")) {
+                generateVarDeclaration((ASTvarDeclaration) this.root.getChild(i));
+            }
+        }  
+    }
+
+    private void generateVarDeclaration(ASTvarDeclaration varDeclaration) {
+        
+        switch(varDeclaration.getChild(0).getName()){
+            case "int":
+                break;
+            case "boolean":
+                break;
+            default:
+            break;
+        }
+
     }
 
     private void nl(){
