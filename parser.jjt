@@ -183,7 +183,7 @@ void statement() #void : {Token t;}
     (<LEFTBRACKET> (statement())* <RIGHTBRACKET>)
     | ifStatement()
     | whileStatement()
-    | (expression() <SEMICOLON>)
+    | (expression() [t=<EQUALS> expression2() {jjtThis.index = t.kind;}#EQUALS(2)] <SEMICOLON>)
 }
 
 void ifStatement() #void : {Token t;}
@@ -223,43 +223,38 @@ void body() : {}
 
 void expression() #void: {Token t;}
 {
-    expression2() [t=<EQUALS> expression2() {jjtThis.index = t.kind;}#EQUALS(2)]
+    expression2() (
+        t=<COMMERCIALE> expression2() {jjtThis.index = t.kind;}#COMMERCIALE(2)
+    )*
 }
 
 void expression2() #void: {Token t;}
 {
     expression3() (
-        t=<COMMERCIALE> expression3() {jjtThis.index = t.kind;}#COMMERCIALE(2)
+        t=<MINOR> expression3() {jjtThis.index = t.kind;}#MINOR(2)
     )*
 }
 
 void expression3() #void: {Token t;}
 {
     expression4() (
-        t=<MINOR> expression4() {jjtThis.index = t.kind;}#MINOR(2)
+        t=<ADDSUB> expression4() {jjtThis.name = t.image;}#ADDSUB(2)
     )*
 }
 
 void expression4() #void: {Token t;}
 {
     expression5() (
-        t=<ADDSUB> expression5() {jjtThis.name = t.image;}#ADDSUB(2)
+        t=<MULDIV> expression5() {jjtThis.name = t.image;}#MULDIV(2)
     )*
 }
 
-void expression5() #void: {Token t;}
+void expression5() #void: {}
 {
-    expression6() (
-        t=<MULDIV> expression6() {jjtThis.name = t.image;}#MULDIV(2)
-    )*
+    expression6() [array() #array(2)]
 }
 
-void expression6() #void: {}
-{
-    expression7() [array() #array(2)]
-}
-
-void expression7() #void: {Token t;}
+void expression6() #void: {Token t;}
 {
     expressionfinal() (
         t=<DOT> (
