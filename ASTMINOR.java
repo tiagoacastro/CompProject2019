@@ -49,25 +49,7 @@ class ASTMINOR extends SimpleNode {
         }
 
         if (side instanceof ASTarray) {
-            SimpleNode var = ((SimpleNode) side.children[0]);
-            SimpleNode access = ((SimpleNode) side.children[1]);
-            if (var.name != null) {
-                Symbol s = table.getSymbol(var.name);
-                if (s != null) {
-                    if (!s.getType().equals("int[]")) {
-                        System.out.println("Variable not of type int[] on line " + side.getLine());
-                        System.exit(0);
-                    }
-
-                    if (!s.isInitialized()) {
-                        System.out.println("Array not initialized on line " + side.getLine());
-                        System.exit(0);
-                    }
-
-                    access.applySemanticAnalysis(table);
-                    return;
-                }
-            }
+            side.applySemanticAnalysis(table);
         }
 
         System.out.println("Found " + side.toString() + " and was expecting *, /, +, -, or integer value on line " + side.getLine());

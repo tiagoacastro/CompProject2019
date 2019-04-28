@@ -14,7 +14,7 @@ class Test extends Test2 {
         j = new int[2];
 
         if (i < 10 && k) {
-            ola = 11[1] + 1 * 2;
+            ola = j[1] + 1 * 2;
             j[0] = 1;
         }
         else {
@@ -25,7 +25,7 @@ class Test extends Test2 {
             i = i + 1;
             i = i * 2 + 1;
             i = i * (2 + 1);
-            a[2] * 5;
+            ola[2] * 5;
         }
 
         test = new Test();

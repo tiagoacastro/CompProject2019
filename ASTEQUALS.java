@@ -17,30 +17,13 @@ class ASTEQUALS extends SimpleNode {
         if (lhs.name != null) {
             Symbol s = table.getSymbol(lhs.name);
             if (s != null) {
-                if (!s.isInitialized()) s.initialize();
                 rhs.applySemanticAnalysis(table);
+                if (!s.isInitialized()) s.initialize();
                 return;
             }
         } else if (lhs instanceof ASTarray) {
-            SimpleNode var = ((SimpleNode) lhs.children[0]);
-            SimpleNode access = ((SimpleNode) lhs.children[1]);
-            if (var.name != null) {
-                Symbol s = table.getSymbol(var.name);
-                if (s != null) {
-                    if (!s.getType().equals("int[]")) {
-                        System.out.println("Variable not of type int[] on line " + ((SimpleNode) children[0]).getLine());
-                        System.exit(0);
-                    }
-
-                    if (!s.isInitialized()) {
-                        System.out.println("Array not initialized on line " + ((SimpleNode) children[0]).getLine());
-                        System.exit(0);
-                    }
-
-                    access.applySemanticAnalysis(table);
-                    return;
-                }
-            }
+            lhs.applySemanticAnalysis(table);
+            return;
         }
 
         System.out.println("Left side of an assignment isn't a known variable on line " + ((SimpleNode) children[0]).getLine());
