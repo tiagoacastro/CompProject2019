@@ -75,6 +75,8 @@ public class SimpleNode implements Node {
         SimpleNode n = null;
 
         do {
+            if(idx == children.length)
+                return null;
             n = (SimpleNode) children[this.idx];
             this.idx++;
         } while(n == null || n.getName() == null || n.getName() == "");

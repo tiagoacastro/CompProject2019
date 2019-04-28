@@ -26,7 +26,11 @@ public class CodeGenerator {
 
     public void generate() {
         generateHeader();
+        nl();
+
         generateGlobals();
+        nl();
+
         // outputs the final string builded to the file
         out.println(this.builder);
         out.close();
@@ -37,38 +41,44 @@ public class CodeGenerator {
         write(this.node.getName());
         nl();
 
-        this.node = this.root.next();
+        SimpleNode next = this.root.next();
 
-        if(this.node.getName().equals("extends")){
+        if(next.getName().equals("extends")){
             write(".super ");
-            write(this.node.getChild(0).getName());
-            nl();
+            write(next.next().getName());
         } else {
             write(".super java/lan/Object");
-            nl();
         }
+
+        nl();
     }
 
     private void generateGlobals() {
-        for(int i = 0; i < this.root.jjtGetNumChildren(); i++) {
+        SimpleNode next;
 
-            if(this.root.getChild(i).getName().equals("varDeclaration")) {
-                generateVarDeclaration((ASTvarDeclaration) this.root.getChild(i));
-            }
+        while((next = this.root.next()).getName().equals("varDeclaration")) {
+            generateGlobalDeclaration(next);
         }  
+
+        this.root.previous();
     }
 
-    private void generateVarDeclaration(ASTvarDeclaration varDeclaration) {
-        
-        switch(varDeclaration.getChild(0).getName()){
+    private void generateGlobalDeclaration(SimpleNode var) {
+        write(".field static ");
+
+        var.next();
+        write(var.next().getName());
+
+        switch(var.previous().getName()){
             case "int":
+                write(" I");
                 break;
             case "boolean":
+                write(" Z");
                 break;
-            default:
-            break;
         }
 
+        nl();
     }
 
     private void generateOperation(SimpleNode operationNode) {
@@ -86,12 +96,6 @@ public class CodeGenerator {
             case "*":
                 write("imul");
                 break;
-            case "<":
-                write("if_icmpge");
-                break;
-            case "&&":
-                write("iand");
-                break;
             default:
                 break;
         }
@@ -99,6 +103,10 @@ public class CodeGenerator {
 
     private void nl(){
         this.builder.append("\n");
+    }
+
+    private void space(){
+        this.builder.append(" ");
     }
 
     private void write(String content){
