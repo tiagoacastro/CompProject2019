@@ -71,6 +71,32 @@ public class CodeGenerator {
 
     }
 
+    private void generateOperation(SimpleNode operationNode) {
+
+        switch (operationNode.getName()) {
+            case "+":
+                write("iadd");
+                break;
+            case "-":
+                write("isub");
+                break;
+            case "/":
+                write("idiv");
+                break;
+            case "*":
+                write("imul");
+                break;
+            case "<":
+                write("if_icmpge");
+                break;
+            case "&&":
+                write("iand");
+                break;
+            default:
+                break;
+        }
+    }
+
     private void nl(){
         this.builder.append("\n");
     }
