@@ -1,7 +1,14 @@
 .class public Test
-.super Test2
+.super java/lan/Object
 
-.field static adeus
-.field static hey
-
+.method <init>()V
+.limit stack 1
+.limit locals 1
+.var0 is this LTest; from Label0 to Label1
+Label 0:
+aload_0
+invokespecial java/lang/Object/<init>()V
+Label 1:
+return
+.end method
 

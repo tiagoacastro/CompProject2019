@@ -28,8 +28,10 @@ public class CodeGenerator {
         generateHeader();
         nl();
 
-        generateGlobals();
-        nl();
+        if(generateGlobals())
+            nl();
+
+        generateMethods();
 
         // outputs the final string builded to the file
         out.println(this.builder);
@@ -53,14 +55,17 @@ public class CodeGenerator {
         nl();
     }
 
-    private void generateGlobals() {
+    private boolean generateGlobals() {
         SimpleNode next;
+        boolean has = false;
 
         while((next = this.root.next()).getName().equals("varDeclaration")) {
             generateGlobalDeclaration(next);
+            has = true;
         }  
 
         this.root.previous();
+        return has;
     }
 
     private void generateGlobalDeclaration(SimpleNode var) {
@@ -81,24 +86,33 @@ public class CodeGenerator {
         nl();
     }
 
-    private void generateOperation(SimpleNode operationNode) {
+    private void generateMethods(){
+        generateConstructor();
+    }
 
-        switch (operationNode.getName()) {
-            case "+":
-                write("iadd");
-                break;
-            case "-":
-                write("isub");
-                break;
-            case "/":
-                write("idiv");
-                break;
-            case "*":
-                write("imul");
-                break;
-            default:
-                break;
-        }
+    private void generateConstructor(){
+        write(".method <init>()V");
+        nl();
+        write(".limit stack 1");
+        nl();
+        write(".limit locals 1");
+        nl();
+        write(".var0 is this L");
+        write(this.node.getName());
+        write("; from Label0 to Label1");
+        nl();
+        write("Label 0:");
+        nl();
+        write("aload_0");
+        nl();
+        write("invokespecial java/lang/Object/<init>()V");
+        nl();
+        write("Label 1:");
+        nl();
+        write("return");
+        nl();
+        write(".end method");
+        nl();
     }
 
     private void nl(){

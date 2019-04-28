@@ -1,19 +1,16 @@
-class Test extends Test2 {
-    int adeus;
-    boolean hey;
-
+class Test {
     public int ola(int adeus) {
-        hey = true;
-        
         return 2 * adeus;
     }
 
     public static void main(String[] args) {
         int i;
         int j;
+        boolean hey;
+        Test t;
 
-        Test t = new Test();
-
+        t = new Test();
+        hey = true;
         i = 2;
         j = i * 5;
         i = i + 1;
