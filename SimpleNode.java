@@ -10,6 +10,7 @@ public class SimpleNode implements Node {
     protected JmmParser parser;
     protected int index = -1;
     protected String name = null;
+    protected int line;
 
     public SimpleNode(int i) {
         id = i;
@@ -104,6 +105,14 @@ public class SimpleNode implements Node {
 
     public int getId() {
         return id;
+    }
+
+    public int getLine() {
+        return line;
+    }
+
+    public void setLine(int line) {
+        this.line = line;
     }
 
     public void createSymbolTable(SymbolTable table) {

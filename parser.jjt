@@ -1,6 +1,7 @@
 options {
     MULTI=true;
     LOOKAHEAD=1;
+    NODE_SCOPE_HOOK=true;
 }
 
 PARSER_BEGIN(JmmParser)
@@ -34,8 +35,8 @@ public class JmmParser {
             SimpleNode root = parser.program();
             root.dump("");
             root.createSymbolTable(parser.getClassTable());
-            root.applySemanticAnalysis(parser.getClassTable());
             parser.print();
+            root.applySemanticAnalysis(parser.getClassTable());
         } catch (java.io.FileNotFoundException e) {
             System.out.println(e);
         }
@@ -48,6 +49,12 @@ public class JmmParser {
         }
         methods.put(identifier, table);
     }
+
+    static void jjtreeOpenNodeScope(Node n) {
+        ((SimpleNode) n).setLine(getToken(1).beginLine);
+    }
+
+    static void jjtreeCloseNodeScope(Node n) {}
 
     void print() {
         System.out.println("class " + classTable.toString());
@@ -249,9 +256,7 @@ void expression5() #void: {Token t;}
 
 void expression6() #void: {}
 {
-    expression7() (
-        array() #array(2)
-    )*
+    expression7() [array() #array(2)]
 }
 
 void expression7() #void: {Token t;}

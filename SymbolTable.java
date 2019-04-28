@@ -11,6 +11,7 @@ public class SymbolTable {
      * SymbolTable default constructor
      */
     public SymbolTable() {
+        parent = null;
         symbols = new Hashtable<>();
     }
 
@@ -58,12 +59,7 @@ public class SymbolTable {
      * @return returns true if the symbol is already defined, false if not
      */
     public boolean symbolDefined(String identifier){
-        Symbol symbol = symbols.get(identifier);
-
-        if(symbol == null)
-            return false;
-        else 
-            return true;
+        return symbols.containsKey(identifier);
     }
 
     /**
@@ -80,7 +76,13 @@ public class SymbolTable {
      * @return returns symbol, null if it isn't defined
      */
     public Symbol getSymbol(String identifier){
-        return symbols.get(identifier);
+        if (symbols.containsKey(identifier))
+            return symbols.get(identifier);
+
+        if (parent != null)
+            return parent.getSymbol(identifier);
+
+        return null;
     }
 
     /**

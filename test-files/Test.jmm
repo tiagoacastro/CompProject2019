@@ -9,12 +9,14 @@ class Test extends Test2 {
         boolean k;
         Test test;
 
+        j = new int[2];
+
         if (i < 10 && i) {
             ola = 11[1] + 1 * 2;
-            a[0] = 1;
+            j[0] = 1;
         }
         else {
-            l = j[k+1];
+            i = j[k+1];
         }
 
         while (i < 10) {
@@ -22,8 +24,6 @@ class Test extends Test2 {
             i = i * 2 + 1;
             i = i * (2 + 1);
             a[2] * 5;
-            5=5;
-            k[3+3] = j/3-7;
         }
 
         test = new Test();
@@ -50,11 +50,6 @@ class Test extends Test2 {
             bool = true;
             ola = 3;
         }
-
-        pars = coiso[2+i*pars[2]];
-
-        serere = new Teste2();
-        serere = new int[2];
 
         return adeus;
     }
