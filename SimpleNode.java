@@ -10,6 +10,8 @@ public class SimpleNode implements Node {
     protected JmmParser parser;
     protected int index = -1;
     protected String name = null;
+    protected int idx = 0;
+    protected String print;
 
     public SimpleNode(int i) {
         id = i;
@@ -49,6 +51,10 @@ public class SimpleNode implements Node {
         return children[i];
     }
 
+    public SimpleNode getChild(int i) {
+        return (SimpleNode) children[i];
+    }
+
     public int jjtGetNumChildren() {
         return (children == null) ? 0 : children.length;
     }
@@ -61,6 +67,21 @@ public class SimpleNode implements Node {
         return value;
     }
 
+    public String getName() {
+        return this.print;
+    }
+
+    public SimpleNode next() {
+        SimpleNode n = null;
+
+        do {
+            n = (SimpleNode) children[this.idx];
+            this.idx++;
+        } while(n == null || n.getName() == null || n.getName() == "");
+
+        return n;
+    }
+
     /*
      * You can override these two methods in subclasses of SimpleNode to customize
      * the way the node appears when the tree is dumped. If your output uses more
@@ -69,14 +90,12 @@ public class SimpleNode implements Node {
      */
 
     public String toString() {
-        String print;
-
         if (index == -1)
-            print = JmmParserTreeConstants.jjtNodeName[id];
+            this.print = JmmParserTreeConstants.jjtNodeName[id];
         else
-            print = JmmParserConstants.tokenImage[index].replaceAll("\"", "");
+            this.print = JmmParserConstants.tokenImage[index].replaceAll("\"", "");
 
-        return print;
+        return this.print;
     }
 
     public String toString(String prefix) {
@@ -95,9 +114,8 @@ public class SimpleNode implements Node {
         if (children != null) {
             for (int i = 0; i < children.length; ++i) {
                 SimpleNode n = (SimpleNode) children[i];
-                if (n != null) {
+                if(n != null)
                     n.dump(prefix + "   ");
-                }
             }
         }
     }

@@ -4,65 +4,56 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 public class CodeGenerator {
-
     private SimpleNode root;
-    private PrintWriter output;
+    private PrintWriter out;
     private StringBuilder builder;
+    private SimpleNode node;
 
     public CodeGenerator(SimpleNode root) {
-        this.root = (SimpleNode) root.children[0];
-
+        this.root = root.getChild(0);
         this.builder = new StringBuilder();
+        this.node = this.root.next();
+        String filename = this.node.getName() + ".j";
 
-        String filename = this.root.value + ".j";
-
-        FileWriter fileWriter;
 		try {
-            fileWriter = new FileWriter(filename, false);
+            FileWriter fileWriter = new FileWriter(filename, false);
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-            this.output = new PrintWriter(bufferedWriter);
+            this.out = new PrintWriter(bufferedWriter);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
         }
     }
 
     public void generate() {
         generateHeader();
-        generateGlobals();
-        generateMethods();
 
         // outputs the final string builded to the file
-        output.println(builder);
+        out.println(this.builder);
+        out.close();
     }
 
     private void generateHeader() {
-        builder.append(".class public ");
-        builder.append(root.jjtGetValue());
-        builder.append("\n");
-        builder.append(".super java/lan/Object");
-        builder.append("\n");
-    }
+        write(".class public ");
+        write(this.node.getName());
+        nl();
 
-    private void generateGlobals() {
+        this.node = this.root.next();
 
-        for (int i = 0; i < root.jjtGetNumChildren(); i++) {
-            SimpleNode child = (SimpleNode) root.jjtGetChild(i);
-
-            // if()
+        if(this.node.getName().equals("extends")){
+            write(".super ");
+            write(this.node.getChild(0).getName());
+            nl();
+        } else {
+            write(".super java/lan/Object");
+            nl();
         }
     }
 
-    private void generateMethods() {
-
-        for (int i = 0; i < root.jjtGetNumChildren(); i++) {
-            SimpleNode childRoot = (SimpleNode) root.jjtGetChild(i);
-
-            // if()
-        }
+    private void nl(){
+        this.builder.append("\n");
     }
 
-    private void generateOperations() {
-        
+    private void write(String content){
+        this.builder.append(content);
     }
 }

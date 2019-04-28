@@ -11,7 +11,8 @@ class ASTADDSUB extends SimpleNode {
   }
 
   public String toString(String prefix) {
-      return prefix + this.name;
+    this.print = this.name;
+    return prefix + this.print;
   }
 
 }
