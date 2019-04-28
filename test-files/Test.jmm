@@ -37,13 +37,16 @@ class Test extends Test2 {
         int[] coiso;
         Duris d;
         int[] d2;
+        Test hello;
 
         bool = true;
         d = new Duris();
         d2 = new int[6];
+        hello = new Test();
 
-        d = d.length;
+        d = d2.length;
         d = d.ola(12, 3*3, coiso);
+        d = hello.olaFun();
 
         if (!bool) {
             bool = false;
