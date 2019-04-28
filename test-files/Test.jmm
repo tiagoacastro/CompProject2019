@@ -9,9 +9,11 @@ class Test extends Test2 {
         boolean k;
         Test test;
 
+        i = 2;
+        k = true;
         j = new int[2];
 
-        if (i < 10 && i) {
+        if (i < 10 && k) {
             ola = 11[1] + 1 * 2;
             j[0] = 1;
         }
