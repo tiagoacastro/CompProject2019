@@ -22,4 +22,7 @@
 !ASTEQUALS.java
 !ASTMINOR.java
 !ASTarray.java
+!ASTDOT.java
+!ASTclassDeclaration.java
+!ASTtype.java
 !BinaryOperator.java

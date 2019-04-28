@@ -11,7 +11,7 @@ class ASTmainDeclaration extends SimpleNode {
     }
 
     public void createSymbolTable(SymbolTable table) {
-        SymbolTable methodTable = new SymbolTable(table);
+        SymbolTable methodTable = new SymbolTable(table, "void");
         JmmParser.getInstance().addMethod("main", methodTable);
 
         if (children == null) return;

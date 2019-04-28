@@ -11,7 +11,8 @@ class ASTmethodDeclaration extends SimpleNode {
     }
 
     public void createSymbolTable(SymbolTable table) {
-        SymbolTable methodTable = new SymbolTable(table);
+        ASTtype typeNode = (ASTtype) children[0];
+        SymbolTable methodTable = new SymbolTable(table, typeNode.getType());
         JmmParser.getInstance().addMethod(((SimpleNode)children[1]).name, methodTable);
 
         if (children == null) return;

@@ -6,6 +6,7 @@ import java.util.Hashtable;
 public class SymbolTable {
     private SymbolTable parent;
     private Hashtable<String, Symbol> symbols;
+    private String type;
 
     /**
      * SymbolTable default constructor
@@ -19,8 +20,9 @@ public class SymbolTable {
      * SymbolTable constructor
      * @param parent
      */
-    public SymbolTable(SymbolTable parent) {
+    public SymbolTable(SymbolTable parent, String type) {
         this.parent = parent;
+        this.type = type;
         symbols = new Hashtable<>();
     }
 
@@ -38,6 +40,22 @@ public class SymbolTable {
      */
     public void setParent(SymbolTable parent){
         this.parent = parent;
+    }
+
+    /**
+     * Gets symbol table type
+     * @return type table type
+     */
+    public String getType() {
+        return type;
+    }
+
+    /**
+     * Sets symbol table type
+     * @param type table type
+     */
+    public void setType(String type){
+        this.type = type;
     }
 
     /**

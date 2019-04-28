@@ -59,7 +59,7 @@ public class JmmParser {
     void print() {
         System.out.println("class " + classTable.toString());
         for (String s : methods.keySet()) {
-            System.out.println(s + " " + methods.get(s).toString());
+            System.out.println(methods.get(s).getType() + " " + s + " " + methods.get(s).toString());
         }
     }
 }
@@ -171,7 +171,7 @@ void parameterDeclaration() : {Token t;}
     type() t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER
 }
 
-void type() #void : {Token t;}
+void type() : {Token t;}
 {
     (t=<INT> {jjtThis.index = t.kind;}#INT [t=<LEFTSQUAREBRACKET> {jjtThis.index = t.kind;}#LEFTSQUAREBRACKET t=<RIGHTSQUAREBRACKET> {jjtThis.index = t.kind;}#RIGHTSQUAREBRACKET]) |
     (t=<BOOLEAN> {jjtThis.index = t.kind;}#BOOLEAN) |
