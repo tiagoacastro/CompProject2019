@@ -34,7 +34,7 @@ class ASTCOMMERCIALE extends SimpleNode {
             return;
         } 
 
-        if (side instanceof ASTTRUE && side instanceof ASTFALSE) return; 
+        if (side instanceof ASTTRUE || side instanceof ASTFALSE) return; 
 
         if (side instanceof ASTMINOR || side instanceof ASTCOMMERCIALE) {
             side.applySemanticAnalysis(table);

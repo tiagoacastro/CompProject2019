@@ -25,4 +25,6 @@
 !ASTDOT.java
 !ASTclassDeclaration.java
 !ASTtype.java
+!ASTfunctionCall.java
+!ASTparameterDeclaration.java
 !BinaryOperator.java

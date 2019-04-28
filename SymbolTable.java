@@ -1,11 +1,12 @@
-import java.util.Hashtable;
+import java.util.LinkedHashMap;
+import java.util.ArrayList;
 
 /**
  * Symbol table class
  */
 public class SymbolTable {
     private SymbolTable parent;
-    private Hashtable<String, Symbol> symbols;
+    private LinkedHashMap<String, Symbol> symbols;
     private String type;
 
     /**
@@ -13,7 +14,7 @@ public class SymbolTable {
      */
     public SymbolTable() {
         parent = null;
-        symbols = new Hashtable<>();
+        symbols = new LinkedHashMap<>();
     }
 
     /**
@@ -23,7 +24,7 @@ public class SymbolTable {
     public SymbolTable(SymbolTable parent, String type) {
         this.parent = parent;
         this.type = type;
-        symbols = new Hashtable<>();
+        symbols = new LinkedHashMap<>();
     }
 
     /**
@@ -119,6 +120,18 @@ public class SymbolTable {
      */
     public Symbol.Access getSymbolAccess(String identifier){
         return symbols.get(identifier).getAccess();
+    }
+
+    public ArrayList<Symbol> getParameters() {
+        ArrayList<Symbol> parameters = new ArrayList<>();
+
+        for (String id : symbols.keySet()) {
+            if (symbols.get(id).getAccess() == Symbol.Access.parameter) {
+                parameters.add(symbols.get(id));
+            }
+        }
+
+        return parameters;
     }
 
     @Override

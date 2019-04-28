@@ -6,11 +6,11 @@ options {
 
 PARSER_BEGIN(JmmParser)
 // código Java que invoca o parser
-import java.util.Hashtable;
+import java.util.LinkedHashMap;
 
 public class JmmParser {
     private SymbolTable classTable = new SymbolTable();
-    private Hashtable<String, SymbolTable> methods = new Hashtable<String, SymbolTable>();
+    private LinkedHashMap<String, SymbolTable> methods = new LinkedHashMap<String, SymbolTable>();
     static private JmmParser instance;
 
     static JmmParser getInstance() {
@@ -21,8 +21,16 @@ public class JmmParser {
         return classTable;
     }
 
-    public Hashtable<String, SymbolTable> getMethods() {
+    public LinkedHashMap<String, SymbolTable> getMethods() {
         return methods;
+    }
+
+    public boolean containsMethod(String identifier) {
+        return methods.containsKey(identifier);
+    }
+
+    public SymbolTable getMethod(String identifier) {
+        return methods.get(identifier);
     }
 
     public static void main(String args[]) throws ParseException {
@@ -42,7 +50,7 @@ public class JmmParser {
         }
     }
 
-    void addMethod(String identifier, SymbolTable table) {
+    public void addMethod(String identifier, SymbolTable table) {
         if (methods.containsKey(identifier)) {
             System.out.println("A method with that identifier already exists.");
             return;
@@ -50,13 +58,13 @@ public class JmmParser {
         methods.put(identifier, table);
     }
 
-    static void jjtreeOpenNodeScope(Node n) {
+    public static void jjtreeOpenNodeScope(Node n) {
         ((SimpleNode) n).setLine(getToken(1).beginLine);
     }
 
-    static void jjtreeCloseNodeScope(Node n) {}
+    public static void jjtreeCloseNodeScope(Node n) {}
 
-    void print() {
+    public void print() {
         System.out.println("class " + classTable.toString());
         for (String s : methods.keySet()) {
             System.out.println(methods.get(s).getType() + " " + s + " " + methods.get(s).toString());

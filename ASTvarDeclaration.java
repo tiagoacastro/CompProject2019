@@ -22,7 +22,7 @@ class ASTvarDeclaration extends SimpleNode {
         ASTtype typeNode = (ASTtype) children[0];
         type = typeNode.getType();
 
-        Symbol symbol = new Symbol(type, ((SimpleNode)children[children.length-1]).name, access);
+        Symbol symbol = new Symbol(type, ((SimpleNode)children[1]).name, access);
         table.addSymbol(symbol);
     }
 }

@@ -13,6 +13,8 @@ class ASTmainDeclaration extends SimpleNode {
     public void createSymbolTable(SymbolTable table) {
         SymbolTable methodTable = new SymbolTable(table, "void");
         JmmParser.getInstance().addMethod("main", methodTable);
+        Symbol symbol = new Symbol("String[]", ((SimpleNode)children[2]).name, Symbol.Access.parameter);
+        methodTable.addSymbol(symbol);
 
         if (children == null) return;
 
