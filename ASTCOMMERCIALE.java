@@ -18,7 +18,7 @@ class ASTCOMMERCIALE extends SimpleNode {
         checkSide(rhs, table);
     }
 
-    public void checkSide(SimpleNode side, SymbolTable table) {
+    public void checkSide(SimpleNode side, SymbolTable table) { //methods?
         if (side.name != null) {
             Symbol s = table.getSymbol(side.name);
             if (s != null) {

@@ -22,3 +22,4 @@
 !ASTEQUALS.java
 !ASTMINOR.java
 !ASTarray.java
+!BinaryOperator.java
