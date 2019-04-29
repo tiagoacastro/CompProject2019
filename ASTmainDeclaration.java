@@ -11,13 +11,25 @@ class ASTmainDeclaration extends SimpleNode {
     }
 
     public void createSymbolTable(SymbolTable table) {
-        SymbolTable methodTable = new SymbolTable(table);
+        SymbolTable methodTable = new SymbolTable(table, "void");
         JmmParser.getInstance().addMethod("main", methodTable);
+        Symbol symbol = new Symbol("String[]", ((SimpleNode)children[2]).name, Symbol.Access.parameter);
+        methodTable.addSymbol(symbol);
 
         if (children == null) return;
 
         for (int i = 0; i < children.length; i++) {
             ((SimpleNode) children[i]).createSymbolTable(methodTable);
+        }
+    }
+
+    public void applySemanticAnalysis(SymbolTable table) {
+        SymbolTable methodTable = JmmParser.getInstance().getMethods().get("main");
+
+        if (children == null) return;
+
+        for (int i = 0; i < children.length; i++) {
+            ((SimpleNode) children[i]).applySemanticAnalysis(methodTable);
         }
     }
 }

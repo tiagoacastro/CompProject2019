@@ -1,7 +1,7 @@
 #!/bin/bash
 # sh run.sh parser_file_name parser_class_name test_file_name
 
-jjtree $1.jjt
-javacc $1.jj
+jjtree parser.jjt
+javacc parser.jj
 javac *.java
-java $2 $3
+java JmmParser $1

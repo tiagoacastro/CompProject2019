@@ -11,13 +11,24 @@ class ASTmethodDeclaration extends SimpleNode {
     }
 
     public void createSymbolTable(SymbolTable table) {
-        SymbolTable methodTable = new SymbolTable(table);
+        ASTtype typeNode = (ASTtype) children[0];
+        SymbolTable methodTable = new SymbolTable(table, typeNode.getType());
         JmmParser.getInstance().addMethod(((SimpleNode)children[1]).name, methodTable);
 
         if (children == null) return;
 
         for (int i = 0; i < children.length; i++) {
             ((SimpleNode) children[i]).createSymbolTable(methodTable);
+        }
+    }
+
+    public void applySemanticAnalysis(SymbolTable table) {
+        SymbolTable methodTable = JmmParser.getInstance().getMethods().get(((SimpleNode)children[1]).name);
+
+        if (children == null) return;
+
+        for (int i = 0; i < children.length; i++) {
+            ((SimpleNode) children[i]).applySemanticAnalysis(methodTable);
         }
     }
 }
