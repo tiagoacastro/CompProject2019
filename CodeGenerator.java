@@ -59,35 +59,39 @@ public class CodeGenerator {
         SimpleNode next;
         boolean has = false;
 
-        while((next = this.root.next()).getName().equals("varDeclaration")) {
+        while((next = this.root.next()) != null && next.getName().equals("varDeclaration")) {
             generateGlobalDeclaration(next);
             has = true;
         }  
-
+        
         this.root.previous();
+        
         return has;
     }
 
     private void generateGlobalDeclaration(SimpleNode var) {
-        write(".field static ");
+        write(".field public ");
 
         var.next();
         write(var.next().getName());
 
-        switch(var.previous().getName()){
-            case "int":
-                write(" I");
-                break;
-            case "boolean":
-                write(" Z");
-                break;
-        }
+        write(getType(var.previous().getName()));
 
         nl();
     }
 
     private void generateMethods(){
         generateConstructor();
+
+        SimpleNode next;
+
+        while((next = this.root.next()) != null) {
+            nl();
+            next = next.next();
+            generateFunctionHeader(next);
+		    generateFunctionBody(next);
+            generateFunctionFooter(next);
+        }
     }
 
     private void generateConstructor(){
@@ -113,6 +117,62 @@ public class CodeGenerator {
         nl();
         write(".end method");
         nl();
+    }
+
+    private void generateFunctionHeader(SimpleNode func){
+        if(func.getName().equals("mainDeclaration"))
+            generateMainHeader();
+        else
+            generateMethodHeader(func);
+        nl();
+
+        //TODO limits
+        write(".limit stack 10");
+        nl();
+
+        write(".limit locals 10");
+        nl();
+    }
+
+    private void generateMainHeader(){
+        write(".method public static main([Ljava/lang/String;)V");
+    }
+
+    private void generateMethodHeader(SimpleNode func){
+        write(".method public ");
+
+        func.next();
+        write(getType(func.next().getName()));
+
+        SimpleNode args = func.next();
+        SimpleNode arg;
+        write(" (");
+        while((arg = args.next()) != null){
+            write(getType(arg.next().getName()));
+        }
+        write(")");
+
+        func.previous();
+        write(getType(func.previous().getName()));
+    }
+
+    private void generateFunctionBody(SimpleNode func){
+
+    }
+
+    private void generateFunctionFooter(SimpleNode func){
+
+    }
+
+    private String getType(String type){
+        switch(type){
+            case "int":
+                return " I";
+            case "boolean":
+                return " Z";
+        }
+
+        return "ND";
     }
 
     private void nl(){

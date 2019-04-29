@@ -83,20 +83,26 @@ public class SimpleNode implements Node {
 
         return n;
     }
-
+    
     public SimpleNode previous() {       
         SimpleNode n = null;
 
+        this.idx--;
+
         do {
-            if(idx == 0)
-                return null;
             this.idx--;
+            if(idx < 0){
+                this.idx = 0;
+                return null;
+            }
             n = (SimpleNode) children[this.idx];
         } while(n == null || n.getName() == null || n.getName() == "");
+
+        this.idx++;
     
         return n;
     }
-
+    
     /*
      * You can override these two methods in subclasses of SimpleNode to customize
      * the way the node appears when the tree is dumped. If your output uses more
