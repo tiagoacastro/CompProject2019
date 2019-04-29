@@ -12,15 +12,17 @@ Label1:
 	return
 .end method
 
-.method public ND(I)I
+.method public ola(I)I
 .limit stack 10
 .limit locals 10
+.var0 is this LTest; from Label0 to Label1
 	ireturn
 .end method
 
 .method public static main([Ljava/lang/String;)V
 .limit stack 10
 .limit locals 10
+.var0 is this LTest; from Label0 to Label1
 	return
 .end method
 

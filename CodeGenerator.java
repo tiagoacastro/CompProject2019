@@ -7,13 +7,14 @@ public class CodeGenerator {
     private SimpleNode root;
     private PrintWriter out;
     private StringBuilder builder;
-    private SimpleNode node;
+    private String store;
+    private String classe;
 
     public CodeGenerator(SimpleNode root) {
         this.root = root.getChild(0);
         this.builder = new StringBuilder();
-        this.node = this.root.next();
-        String filename = this.node.getName() + ".j";
+        this.classe = this.root.next().getName();
+        String filename = this.classe + ".j";
 
 		try {
             FileWriter fileWriter = new FileWriter(filename, false);
@@ -40,7 +41,7 @@ public class CodeGenerator {
 
     private void generateHeader() {
         write(".class public ");
-        write(this.node.getName());
+        write(this.classe);
         nl();
 
         SimpleNode extend = this.root.next();
@@ -103,7 +104,7 @@ public class CodeGenerator {
         write(".limit locals 1");
         nl();
         write(".var0 is this L");
-        write(this.node.getName());
+        write(this.classe);
         write("; from Label0 to Label1");
         nl();
         write("Label0:");
@@ -138,57 +139,59 @@ public class CodeGenerator {
         nl();
 
         write(".var0 is this L");
-        write(this.node.getName());
+        write(this.classe);
         write("; from Label0 to Label1");
         nl();
     }
 
     private void generateMainHeader(SimpleNode func){
         write(".method public static main([Ljava/lang/String;)V");
-        func.next(2);
+        func.next(3);
     }
 
     private void generateMethodHeader(SimpleNode func){
         write(".method public ");
 
-        write(getType(func.next(2).getName()));
+        write(func.next(2).getName());
 
         SimpleNode args = func.next();
         write("(");
         if(args.getName().equals("parameterDeclaration")){
             SimpleNode arg;
             while((arg = args.next()) != null){
-                write(getType(arg.getName()));
+                write(getType(arg.next().getName()));
                 args.next();
             }
         }
         func.previous();
         write(")");
 
-        write(getType(func.previous().getName()));
+        this.store = func.previous().next().getName();
+        write(getType(this.store));
     }
 
     private void generateFunctionBody(SimpleNode func){
-        SimpleNode body = null;
-        while(body == null || !body.getName().equals("methodBody")){
-            body = func.next();
-        }
+        SimpleNode body = func.next();
 
-        SimpleNode node;
-        while((node = body.next()) != null) {
-            switch(node.getName()){
-                case "=":
-                    break;
-                default:
-                    break;
-            
+        if(body.children != null){
+            SimpleNode node;
+            while((node = body.next()) != null) {
+                switch(node.getName()){
+                    case "=":
+                        break;
+                    default:
+                        break;
+                }
             }
         }
     }
 
     private void generateFunctionFooter(SimpleNode func){
         tab();
-        write(getType2(func.same().getName()));
+        SimpleNode n = func.next();
+        if(n != null){
+            write(getType2(this.store));
+        }
 		write("return");
         nl();
         
@@ -213,8 +216,6 @@ public class CodeGenerator {
                 return "i";
             case "boolean":
                 return "z";
-            case "void":
-                return "";
         }
 
         return "nd";
