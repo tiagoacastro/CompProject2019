@@ -16,7 +16,6 @@ public class BinaryOperator extends SimpleNode {
     }
 
     public void checkSide(SimpleNode side, SymbolTable table) {
-        //int int[expr] identifiers + - * / methods(?)
         if (side.name != null) {
             if (side instanceof ASTADDSUB || side instanceof ASTMULDIV) {
                 side.applySemanticAnalysis(table);
@@ -48,6 +47,38 @@ public class BinaryOperator extends SimpleNode {
 
         if (side instanceof ASTarray) {
             side.applySemanticAnalysis(table);
+            return;
+        }
+
+        if (side instanceof ASTDOT) {
+            side.applySemanticAnalysis(table);
+            SimpleNode var = (SimpleNode) side.children[0];
+            SimpleNode rhs = (SimpleNode) side.children[1];
+
+            Symbol s = table.getSymbol(var.name);
+            if (rhs instanceof ASTfunctionCall && s != null) {
+                if (!s.getType().equals(JmmParser.getInstance().getClassTable().getType())) return;
+                String fName = ((SimpleNode) rhs.children[0]).name;
+                if (JmmParser.getInstance().containsMethod(fName)) {
+                    if (JmmParser.getInstance().getMethod(fName).getType().equals("int")) return;
+                    System.out.println("Incompatible type: " + fName + " return type not of type int on line " + side.getLine());
+                    System.exit(0);
+                }
+                System.out.println("Unknown method on line " + side.getLine());
+                System.exit(0);
+            }
+
+            if (rhs instanceof ASTfunctionCall && var instanceof ASTNEW) {
+                if (!JmmParser.getInstance().getClassTable().getType().equals(((SimpleNode) var.children[0]).name)) return;
+                String fName = ((SimpleNode) rhs.children[0]).name;
+                if (JmmParser.getInstance().containsMethod(fName)) {
+                    if (JmmParser.getInstance().getMethod(fName).getType().equals("int")) return;
+                    System.out.println("Incompatible type: " + fName + " return type not of type int on line " + side.getLine());
+                    System.exit(0);
+                }
+                System.out.println("Unknown method on line " + side.getLine());
+                System.exit(0);
+            }
             return;
         }
 

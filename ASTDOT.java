@@ -40,6 +40,8 @@ class ASTDOT extends SimpleNode {
                     rhs.applySemanticAnalysis(table);
                     return;
                 }
+                
+                return;
             }
         }
 
