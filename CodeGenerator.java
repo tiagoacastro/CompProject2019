@@ -157,7 +157,40 @@ public class CodeGenerator {
     }
 
     private void generateFunctionBody(SimpleNode func){
+        
+        SimpleNode methodBody = null;
+        for(int i = 0; i < func.jjtGetNumChildren(); i++){
+            if(func.getChild(i).getName().equals("methodBody")) {
+                methodBody = func.getChild(i);
+            }
+        }
 
+        for(int j = 0; j < methodBody.jjtGetNumChildren(); j++) {
+            switch(methodBody.getChild(j).getName()){
+                case "varDeclaration":
+                    break;
+                case "=":
+                    generateEqualSign(methodBody.getChild(j));
+                    break;
+                default:
+                    break;
+            
+            }
+        }
+    }
+
+    private void generateEqualSign(SimpleNode equalsNode) {
+        SimpleNode left = equalsNode.getChild(0);
+        storeLocalVariable(left);
+        generateRight(equalsNode);
+    }
+
+    private void generateRight(SimpleNode equalsNode){
+        
+    }
+
+    private void storeLocalVariable(SimpleNode leftNode) {
+        //need acess to symbol table
     }
 
     private void generateFunctionFooter(SimpleNode func){
