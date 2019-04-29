@@ -2,6 +2,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Arrays;
 
 public class CodeGenerator {
     private SimpleNode root;
@@ -9,6 +10,8 @@ public class CodeGenerator {
     private StringBuilder builder;
     private String store;
     private String classe;
+    private String[] locals = new String[10]; //hardcoded
+    private int localNum = 0;
 
     public CodeGenerator(SimpleNode root) {
         this.root = root.getChild(0);
@@ -131,7 +134,7 @@ public class CodeGenerator {
             generateMethodHeader(func);
         nl();
 
-        //TODO limits
+        //hardcoded
         write(".limit stack 10");
         nl();
 
@@ -171,27 +174,110 @@ public class CodeGenerator {
     }
 
     private void generateFunctionBody(SimpleNode func){
-        SimpleNode body = func.next();
+        SimpleNode body = null;
+        do {
+            body = func.next();
+        } while(!body.getName().equals("methodBody"));
+
+        Arrays.fill(this.locals, null);
+        this.localNum = 0;
 
         if(body.children != null){
             SimpleNode node;
             while((node = body.next()) != null) {
-                switch(node.getName()){
-                    case "=":
-                        break;
-                    default:
-                        break;
-                }
+                handle(node);
             }
         }
     }
 
+    private void handle(SimpleNode node){
+        String name = node.getName();
+        if(isNumeric(name)) {
+            tab();
+            write("iconst_");
+            write(name);
+            nl();
+        } else {
+            switch(node.getName()){
+                case "varDeclaration":
+                    write(".var ");
+                    write(""+(localNum+1));
+                    write(" is arg");
+                    write(""+localNum);
+                    space();
+                    write(getType(node.next().next().getName()));
+                    write(" from Label0 to Label1");
+                    nl();
+                    locals[localNum] = node.next().getName();
+                    localNum++;
+                    break;
+                case "=":
+                    String idx = find(node.next());
+                    handle(node.next());
+                    tab();
+                    write("istore_");
+                    write(idx);
+                    nl();
+                    break;
+                case "+":
+                    handle(node.next());
+                    handle(node.next());
+                    tab();
+                    write("iadd");
+                    nl();
+                    break;
+                case "-":
+                    handle(node.next());
+                    handle(node.next());
+                    tab();
+                    write("isub");
+                    nl();
+                    break;
+                case "*":
+                    handle(node.next());
+                    handle(node.next());
+                    tab();
+                    write("imul");
+                    nl();
+                    break;
+                case "/":
+                    handle(node.next());
+                    handle(node.next());
+                    tab();
+                    write("idiv");
+                    nl();
+                    break;
+                default:
+                    tab();
+                    write("iload_");
+                    write(find(node));
+                    nl();
+                    break;
+            }
+        }
+    }
+
+    private String find(SimpleNode node){
+        for(int i=1; i <= this.localNum; i++){
+            if(this.locals[i-1].equals(node.getName())){
+                return ""+i;
+            }
+        }
+        return ""+404;
+    }
+
+    private static boolean isNumeric(String str) { 
+        return str.matches("-?\\d+(\\.\\d+)?");
+      }
+
     private void generateFunctionFooter(SimpleNode func){
-        tab();
         SimpleNode n = func.next();
         if(n != null){
+            handle(n.next());
+            tab();
             write(getType2(this.store));
-        }
+        } else
+            tab();
 		write("return");
         nl();
         
@@ -207,7 +293,7 @@ public class CodeGenerator {
                 return "Z";
         }
 
-        return "ND";
+        return "L" + type + ";";
     }
 
     private String getType2(String type){
