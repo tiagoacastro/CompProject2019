@@ -68,7 +68,7 @@ public class JmmParser {
     public static void jjtreeCloseNodeScope(Node n) {}
 
     public void print() {
-        System.out.println("class " + classTable.toString());
+        System.out.println("\nSYMBOL TABLE\n\nclass " + classTable.toString());
         for (String s : methods.keySet()) {
             System.out.println(methods.get(s).getType() + " " + s + " " + methods.get(s).toString());
         }
