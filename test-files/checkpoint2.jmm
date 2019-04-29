@@ -1,6 +1,6 @@
 class Test {
-    public int ola(int adeus) {
-        return 2 * adeus;
+    public int ola() {
+        return 2;
     }
 
     public static void main(String[] args) {
@@ -11,9 +11,9 @@ class Test {
 
         t = new Test();
         hey = true;
-        i = 2;
+        i = t.ola();
         j = i * 5;
         i = i + 1;
-        i = j * 2 + t.ola(i);
+        i = j * 2;
     }
 }

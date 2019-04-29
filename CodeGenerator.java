@@ -136,6 +136,11 @@ public class CodeGenerator {
 
         write(".limit locals 10");
         nl();
+
+        write(".var0 is this L");
+        write(this.node.getName());
+        write("; from Label0 to Label1");
+        nl();
     }
 
     private void generateMainHeader(SimpleNode func){
@@ -164,40 +169,21 @@ public class CodeGenerator {
     }
 
     private void generateFunctionBody(SimpleNode func){
-        
-        SimpleNode methodBody = null;
-        for(int i = 0; i < func.jjtGetNumChildren(); i++){
-            if(func.getChild(i).getName().equals("methodBody")) {
-                methodBody = func.getChild(i);
-            }
+        SimpleNode body = null;
+        while(body == null || !body.getName().equals("methodBody")){
+            body = func.next();
         }
 
-        for(int j = 0; j < methodBody.jjtGetNumChildren(); j++) {
-            switch(methodBody.getChild(j).getName()){
-                case "varDeclaration":
-                    break;
+        SimpleNode node;
+        while((node = body.next()) != null) {
+            switch(node.getName()){
                 case "=":
-                    generateEqualSign(methodBody.getChild(j));
                     break;
                 default:
                     break;
             
             }
         }
-    }
-
-    private void generateEqualSign(SimpleNode equalsNode) {
-        SimpleNode left = equalsNode.getChild(0);
-        storeLocalVariable(left);
-        generateRight(equalsNode);
-    }
-
-    private void generateRight(SimpleNode equalsNode){
-        
-    }
-
-    private void storeLocalVariable(SimpleNode leftNode) {
-        //need acess to symbol table
     }
 
     private void generateFunctionFooter(SimpleNode func){
