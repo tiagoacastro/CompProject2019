@@ -12,6 +12,7 @@ public class CodeGenerator {
     private String classe;
     private String[] locals = new String[10]; //hardcoded
     private int localNum = 0;
+    private String method;
 
     public CodeGenerator(SimpleNode root) {
         this.root = root.getChild(0);
@@ -149,13 +150,16 @@ public class CodeGenerator {
 
     private void generateMainHeader(SimpleNode func){
         write(".method public static main([Ljava/lang/String;)V");
+        this.method = "main";
         func.next(3);
     }
 
     private void generateMethodHeader(SimpleNode func){
         write(".method public ");
 
-        write(func.next(2).getName());
+
+        this.method = func.next(2).getName();
+        write(this.method);
 
         SimpleNode args = func.next();
         write("(");
@@ -184,9 +188,26 @@ public class CodeGenerator {
 
         if(body.children != null){
             SimpleNode node;
+            while((node = body.next()) != null && node.getName().equals("varDeclaration")) {
+                write(".var ");
+                write(""+(localNum+1));
+                write(" is arg");
+                write(""+localNum);
+                space();
+                write(getType(node.next().next().getName()));
+                write(" from Label0 to Label1");
+                nl();
+                locals[localNum] = node.next().getName();
+                localNum++;
+            }
+            write("Label0:");
+            nl();
             while((node = body.next()) != null) {
                 handle(node);
             }
+        } else {
+            write("Label0:");
+            nl();
         }
     }
 
@@ -199,18 +220,6 @@ public class CodeGenerator {
             nl();
         } else {
             switch(node.getName()){
-                case "varDeclaration":
-                    write(".var ");
-                    write(""+(localNum+1));
-                    write(" is arg");
-                    write(""+localNum);
-                    space();
-                    write(getType(node.next().next().getName()));
-                    write(" from Label0 to Label1");
-                    nl();
-                    locals[localNum] = node.next().getName();
-                    localNum++;
-                    break;
                 case "=":
                     String idx = find(node.next());
                     handle(node.next());
@@ -274,10 +283,15 @@ public class CodeGenerator {
         SimpleNode n = func.next();
         if(n != null){
             handle(n.next());
+            write("Label1:");
+            nl();
             tab();
             write(getType2(this.store));
-        } else
+        } else{
+            write("Label1:");
+            nl();
             tab();
+        }
 		write("return");
         nl();
         
@@ -304,7 +318,7 @@ public class CodeGenerator {
                 return "z";
         }
 
-        return "nd";
+        return "a";
     }
 
     private void nl(){
