@@ -7,10 +7,6 @@ public class BinaryOperator extends SimpleNode {
         super(p, id);
     }
 
-    public String toString(String prefix) {
-        return prefix + this.name;
-    }
-
     public void applySemanticAnalysis(SymbolTable table) {
         SimpleNode lhs = ((SimpleNode) children[0]);
         SimpleNode rhs = ((SimpleNode) children[1]);
