@@ -142,9 +142,13 @@ public class CodeGenerator {
         write(".limit locals 10");
         nl();
 
-        write(".var0 is this L");
-        write(this.classe);
-        write("; from Label0 to Label1");
+        if(func.getName().equals("mainDeclaration")) {
+            write(".var0 is arg0 [Ljava/lang/String; from Label0 to Label1");
+        }else{
+            write(".var0 is this L");
+            write(this.classe);
+            write("; from Label0 to Label1");
+        }
         nl();
     }
 
