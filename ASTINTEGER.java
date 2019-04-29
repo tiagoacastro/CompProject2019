@@ -10,7 +10,8 @@ public class ASTINTEGER extends SimpleNode {
     }
 
     public String toString(String prefix) {
-        return prefix + this.name;
+        this.print = this.name;
+        return prefix + this.print;
     }
 }
 /* JavaCC - OriginalChecksum=3dced66d0f48cf59762f690585e3f853 (do not edit this line) */

@@ -10,8 +10,10 @@ class ASTADDSUB extends BinaryOperator {
         super(p, id);
     }
 
-    public String toString(String prefix) {
-        return prefix + this.name;
-    }
+  public String toString(String prefix) {
+    this.print = this.name;
+    return prefix + this.print;
+  }
+
 }
 /* JavaCC - OriginalChecksum=44acf13761db8f3aed84c23f5034a2e5 (do not edit this line) */

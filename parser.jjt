@@ -45,6 +45,9 @@ public class JmmParser {
             root.createSymbolTable(parser.getClassTable());
             parser.print();
             root.applySemanticAnalysis(parser.getClassTable());
+
+            CodeGenerator codeGen = new CodeGenerator(root);
+            codeGen.generate();
         } catch (java.io.FileNotFoundException e) {
             System.out.println(e);
         }
@@ -72,7 +75,7 @@ public class JmmParser {
     }
 }
 PARSER_END(JmmParser)
-// símbolos que não devem ser considerados na análise
+// símbolos que não devem ser considerados na análise 
 SKIP :
 {
     " "

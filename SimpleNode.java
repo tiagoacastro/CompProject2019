@@ -10,6 +10,8 @@ public class SimpleNode implements Node {
     protected JmmParser parser;
     protected int index = -1;
     protected String name = null;
+    protected int idx = -1;
+    protected String print;
     protected int line;
 
     public SimpleNode(int i) {
@@ -50,6 +52,10 @@ public class SimpleNode implements Node {
         return children[i];
     }
 
+    public SimpleNode getChild(int i) {
+        return (SimpleNode) children[i];
+    }
+
     public int jjtGetNumChildren() {
         return (children == null) ? 0 : children.length;
     }
@@ -62,6 +68,54 @@ public class SimpleNode implements Node {
         return value;
     }
 
+    public String getName() {
+        return this.print;
+    }
+
+    public void reset() {         
+        this.idx = -1;
+    }
+
+    public SimpleNode same() {         
+        return (SimpleNode) this.children[this.idx];
+    }
+
+    public SimpleNode next(int times) {
+        SimpleNode n = null;
+
+        for(int i=0; i<times; i++)
+            n = next();
+
+        return n;
+    }
+
+    public SimpleNode next() {
+        SimpleNode n = null;
+
+        while(n == null || n.getName() == null || n.getName() == "") {
+            this.idx++;
+            if(this.idx == this.children.length)
+                return null;
+            n = (SimpleNode) this.children[this.idx];
+        }
+
+        return n;
+    }
+    
+    public SimpleNode previous() {       
+        SimpleNode n = null;
+
+        while(n == null || n.getName() == null || n.getName() == "") {
+            this.idx--;
+            if(this.idx == -1){
+                return null;
+            }
+            n = (SimpleNode) this.children[this.idx];
+        }
+    
+        return n;
+    }
+
     /*
      * You can override these two methods in subclasses of SimpleNode to customize
      * the way the node appears when the tree is dumped. If your output uses more
@@ -70,14 +124,12 @@ public class SimpleNode implements Node {
      */
 
     public String toString() {
-        String print;
-
         if (index == -1)
-            print = JmmParserTreeConstants.jjtNodeName[id];
+            this.print = JmmParserTreeConstants.jjtNodeName[id];
         else
-            print = JmmParserConstants.tokenImage[index].replaceAll("\"", "");
+            this.print = JmmParserConstants.tokenImage[index].replaceAll("\"", "");
 
-        return print;
+        return this.print;
     }
 
     public String toString(String prefix) {
@@ -90,15 +142,13 @@ public class SimpleNode implements Node {
      */
 
     public void dump(String prefix) {
-
         System.out.println(toString(prefix));
 
         if (children != null) {
             for (int i = 0; i < children.length; ++i) {
                 SimpleNode n = (SimpleNode) children[i];
-                if (n != null) {
+                if(n != null)
                     n.dump(prefix + "   ");
-                }
             }
         }
     }

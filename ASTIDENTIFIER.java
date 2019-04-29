@@ -10,7 +10,8 @@ public class ASTIDENTIFIER extends SimpleNode {
     }
 
     public String toString(String prefix) {
-        return prefix + this.name;
+        this.print = this.name;
+        return prefix + this.print;
     }
 }
 /* JavaCC - OriginalChecksum=95c83ca56f05760c5fba6e61046ce3de (do not edit this line) */

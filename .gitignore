@@ -15,6 +15,7 @@
 !ASTMULDIV.java
 !SymbolTable.java
 !Symbol.java
+!CodeGenerator.java
 !ASTmainDeclaration.java
 !ASTmethodDeclaration.java
 !ASTvarDeclaration.java
