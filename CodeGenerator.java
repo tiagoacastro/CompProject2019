@@ -109,17 +109,13 @@ public class CodeGenerator {
         nl();
         write(".var0 is this L");
         write(this.classe);
-        write("; from Label0 to Label1");
-        nl();
-        write("Label0:");
+        write(";");
         nl();
         tab();
         write("aload_0");
         nl();
         tab();
         write("invokespecial java/lang/Object/<init>()V");
-        nl();
-        write("Label1:");
         nl();
         tab();
         write("return");
@@ -143,11 +139,11 @@ public class CodeGenerator {
         nl();
 
         if(func.getName().equals("mainDeclaration")) {
-            write(".var0 is arg0 [Ljava/lang/String; from Label0 to Label1");
+            write(".var0 is arg0 [Ljava/lang/String;");
         }else{
             write(".var0 is this L");
             write(this.classe);
-            write("; from Label0 to Label1");
+            write(";");
         }
         nl();
     }
@@ -199,19 +195,14 @@ public class CodeGenerator {
                 write(""+localNum);
                 space();
                 write(getType(node.next().next().getName()));
-                write(" from Label0 to Label1");
+                write("");
                 nl();
                 locals[localNum] = node.next().getName();
                 localNum++;
             }
-            write("Label0:");
-            nl();
             while((node = body.next()) != null) {
                 handle(node);
             }
-        } else {
-            write("Label0:");
-            nl();
         }
     }
 
@@ -287,13 +278,9 @@ public class CodeGenerator {
         SimpleNode n = func.next();
         if(n != null){
             handle(n.next());
-            write("Label1:");
-            nl();
             tab();
             write(getType2(this.store));
         } else{
-            write("Label1:");
-            nl();
             tab();
         }
 		write("return");
