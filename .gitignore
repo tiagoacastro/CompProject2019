@@ -27,4 +27,6 @@
 !ASTtype.java
 !ASTfunctionCall.java
 !ASTparameterDeclaration.java
+!ASTEXCLAMATION.java
 !BinaryOperator.java
+!BooleanOperator.java
