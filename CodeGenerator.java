@@ -43,11 +43,11 @@ public class CodeGenerator {
         write(this.node.getName());
         nl();
 
-        SimpleNode next = this.root.next();
+        SimpleNode extend = this.root.next();
 
-        if(next.getName().equals("extends")){
+        if(extend.getName().equals("extends")){
             write(".super ");
-            write(next.next().getName());
+            write(extend.next().getName());
         } else {
             this.root.previous();
             write(".super java/lan/Object");
@@ -57,11 +57,11 @@ public class CodeGenerator {
     }
 
     private boolean generateGlobals() {
-        SimpleNode next;
+        SimpleNode global;
         boolean has = false;
 
-        while((next = this.root.next()) != null && next.getName().equals("varDeclaration")) {
-            generateGlobalDeclaration(next);
+        while((global = this.root.next()) != null && global.getName().equals("varDeclaration")) {
+            generateGlobalDeclaration(global);
             has = true;
         }  
         
@@ -73,8 +73,7 @@ public class CodeGenerator {
     private void generateGlobalDeclaration(SimpleNode var) {
         write(".field public ");
 
-        var.next();
-        write(var.next().getName());
+        write(var.next(2).getName());
 
         space();
         write(getType(var.previous().getName()));
@@ -85,14 +84,14 @@ public class CodeGenerator {
     private void generateMethods(){
         generateConstructor();
 
-        SimpleNode next;
+        SimpleNode method;
 
-        while((next = this.root.next()) != null) {
+        while((method = this.root.next()) != null) {
             nl();
-            next = next.next();
-            generateFunctionHeader(next);
-		    generateFunctionBody(next);
-            generateFunctionFooter(next);
+            method = method.next();
+            generateFunctionHeader(method);
+		    generateFunctionBody(method);
+            generateFunctionFooter(method);
         }
     }
 
@@ -141,15 +140,13 @@ public class CodeGenerator {
 
     private void generateMainHeader(SimpleNode func){
         write(".method public static main([Ljava/lang/String;)V");
-        func.next();
-        func.next();
+        func.next(2);
     }
 
     private void generateMethodHeader(SimpleNode func){
         write(".method public ");
 
-        func.next();
-        write(getType(func.next().getName()));
+        write(getType(func.next(2).getName()));
 
         SimpleNode args = func.next();
         write("(");

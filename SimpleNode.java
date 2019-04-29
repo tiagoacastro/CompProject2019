@@ -75,6 +75,15 @@ public class SimpleNode implements Node {
         return (SimpleNode) this.children[this.idx];
     }
 
+    public SimpleNode next(int times) {
+        SimpleNode n = null;
+
+        for(int i=0; i<times; i++)
+            n = next();
+
+        return n;
+    }
+
     public SimpleNode next() {
         SimpleNode n = null;
 
