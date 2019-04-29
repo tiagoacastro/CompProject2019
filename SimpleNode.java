@@ -71,6 +71,10 @@ public class SimpleNode implements Node {
         return this.print;
     }
 
+    public SimpleNode same() {         
+        return (SimpleNode) this.children[this.idx];
+    }
+
     public SimpleNode next() {
         SimpleNode n = null;
 
@@ -97,7 +101,7 @@ public class SimpleNode implements Node {
     
         return n;
     }
-    
+
     /*
      * You can override these two methods in subclasses of SimpleNode to customize
      * the way the node appears when the tree is dumped. If your output uses more

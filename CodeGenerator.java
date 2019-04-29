@@ -107,14 +107,17 @@ public class CodeGenerator {
         write(this.node.getName());
         write("; from Label0 to Label1");
         nl();
-        write("Label 0:");
+        write("Label0:");
         nl();
+        tab();
         write("aload_0");
         nl();
+        tab();
         write("invokespecial java/lang/Object/<init>()V");
         nl();
-        write("Label 1:");
+        write("Label1:");
         nl();
+        tab();
         write("return");
         nl();
         write(".end method");
@@ -123,7 +126,7 @@ public class CodeGenerator {
 
     private void generateFunctionHeader(SimpleNode func){
         if(func.getName().equals("mainDeclaration"))
-            generateMainHeader();
+            generateMainHeader(func);
         else
             generateMethodHeader(func);
         nl();
@@ -136,8 +139,10 @@ public class CodeGenerator {
         nl();
     }
 
-    private void generateMainHeader(){
+    private void generateMainHeader(SimpleNode func){
         write(".method public static main([Ljava/lang/String;)V");
+        func.next();
+        func.next();
     }
 
     private void generateMethodHeader(SimpleNode func){
@@ -154,20 +159,25 @@ public class CodeGenerator {
                 write(getType(arg.getName()));
                 args.next();
             }
-        } else
-            func.previous();
+        }
+        func.previous();
         write(")");
 
-        func.previous();
         write(getType(func.previous().getName()));
     }
 
     private void generateFunctionBody(SimpleNode func){
-
+        
     }
 
     private void generateFunctionFooter(SimpleNode func){
-
+        tab();
+        write(getType2(func.same().getName()));
+		write("return");
+        nl();
+        
+		write(".end method");
+        nl();
     }
 
     private String getType(String type){
@@ -181,8 +191,25 @@ public class CodeGenerator {
         return "ND";
     }
 
+    private String getType2(String type){
+        switch(type){
+            case "int":
+                return "i";
+            case "boolean":
+                return "z";
+            case "void":
+                return "";
+        }
+
+        return "nd";
+    }
+
     private void nl(){
         this.builder.append("\n");
+    }
+
+    private void tab(){
+        this.builder.append("\t");
     }
 
     private void space(){

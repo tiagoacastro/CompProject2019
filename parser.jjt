@@ -143,8 +143,6 @@ void type(Symbol symbol) #void: {Token t;}
     (t=<INT> {jjtThis.index = t.kind;}#INT {symbol.setType("int");} [t=<LEFTSQUAREBRACKET> {jjtThis.index = t.kind;}#LEFTSQUAREBRACKET t=<RIGHTSQUAREBRACKET> {jjtThis.index = t.kind;}#RIGHTSQUAREBRACKET {symbol.setType("int[]");}]) | 
     (t=<BOOLEAN> {jjtThis.index = t.kind;}#BOOLEAN {symbol.setType("boolean");}) | 
     (t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER {symbol.setType(t.image);})
-
-    
 }
 
 void statement() #void: {Token t;}
