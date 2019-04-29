@@ -10,10 +10,10 @@
 	return
 .end method
 
-.method public ola(I)I
+.method public ola()I
 .limit stack 10
 .limit locals 10
-.var0 is this LTest;
+.var 0 is this LTest;
 	iconst_2
 	ireturn
 .end method
@@ -21,10 +21,10 @@
 .method public static main([Ljava/lang/String;)V
 .limit stack 10
 .limit locals 10
-.var0 is args [Ljava/lang/String;
-.var1 is i I
-.var2 is j I
-.var3 is t LTest;
+.var 0 is args [Ljava/lang/String;
+.var 1 is i I
+.var 2 is j I
+.var 3 is t LTest;
 	iload_2
 	iconst_1
 	iadd

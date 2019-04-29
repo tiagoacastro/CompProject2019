@@ -1,5 +1,5 @@
 class Test {
-    public int ola(int j) {
+    public int ola() {
         return 2;
     }
 
@@ -9,10 +9,6 @@ class Test {
         Test t;
 
         j = 5;
-        /*
-        t = new Test();
-        i = t.ola(j);
-        */
         i = j + 1;
         i = j * 2;
     }
