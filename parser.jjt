@@ -262,11 +262,11 @@ void expression5() #void: {}
     expression6() [array() #array(2)]
 }
 
-void expression6() #void: {Token t;}
+void expression6() #void: {Token t, t1;}
 {
     expressionfinal() (
         t=<DOT> (
-            (t=<LENGTH> {jjtThis.index = t.kind;}#LENGTH)
+            (t1=<LENGTH> {jjtThis.index = t1.kind;}#LENGTH)
             | (functionCall())
         )
         {jjtThis.index = t.kind;}#DOT(2)
