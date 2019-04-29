@@ -9,7 +9,7 @@ class Test extends Test2 {
         boolean k;
         Test test;
 
-        i = 2;
+        i = new Test().adeusFun();
         k = true;
         j = new int[2];
 

@@ -42,6 +42,16 @@ class ASTDOT extends SimpleNode {
                 }
             }
         }
+
+        if (lhs instanceof ASTNEW) {
+            if (JmmParser.getInstance().getClassTable().getType().equals(((SimpleNode) lhs.children[0]).name))
+                rhs.applySemanticAnalysis(table);
+
+            return;
+        }
+
+        System.out.println("Found " + lhs.toString() + " and was expecting int[] or " + JmmParser.getInstance().getClassTable().getType() + " value on line " + lhs.getLine());
+        System.exit(0);
     }
 }
 /* JavaCC - OriginalChecksum=ef835f1225925686216b66ae41223fd2 (do not edit this line) */
