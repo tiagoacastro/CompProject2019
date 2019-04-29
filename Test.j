@@ -26,9 +26,9 @@ Label1:
 .limit stack 10
 .limit locals 10
 .var0 is this LTest; from Label0 to Label1
-.var 1 is arg0 I from Label0 to Label1
-.var 2 is arg1 I from Label0 to Label1
-.var 3 is arg2 LTest; from Label0 to Label1
+.var1 is arg0 I from Label0 to Label1
+.var2 is arg1 I from Label0 to Label1
+.var3 is arg2 LTest; from Label0 to Label1
 Label0:
 	iload_2
 	iconst_1

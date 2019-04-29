@@ -189,7 +189,7 @@ public class CodeGenerator {
         if(body.children != null){
             SimpleNode node;
             while((node = body.next()) != null && node.getName().equals("varDeclaration")) {
-                write(".var ");
+                write(".var");
                 write(""+(localNum+1));
                 write(" is arg");
                 write(""+localNum);
