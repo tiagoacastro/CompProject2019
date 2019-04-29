@@ -254,7 +254,8 @@ public class CodeGenerator {
                     break;
                 default:
                     tab();
-                    write("iload_");
+                    write(getType2(JmmParser.getInstance().getMethod(this.method).getSymbolType(node.getName()))); 
+                    write("load_"); 
                     write(find(node));
                     nl();
                     break;
