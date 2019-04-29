@@ -12,6 +12,10 @@ Label 1:
 return
 .end method
 
+.method public ND(I)I
+.limit stack 10
+.limit locals 10
+
 .method public static main([Ljava/lang/String;)V
 .limit stack 10
 .limit locals 10

@@ -10,7 +10,7 @@ public class SimpleNode implements Node {
     protected JmmParser parser;
     protected int index = -1;
     protected String name = null;
-    protected int idx = 0;
+    protected int idx = -1;
     protected String print;
 
     public SimpleNode(int i) {
@@ -74,12 +74,12 @@ public class SimpleNode implements Node {
     public SimpleNode next() {
         SimpleNode n = null;
 
-        do {
-            if(idx == children.length)
-                return null;
-            n = (SimpleNode) children[this.idx];
+        while(n == null || n.getName() == null || n.getName() == "") {
             this.idx++;
-        } while(n == null || n.getName() == null || n.getName() == "");
+            if(this.idx == this.children.length)
+                return null;
+            n = (SimpleNode) this.children[this.idx];
+        }
 
         return n;
     }
@@ -87,18 +87,13 @@ public class SimpleNode implements Node {
     public SimpleNode previous() {       
         SimpleNode n = null;
 
-        this.idx--;
-
-        do {
+        while(n == null || n.getName() == null || n.getName() == "") {
             this.idx--;
-            if(idx < 0){
-                this.idx = 0;
+            if(this.idx == -1){
                 return null;
             }
-            n = (SimpleNode) children[this.idx];
-        } while(n == null || n.getName() == null || n.getName() == "");
-
-        this.idx++;
+            n = (SimpleNode) this.children[this.idx];
+        }
     
         return n;
     }
