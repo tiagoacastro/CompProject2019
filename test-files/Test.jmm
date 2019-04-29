@@ -9,12 +9,15 @@ class Test extends Test2 {
         boolean k;
         Test test;
 
-        i = 2;
+        i = new Test().adeusFun();
         k = true;
         j = new int[2];
 
+        test = new Test();
+        test.adeusFun();
+
         if (i < 10 && !k) {
-            ola = j[1] + 1 * 2;
+            ola = j[1] + 1 * test.olaFun(true, j);
             j[0] = 1;
         }
         else {
@@ -27,9 +30,6 @@ class Test extends Test2 {
             i = i * (2 + 1);
             ola[2] * 5;
         }
-
-        test = new Test();
-        test.olaFun(true, j);
     }
 
     public int olaFun(boolean adeus, int[] pars) {
@@ -42,12 +42,14 @@ class Test extends Test2 {
         bool = true;
         d = new Duris();
         d2 = new int[6];
+        coiso = new int[6];
         hello = new Test();
 
         d = d2.length;
+        d = coiso.length;
         d = d.ola(12, 3*3, coiso);
 
-        if (!bool) {
+        if (hello.booleanFun() && bool) {
             bool = false;
         }
         else {
@@ -56,5 +58,17 @@ class Test extends Test2 {
         }
 
         return adeus;
+    }
+
+    public int adeusFun() {
+        int i;
+        i = 0;
+        return i;
+    }
+
+    public boolean booleanFun() {
+        boolean var;
+        var = true;
+        return var;
     }
 }

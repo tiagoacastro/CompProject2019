@@ -17,6 +17,7 @@ class ASTparameterDeclaration extends SimpleNode {
         type = typeNode.getType();
 
         Symbol symbol = new Symbol(type, ((SimpleNode)children[1]).name, Symbol.Access.parameter);
+        symbol.initialize();
         table.addSymbol(symbol);
     }
 }
