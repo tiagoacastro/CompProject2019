@@ -80,8 +80,13 @@ public class Symbol {
     public Access getAccess() {return this.access;} 
 
     /**
-     * Setter for isInitialized
-     * @return access type
+     * Getter for isInitialized
+     * @return boolean isInitialized
+     */
+    public boolean isInitialized() {return isInitialized;} 
+
+    /**
+     * Marks symbol as initialized.
      */
     public void initialize() {this.isInitialized = true;} 
 

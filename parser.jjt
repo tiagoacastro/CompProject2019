@@ -1,15 +1,16 @@
 options {
     MULTI=true;
     LOOKAHEAD=1;
+    NODE_SCOPE_HOOK=true;
 }
 
 PARSER_BEGIN(JmmParser)
 // código Java que invoca o parser
-import java.util.Hashtable;
+import java.util.LinkedHashMap;
 
 public class JmmParser {
     private SymbolTable classTable = new SymbolTable();
-    private Hashtable<String, SymbolTable> methods = new Hashtable<String, SymbolTable>();
+    private LinkedHashMap<String, SymbolTable> methods = new LinkedHashMap<String, SymbolTable>();
     static private JmmParser instance;
 
     static JmmParser getInstance() {
@@ -20,8 +21,16 @@ public class JmmParser {
         return classTable;
     }
 
-    public Hashtable<String, SymbolTable> getMethods() {
+    public LinkedHashMap<String, SymbolTable> getMethods() {
         return methods;
+    }
+
+    public boolean containsMethod(String identifier) {
+        return methods.containsKey(identifier);
+    }
+
+    public SymbolTable getMethod(String identifier) {
+        return methods.get(identifier);
     }
 
     public static void main(String args[]) throws ParseException {
@@ -33,14 +42,15 @@ public class JmmParser {
             instance = parser;
             SimpleNode root = parser.program();
             root.dump("");
-            root.createSymbolTable(parser.classTable);
+            root.createSymbolTable(parser.getClassTable());
             parser.print();
+            root.applySemanticAnalysis(parser.getClassTable());
         } catch (java.io.FileNotFoundException e) {
             System.out.println(e);
         }
     }
 
-    void addMethod(String identifier, SymbolTable table) {
+    public void addMethod(String identifier, SymbolTable table) {
         if (methods.containsKey(identifier)) {
             System.out.println("A method with that identifier already exists.");
             return;
@@ -48,10 +58,16 @@ public class JmmParser {
         methods.put(identifier, table);
     }
 
-    void print() {
+    public static void jjtreeOpenNodeScope(Node n) {
+        ((SimpleNode) n).setLine(getToken(1).beginLine);
+    }
+
+    public static void jjtreeCloseNodeScope(Node n) {}
+
+    public void print() {
         System.out.println("class " + classTable.toString());
         for (String s : methods.keySet()) {
-            System.out.println(s + " " + methods.get(s).toString());
+            System.out.println(methods.get(s).getType() + " " + s + " " + methods.get(s).toString());
         }
     }
 }
@@ -163,7 +179,7 @@ void parameterDeclaration() : {Token t;}
     type() t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER
 }
 
-void type() #void : {Token t;}
+void type() : {Token t;}
 {
     (t=<INT> {jjtThis.index = t.kind;}#INT [t=<LEFTSQUAREBRACKET> {jjtThis.index = t.kind;}#LEFTSQUAREBRACKET t=<RIGHTSQUAREBRACKET> {jjtThis.index = t.kind;}#RIGHTSQUAREBRACKET]) |
     (t=<BOOLEAN> {jjtThis.index = t.kind;}#BOOLEAN) |
@@ -175,7 +191,7 @@ void statement() #void : {Token t;}
     (<LEFTBRACKET> (statement())* <RIGHTBRACKET>)
     | ifStatement()
     | whileStatement()
-    | (expression() <SEMICOLON>)
+    | (expression() [t=<EQUALS> expression2() {jjtThis.index = t.kind;}#EQUALS(2)] <SEMICOLON>)
 }
 
 void ifStatement() #void : {Token t;}
@@ -215,50 +231,43 @@ void body() : {}
 
 void expression() #void: {Token t;}
 {
-    expression2() [t=<EQUALS> expression2() {jjtThis.index = t.kind;}#EQUALS(2)]
+    expression2() (
+        t=<COMMERCIALE> expression2() {jjtThis.index = t.kind;}#COMMERCIALE(2)
+    )*
 }
 
 void expression2() #void: {Token t;}
 {
     expression3() (
-        t=<COMMERCIALE> expression3() {jjtThis.index = t.kind;}#COMMERCIALE(2)
+        t=<MINOR> expression3() {jjtThis.index = t.kind;}#MINOR(2)
     )*
 }
 
 void expression3() #void: {Token t;}
 {
     expression4() (
-        t=<MINOR> expression4() {jjtThis.index = t.kind;}#MINOR(2)
+        t=<ADDSUB> expression4() {jjtThis.name = t.image;}#ADDSUB(2)
     )*
 }
 
 void expression4() #void: {Token t;}
 {
     expression5() (
-        t=<ADDSUB> expression5() {jjtThis.name = t.image;}#ADDSUB(2)
+        t=<MULDIV> expression5() {jjtThis.name = t.image;}#MULDIV(2)
     )*
 }
 
-void expression5() #void: {Token t;}
+void expression5() #void: {}
 {
-    expression6() (
-        t=<MULDIV> expression6() {jjtThis.name = t.image;}#MULDIV(2)
-    )*
+    expression6() [array() #array(2)]
 }
 
-void expression6() #void: {}
-{
-    expression7() (
-        array() #array(2)
-    )*
-}
-
-void expression7() #void: {Token t;}
+void expression6() #void: {Token t;}
 {
     expressionfinal() (
         t=<DOT> (
-            (t=<LENGTH> {jjtThis.index = t.kind;}#LENGTH) |
-            (functionCall())
+            (t=<LENGTH> {jjtThis.index = t.kind;}#LENGTH)
+            | (functionCall())
         )
         {jjtThis.index = t.kind;}#DOT(2)
     )*
@@ -281,7 +290,7 @@ void expressionfinal() #void: {Token t, t1;}
     (t=<FALSE> {jjtThis.index = t.kind;}#FALSE) |
     (t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER) |
     (t=<THIS> {jjtThis.index = t.kind;}#THIS) |
-    (t=<EXCLAMATION> expressionfinal() {jjtThis.index = t.kind;}#EXCLAMATION) |
+    (t=<EXCLAMATION> expressionfinal() {jjtThis.index = t.kind;}#EXCLAMATION(1)) |
     (<LEFTPARENTHESES> expression() <RIGHTPARENTHESES>) |
     (t1=<NEW> (((t=<INT> {jjtThis.index = t.kind;}#INT) array() #array(2) {jjtThis.index = t1.kind;}#NEW(1)) | ((t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER) {jjtThis.index = t1.kind;}#NEW(1) <LEFTPARENTHESES> <RIGHTPARENTHESES>) ))
 }

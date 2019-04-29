@@ -1,26 +1,30 @@
-import java.util.Hashtable;
+import java.util.LinkedHashMap;
+import java.util.ArrayList;
 
 /**
  * Symbol table class
  */
 public class SymbolTable {
     private SymbolTable parent;
-    private Hashtable<String, Symbol> symbols;
+    private LinkedHashMap<String, Symbol> symbols;
+    private String type;
 
     /**
      * SymbolTable default constructor
      */
     public SymbolTable() {
-        symbols = new Hashtable<>();
+        parent = null;
+        symbols = new LinkedHashMap<>();
     }
 
     /**
      * SymbolTable constructor
      * @param parent
      */
-    public SymbolTable(SymbolTable parent) {
+    public SymbolTable(SymbolTable parent, String type) {
         this.parent = parent;
-        symbols = new Hashtable<>();
+        this.type = type;
+        symbols = new LinkedHashMap<>();
     }
 
     /**
@@ -37,6 +41,22 @@ public class SymbolTable {
      */
     public void setParent(SymbolTable parent){
         this.parent = parent;
+    }
+
+    /**
+     * Gets symbol table type
+     * @return type table type
+     */
+    public String getType() {
+        return type;
+    }
+
+    /**
+     * Sets symbol table type
+     * @param type table type
+     */
+    public void setType(String type){
+        this.type = type;
     }
 
     /**
@@ -58,12 +78,7 @@ public class SymbolTable {
      * @return returns true if the symbol is already defined, false if not
      */
     public boolean symbolDefined(String identifier){
-        Symbol symbol = symbols.get(identifier);
-
-        if(symbol == null)
-            return false;
-        else 
-            return true;
+        return symbols.containsKey(identifier);
     }
 
     /**
@@ -80,7 +95,13 @@ public class SymbolTable {
      * @return returns symbol, null if it isn't defined
      */
     public Symbol getSymbol(String identifier){
-        return symbols.get(identifier);
+        if (symbols.containsKey(identifier))
+            return symbols.get(identifier);
+
+        if (parent != null)
+            return parent.getSymbol(identifier);
+
+        return null;
     }
 
     /**
@@ -99,6 +120,18 @@ public class SymbolTable {
      */
     public Symbol.Access getSymbolAccess(String identifier){
         return symbols.get(identifier).getAccess();
+    }
+
+    public ArrayList<Symbol> getParameters() {
+        ArrayList<Symbol> parameters = new ArrayList<>();
+
+        for (String id : symbols.keySet()) {
+            if (symbols.get(id).getAccess() == Symbol.Access.parameter) {
+                parameters.add(symbols.get(id));
+            }
+        }
+
+        return parameters;
     }
 
     @Override

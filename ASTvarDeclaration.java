@@ -19,14 +19,10 @@ class ASTvarDeclaration extends SimpleNode {
         else
             access = Symbol.Access.local;
 
-        if (children.length == 2 && ((SimpleNode)children[0]).index != -1)
-            type = JmmParserConstants.tokenImage[((SimpleNode)children[0]).index].replaceAll("\"", "");
-        else if (children.length == 2)
-            type = ((SimpleNode)children[0]).name;
-        else
-            type = "int[]";
+        ASTtype typeNode = (ASTtype) children[0];
+        type = typeNode.getType();
 
-        Symbol symbol = new Symbol(type, ((SimpleNode)children[children.length-1]).name, access);
+        Symbol symbol = new Symbol(type, ((SimpleNode)children[1]).name, access);
         table.addSymbol(symbol);
     }
 }

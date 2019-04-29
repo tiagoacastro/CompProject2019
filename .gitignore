@@ -18,3 +18,15 @@
 !ASTmainDeclaration.java
 !ASTmethodDeclaration.java
 !ASTvarDeclaration.java
+!ASTCOMMERCIALE.java
+!ASTEQUALS.java
+!ASTMINOR.java
+!ASTarray.java
+!ASTDOT.java
+!ASTclassDeclaration.java
+!ASTtype.java
+!ASTfunctionCall.java
+!ASTparameterDeclaration.java
+!ASTEXCLAMATION.java
+!BinaryOperator.java
+!BooleanOperator.java
