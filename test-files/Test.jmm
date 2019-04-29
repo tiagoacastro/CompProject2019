@@ -27,7 +27,7 @@ class Test extends Test2 {
         }
     }
 
-    public int ola(int adeus, int[] pars) {
+    public int olaFun(int adeus, int[] pars) {
         boolean bool;
         int[] coiso;
         Duris d;

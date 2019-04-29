@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "*.jmm": "java",
+        "*.jjt": "java",
+        "*.jj": "java"
+    }
+}
