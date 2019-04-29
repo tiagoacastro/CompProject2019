@@ -38,6 +38,38 @@ public class BooleanOperator extends SimpleNode {
             return;
         }
 
+        if (side instanceof ASTDOT) {
+            side.applySemanticAnalysis(table);
+            SimpleNode var = (SimpleNode) side.children[0];
+            SimpleNode rhs = (SimpleNode) side.children[1];
+
+            Symbol s = table.getSymbol(var.name);
+            if (rhs instanceof ASTfunctionCall && s != null) {
+                if (!s.getType().equals(JmmParser.getInstance().getClassTable().getType())) return;
+                String fName = ((SimpleNode) rhs.children[0]).name;
+                if (JmmParser.getInstance().containsMethod(fName)) {
+                    if (JmmParser.getInstance().getMethod(fName).getType().equals("boolean")) return;
+                    System.out.println("Incompatible type: " + fName + " return type not of type boolean on line " + side.getLine());
+                    System.exit(0);
+                }
+                System.out.println("Unknown method on line " + side.getLine());
+                System.exit(0);
+            }
+
+            if (rhs instanceof ASTfunctionCall && var instanceof ASTNEW) {
+                if (!JmmParser.getInstance().getClassTable().getType().equals(((SimpleNode) var.children[0]).name)) return;
+                String fName = ((SimpleNode) rhs.children[0]).name;
+                if (JmmParser.getInstance().containsMethod(fName)) {
+                    if (JmmParser.getInstance().getMethod(fName).getType().equals("boolean")) return;
+                    System.out.println("Incompatible type: " + fName + " return type not of type boolean on line " + side.getLine());
+                    System.exit(0);
+                }
+                System.out.println("Unknown method on line " + side.getLine());
+                System.exit(0);
+            }
+            return;
+        }
+
         System.out.println("Found " + side.toString() + " and was expecting <, && or boolean value on line " + side.getLine());
         System.exit(0);
     }

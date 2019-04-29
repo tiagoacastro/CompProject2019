@@ -49,7 +49,7 @@ class Test extends Test2 {
         d = coiso.length;
         d = d.ola(12, 3*3, coiso);
 
-        if (!adeus) {
+        if (hello.booleanFun() && bool) {
             bool = false;
         }
         else {
@@ -64,5 +64,11 @@ class Test extends Test2 {
         int i;
         i = 0;
         return i;
+    }
+
+    public boolean booleanFun() {
+        boolean var;
+        var = true;
+        return var;
     }
 }
