@@ -139,7 +139,7 @@ public class CodeGenerator {
         nl();
 
         if(func.getName().equals("mainDeclaration")) {
-            write(".var0 is arg0 [Ljava/lang/String;");
+            write(".var0 is args [Ljava/lang/String;");
         }else{
             write(".var0 is this L");
             write(this.classe);
@@ -191,8 +191,9 @@ public class CodeGenerator {
             while((node = body.next()) != null && node.getName().equals("varDeclaration")) {
                 write(".var");
                 write(""+(localNum+1));
-                write(" is arg");
-                write(""+localNum);
+                write(" is ");
+                write(node.next(2).getName());
+                node.previous(2);
                 space();
                 write(getType(node.next().next().getName()));
                 write("");

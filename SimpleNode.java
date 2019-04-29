@@ -101,6 +101,15 @@ public class SimpleNode implements Node {
 
         return n;
     }
+
+    public SimpleNode previous(int times) {
+        SimpleNode n = null;
+
+        for(int i=0; i<times; i++)
+            n = previous();
+
+        return n;
+    }
     
     public SimpleNode previous() {       
         SimpleNode n = null;

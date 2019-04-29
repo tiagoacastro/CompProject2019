@@ -21,10 +21,10 @@
 .method public static main([Ljava/lang/String;)V
 .limit stack 10
 .limit locals 10
-.var0 is arg0 [Ljava/lang/String;
-.var1 is arg0 I
-.var2 is arg1 I
-.var3 is arg2 LTest;
+.var0 is args [Ljava/lang/String;
+.var1 is i I
+.var2 is j I
+.var3 is t LTest;
 	iload_2
 	iconst_1
 	iadd
