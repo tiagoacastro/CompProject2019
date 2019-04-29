@@ -290,7 +290,7 @@ void expressionfinal() #void: {Token t, t1;}
     (t=<FALSE> {jjtThis.index = t.kind;}#FALSE) |
     (t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER) |
     (t=<THIS> {jjtThis.index = t.kind;}#THIS) |
-    (t=<EXCLAMATION> expressionfinal() {jjtThis.index = t.kind;}#EXCLAMATION) |
+    (t=<EXCLAMATION> expressionfinal() {jjtThis.index = t.kind;}#EXCLAMATION(1)) |
     (<LEFTPARENTHESES> expression() <RIGHTPARENTHESES>) |
     (t1=<NEW> (((t=<INT> {jjtThis.index = t.kind;}#INT) array() #array(2) {jjtThis.index = t1.kind;}#NEW(1)) | ((t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER) {jjtThis.index = t1.kind;}#NEW(1) <LEFTPARENTHESES> <RIGHTPARENTHESES>) ))
 }

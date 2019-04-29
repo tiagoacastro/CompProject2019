@@ -13,7 +13,7 @@ class Test extends Test2 {
         k = true;
         j = new int[2];
 
-        if (i < 10 && k) {
+        if (i < 10 && !k) {
             ola = j[1] + 1 * 2;
             j[0] = 1;
         }
