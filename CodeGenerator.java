@@ -49,6 +49,7 @@ public class CodeGenerator {
             write(".super ");
             write(next.next().getName());
         } else {
+            this.root.previous();
             write(".super java/lan/Object");
         }
 
@@ -75,6 +76,7 @@ public class CodeGenerator {
         var.next();
         write(var.next().getName());
 
+        space();
         write(getType(var.previous().getName()));
 
         nl();
@@ -145,11 +147,15 @@ public class CodeGenerator {
         write(getType(func.next().getName()));
 
         SimpleNode args = func.next();
-        SimpleNode arg;
-        write(" (");
-        while((arg = args.next()) != null){
-            write(getType(arg.next().getName()));
-        }
+        write("(");
+        if(args.getName().equals("parameterDeclaration")){
+            SimpleNode arg;
+            while((arg = args.next()) != null){
+                write(getType(arg.getName()));
+                args.next();
+            }
+        } else
+            func.previous();
         write(")");
 
         func.previous();
@@ -167,9 +173,9 @@ public class CodeGenerator {
     private String getType(String type){
         switch(type){
             case "int":
-                return " I";
+                return "I";
             case "boolean":
-                return " Z";
+                return "Z";
         }
 
         return "ND";
