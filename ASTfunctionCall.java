@@ -20,6 +20,16 @@ class ASTfunctionCall extends SimpleNode {
         }
 
         ArrayList<Symbol> parameterSymbols = JmmParser.getInstance().getMethod(methodName).getParameters();
+
+        if (children.length == 1) {
+            if (parameterSymbols.size() == 0) 
+                return;
+            else {
+                System.out.println("Parameters don't match method definition on line " + this.getLine());
+                System.exit(0);
+            }
+        }
+
         Node[] parameters = ((SimpleNode) children[1]).children;
 
         if (parameterSymbols.size() != parameters.length) {

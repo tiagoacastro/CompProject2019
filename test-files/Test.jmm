@@ -30,6 +30,7 @@ class Test extends Test2 {
 
         test = new Test();
         test.olaFun(true, j);
+        test.adeusFun();
     }
 
     public int olaFun(boolean adeus, int[] pars) {
@@ -56,5 +57,11 @@ class Test extends Test2 {
         }
 
         return adeus;
+    }
+
+    public int adeusFun() {
+        int i;
+        i = 0;
+        return i;
     }
 }
