@@ -55,7 +55,7 @@ public class CodeGenerator {
             write(extend.next().getName());
         } else {
             this.root.previous();
-            write(".super java/lan/Object");
+            write(".super java/lang/Object");
         }
 
         nl();
@@ -101,13 +101,13 @@ public class CodeGenerator {
     }
 
     private void generateConstructor(){
-        write(".method <init>()V");
+        write(".method public <init>()V");
         nl();
         write(".limit stack 1");
         nl();
         write(".limit locals 1");
         nl();
-        write(".var0 is this L");
+        write(".var 0 is this L");
         write(this.classe);
         write(";");
         nl();
@@ -201,6 +201,7 @@ public class CodeGenerator {
                 locals[localNum] = node.next().getName();
                 localNum++;
             }
+            body.previous();
             while((node = body.next()) != null) {
                 handle(node);
             }

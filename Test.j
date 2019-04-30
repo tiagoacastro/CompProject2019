@@ -1,10 +1,10 @@
 .class public Test
-.super java/lan/Object
+.super java/lang/Object
 
-.method <init>()V
+.method public <init>()V
 .limit stack 1
 .limit locals 1
-.var0 is this LTest;
+.var 0 is this LTest;
 	aload_0
 	invokespecial java/lang/Object/<init>()V
 	return
@@ -25,6 +25,8 @@
 .var 1 is i I
 .var 2 is j I
 .var 3 is t LTest;
+	iconst_5
+	istore_2
 	iload_2
 	iconst_1
 	iadd
