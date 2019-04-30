@@ -1,4 +1,4 @@
-class Test {
+class Checkpoint2 {
     public int ola() {
         return 2;
     }

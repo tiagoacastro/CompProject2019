@@ -4,4 +4,5 @@
 jjtree parser.jjt
 javacc parser.jj
 javac *.java
-java JmmParser $1
+java JmmParser $1.jmm
+java -jar jasmin.jar $1.j
