@@ -14,7 +14,7 @@ class Test extends Test2 {
         j = new int[2];
 
         test = new Test();
-        test.adeusFun();
+        this.adeusFun();
 
         if (i < 10 && !k) {
             ola = j[1] + 1 * test.olaFun(true, j);

@@ -45,6 +45,13 @@ class ASTDOT extends SimpleNode {
             }
         }
 
+        if (lhs.index != -1) {
+            if (lhs.index == JmmParserConstants.THIS) {
+                rhs.applySemanticAnalysis(table);
+                return;
+            }
+        }
+
         if (lhs instanceof ASTNEW) {
             if (JmmParser.getInstance().getClassTable().getType().equals(((SimpleNode) lhs.children[0]).name))
                 rhs.applySemanticAnalysis(table);
