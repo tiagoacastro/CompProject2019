@@ -294,6 +294,9 @@ public class CodeGenerator {
                         nl();
                     }
                     break;
+                case ".":
+                    dotOperator(node);
+                    break;
                 default:
                     tab();
                     write(getType2(JmmParser.getInstance().getMethod(this.method).getSymbolType(node.getName()))); 
@@ -316,7 +319,13 @@ public class CodeGenerator {
 
     private static boolean isNumeric(String str) { 
         return str.matches("-?\\d+(\\.\\d+)?");
-      }
+    }
+
+    private void dotOperator(SimpleNode node) {
+        if (((SimpleNode) children[1]).index == JmmParserConstants.LENGTH) {
+            
+        }
+    }
 
     private void generateFunctionFooter(SimpleNode func){
         SimpleNode n = func.next();
