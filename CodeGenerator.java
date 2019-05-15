@@ -270,7 +270,7 @@ public class CodeGenerator {
                 return ""+i;
             }
         }
-        return ""+404;
+        return "404";
     }
 
     private static boolean isNumeric(String str) { 
