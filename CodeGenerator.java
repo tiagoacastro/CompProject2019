@@ -267,6 +267,16 @@ public class CodeGenerator {
                     write("idiv");
                     nl();
                     break;
+                case "true":
+                    tab();
+                    write("iconst_1");
+                    nl();
+                    break;
+                case "false":
+                    tab();
+                    write("iconst_0");
+                    nl();
+                    break;
                 default:
                     tab();
                     write(getType2(JmmParser.getInstance().getMethod(this.method).getSymbolType(node.getName()))); 

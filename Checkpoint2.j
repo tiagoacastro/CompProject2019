@@ -22,6 +22,17 @@
 	ireturn
 .end method
 
+.method public check()Z
+.limit stack 10
+.limit locals 10
+.var 0 is this LCheckpoint2;
+.var 1 is b Z
+	iconst_1
+	istore_1
+	iload_1
+	ireturn
+.end method
+
 .method public static main([Ljava/lang/String;)V
 .limit stack 10
 .limit locals 10

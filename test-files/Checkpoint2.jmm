@@ -3,6 +3,14 @@ class Checkpoint2 {
         return f + j;
     }
 
+    public boolean check(){
+        boolean b;
+
+        b = true;
+
+        return b;
+    }
+
     public static void main(String[] args) {
         int i;
         int j;
