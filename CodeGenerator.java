@@ -320,10 +320,8 @@ public class CodeGenerator {
 
     private String getType2(String type){
         switch(type){
-            case "int":
+            case "int": case "boolean":
                 return "i";
-            case "boolean":
-                return "z";
         }
 
         return "a";
