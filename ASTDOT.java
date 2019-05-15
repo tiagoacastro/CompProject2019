@@ -45,6 +45,13 @@ class ASTDOT extends SimpleNode {
             }
         }
 
+        if (lhs.index != -1) {
+            if (lhs.index == JmmParserConstants.THIS) {
+                rhs.applySemanticAnalysis(table);
+                return;
+            }
+        }
+
         if (lhs instanceof ASTNEW) {
             if (JmmParser.getInstance().getClassTable().getType().equals(((SimpleNode) lhs.children[0]).name))
                 rhs.applySemanticAnalysis(table);
@@ -52,7 +59,9 @@ class ASTDOT extends SimpleNode {
             return;
         }
 
-        System.out.println("Found " + lhs.toString() + " and was expecting int[] or " + JmmParser.getInstance().getClassTable().getType() + " value on line " + lhs.getLine());
+        if (rhs.index != JmmParserConstants.LENGTH) return;
+
+        System.out.println("Found " + lhs.toString() + " and was expecting int[] on line " + lhs.getLine());
         System.exit(0);
     }
 }
