@@ -50,6 +50,10 @@
 	iconst_2
 	imul
 	istore_1
+	new Checkpoint2
+	dup
+	invokespecial Checkpoint2/<init>()V
+	astore_3
 	return
 .end method
 

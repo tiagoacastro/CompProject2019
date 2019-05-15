@@ -235,7 +235,8 @@ public class CodeGenerator {
                     String idx = find(node.next());
                     handle(node.next());
                     tab();
-                    write("istore_");
+                    write(getType2(JmmParser.getInstance().getMethod(this.method).getSymbolType(node.previous().getName())));
+                    write("store_");
                     write(idx);
                     nl();
                     break;
@@ -276,6 +277,22 @@ public class CodeGenerator {
                     tab();
                     write("iconst_0");
                     nl();
+                    break;
+                case "new":
+                    if(node.next().getName().equals(this.classe)) {
+                        tab();
+                        write("new ");
+                        write(classe);
+                        nl();
+                        tab();
+                        write("dup");
+                        nl();
+                        tab();
+                        write("invokespecial ");
+                        write(classe);
+                        write("/<init>()V");
+                        nl();
+                    }
                     break;
                 default:
                     tab();

@@ -14,14 +14,11 @@ class Checkpoint2 {
     public static void main(String[] args) {
         int i;
         int j;
-        //int[] f;
         Checkpoint2 t;
 
         j = 5;  
         i = j + 1;
         i = j * 2;
-        /*f = new int[2*2];
-        j = this.ola(5);
-        j = f.length;*/
+        t = new Checkpoint2();
     }
 }
