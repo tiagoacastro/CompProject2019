@@ -15,6 +15,7 @@ class Test extends Test2 {
 
         test = new Test();
         this.adeusFun();
+        i = ncdjks.adeus();
 
         if (i < 10 && !k) {
             ola = j[1] + 1 * test.olaFun(true, j);

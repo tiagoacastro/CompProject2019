@@ -59,7 +59,9 @@ class ASTDOT extends SimpleNode {
             return;
         }
 
-        System.out.println("Found " + lhs.toString() + " and was expecting int[] or " + JmmParser.getInstance().getClassTable().getType() + " value on line " + lhs.getLine());
+        if (rhs.index != JmmParserConstants.LENGTH) return;
+
+        System.out.println("Found " + lhs.toString() + " and was expecting int[] on line " + lhs.getLine());
         System.exit(0);
     }
 }
