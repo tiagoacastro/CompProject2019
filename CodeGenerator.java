@@ -138,14 +138,37 @@ public class CodeGenerator {
         write(".limit locals 10");
         nl();
 
+        Arrays.fill(this.locals, null);
+        this.localNum = 0;
+
         if(func.getName().equals("mainDeclaration")) {
             write(".var 0 is args [Ljava/lang/String;");
+            nl();
         }else{
             write(".var 0 is this L");
             write(this.classe);
             write(";");
+            nl();
+
+            SimpleNode node;
+            func.next();
+            while((node = func.next()) != null && node.getName().equals("parameterDeclaration")) {
+                node.reset();
+                write(".var ");
+                write(""+(this.localNum+1));
+                write(" is ");
+                String id = node.next(2).getName();
+                write(id);
+                space();
+                node = node.previous();
+                node.reset();
+                write(getType(node.next().getName()));
+                nl();
+                this.locals[this.localNum] = id;
+                this.localNum++;
+            }
+            func.reset();
         }
-        nl();
     }
 
     private void generateMainHeader(SimpleNode func){
@@ -161,19 +184,15 @@ public class CodeGenerator {
         this.method = func.next(2).getName();
         write(this.method);
 
-        SimpleNode args = func.next();
+        SimpleNode arg;
         write("(");
-        if(args.getName().equals("parameterDeclaration")){
-            SimpleNode arg;
-            while((arg = args.next()) != null){
-                write(getType(arg.next().getName()));
-                args.next();
-            }
+        while((arg = func.next()) != null && arg.getName().equals("parameterDeclaration")){
+            write(getType(arg.next().next().getName()));
         }
-        func.previous();
+        func.reset();
         write(")");
 
-        this.store = func.previous().next().getName();
+        this.store = func.next().next().getName();
         write(getType(this.store));
     }
 
@@ -183,23 +202,18 @@ public class CodeGenerator {
             body = func.next();
         } while(!body.getName().equals("methodBody"));
 
-        Arrays.fill(this.locals, null);
-        this.localNum = 0;
-
         if(body.children != null){
             SimpleNode node;
             while((node = body.next()) != null && node.getName().equals("varDeclaration")) {
                 write(".var ");
-                write(""+(localNum+1));
+                write(""+(this.localNum+1));
                 write(" is ");
                 write(node.next(2).getName());
-                node.previous(2);
                 space();
-                write(getType(node.next().next().getName()));
-                write("");
+                write(getType(node.previous().next().getName()));
                 nl();
-                locals[localNum] = node.next().getName();
-                localNum++;
+                this.locals[this.localNum] = node.next().getName();
+                this.localNum++;
             }
             body.previous();
             while((node = body.next()) != null) {

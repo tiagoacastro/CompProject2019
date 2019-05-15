@@ -1,15 +1,19 @@
 class Checkpoint2 {
-    public int ola() {
-        return 2;
+    public int ola(int f, int j) {
+        return f + j;
     }
 
     public static void main(String[] args) {
         int i;
         int j;
-        Test t;
+        //int[] f;
+        Checkpoint2 t;
 
-        j = 5;
+        j = 5;  
         i = j + 1;
         i = j * 2;
+        /*f = new int[2*2];
+        j = this.ola(5);
+        j = f.length;*/
     }
 }

@@ -10,11 +10,15 @@
 	return
 .end method
 
-.method public ola()I
+.method public ola(II)I
 .limit stack 10
 .limit locals 10
 .var 0 is this LCheckpoint2;
-	iconst_2
+.var 1 is f I
+.var 2 is j I
+	iload_1
+	iload_2
+	iadd
 	ireturn
 .end method
 
@@ -24,7 +28,7 @@
 .var 0 is args [Ljava/lang/String;
 .var 1 is i I
 .var 2 is j I
-.var 3 is t LTest;
+.var 3 is t LCheckpoint2;
 	iconst_5
 	istore_2
 	iload_2
