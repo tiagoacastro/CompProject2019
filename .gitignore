@@ -5,8 +5,9 @@
 *.java
 *.class
 *.jj
+*.j
 
-# Exceptions
+# Java exceptions
 !SimpleNode.java
 !JmmParserConstants.java
 !ASTIDENTIFIER.java
@@ -31,3 +32,8 @@
 !ASTEXCLAMATION.java
 !BinaryOperator.java
 !BooleanOperator.java
+
+# Class exceptions
+!io.class
+!ioPlus.class
+!MathUtils.class

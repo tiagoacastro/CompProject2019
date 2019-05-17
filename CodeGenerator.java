@@ -322,8 +322,35 @@ public class CodeGenerator {
     }
 
     private void dotOperator(SimpleNode node) {
-        if (((SimpleNode) children[1]).index == JmmParserConstants.LENGTH) {
-            
+        if (node.next(2).index == JmmParserConstants.LENGTH) {
+            tab();
+            write("aload_");
+            write(find(node.previous()));
+            nl();
+            tab();
+            write("arraylength");
+            nl();
+            return;
+        }
+
+        functionCall(node.same(), node.next());
+    }
+
+    private void functionCall(SimpleNode caller, SimpleNode call) {
+        if (find(caller) == "404") {
+            write("invokestatic " + caller.getName() + "/" + call.getName() + "(");
+            SimpleNode parameters = call.next(2);
+            SimpleNode param;
+            while((param = parameters.next()) != null) {
+                String name = param.getName();
+                if (isNumeric(name))
+                    write(getType("int"));
+                else if (name == "true" || name == "false")
+                    write(getType("boolean"));
+                else if (find(param) != "404") {
+                    write(getType2(JmmParser.getInstance().getMethod(this.method).getSymbolType(param.getName())));
+                }
+            }
         }
     }
 
