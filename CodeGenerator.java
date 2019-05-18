@@ -376,8 +376,24 @@ public class CodeGenerator {
         if (method != null)
             write(getType(method.getType()));
         else
-            write("V");
+            write(getType(findReturnType(call)));
         nl();
+    }
+
+    private String findReturnType(SimpleNode call) {
+        SimpleNode parentElement = (SimpleNode) call.jjtGetParent().jjtGetParent();
+        String parentName = parentElement.getName();
+        if (parentName.equals("+") || parentName.equals("-") || parentName.equals("*") || parentName.equals("/")) {
+            return "int";
+        }
+        else if (parentName.equals("&&") || parentName.equals("<")) {
+            return "boolean";
+        }
+        else if (parentName.equals("=")) {
+            return JmmParser.getInstance().getMethod(this.method).getSymbol(((SimpleNode) parentElement.children[0]).getName()).getType();
+        }
+
+        return "void";
     }
 
     private void generateFunctionFooter(SimpleNode func){
@@ -402,6 +418,8 @@ public class CodeGenerator {
                 return "I";
             case "boolean":
                 return "Z";
+            case "void":
+                return "V";
         }
 
         return "L" + type + ";";
