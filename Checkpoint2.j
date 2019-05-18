@@ -54,6 +54,13 @@
 	dup
 	invokespecial Checkpoint2/<init>()V
 	astore_3
+	aload_3
+	iconst_1
+	iconst_1
+	invokevirtual Checkpoint2/ola(II)I
+	istore_1
+	iload_1
+	invokestatic io/println(I)V
 	return
 .end method
 

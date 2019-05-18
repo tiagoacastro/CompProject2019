@@ -333,25 +333,51 @@ public class CodeGenerator {
             return;
         }
 
-        functionCall(node.same(), node.next());
+        functionCall(node.previous(), node.next());
     }
 
     private void functionCall(SimpleNode caller, SimpleNode call) {
-        if (find(caller) == "404") {
-            write("invokestatic " + caller.getName() + "/" + call.getName() + "(");
-            SimpleNode parameters = call.next(2);
-            SimpleNode param;
-            while((param = parameters.next()) != null) {
-                String name = param.getName();
-                if (isNumeric(name))
-                    write(getType("int"));
-                else if (name == "true" || name == "false")
-                    write(getType("boolean"));
-                else if (find(param) != "404") {
-                    write(getType2(JmmParser.getInstance().getMethod(this.method).getSymbolType(param.getName())));
-                }
+        SimpleNode parameters = call.next(2);
+        SimpleNode param;
+        String callerId = find(caller);
+
+        if (callerId != "404") {
+            tab();
+            write("aload_");
+            write(find(caller));
+            nl();
+        }
+
+        while((param = parameters.next()) != null) {
+            handle(param);
+        }
+
+        parameters.reset();
+
+        tab();
+        if (callerId == "404")
+            write("invokestatic " + caller.getName() + "/" + call.previous().getName() + "(");
+        else
+            write("invokevirtual " + JmmParser.getInstance().getMethod(this.method).getSymbolType(caller.getName()) + "/" + call.previous().getName() + "(");
+
+        while((param = parameters.next()) != null) {
+            String name = param.getName();
+            if (isNumeric(name))
+                write(getType("int"));
+            else if (name == "true" || name == "false")
+                write(getType("boolean"));
+            else if (find(param) != "404") {
+                write(getType(JmmParser.getInstance().getMethod(this.method).getSymbolType(param.getName())));
             }
         }
+
+        write(")");
+        SymbolTable method = JmmParser.getInstance().getMethod(call.same().getName());
+        if (method != null)
+            write(getType(method.getType()));
+        else
+            write("V");
+        nl();
     }
 
     private void generateFunctionFooter(SimpleNode func){
