@@ -294,6 +294,9 @@ public class CodeGenerator {
                         nl();
                     }
                     break;
+                case ".":
+                    dotOperator(node);
+                    break;
                 default:
                     tab();
                     write(getType2(JmmParser.getInstance().getMethod(this.method).getSymbolType(node.getName()))); 
@@ -316,7 +319,82 @@ public class CodeGenerator {
 
     private static boolean isNumeric(String str) { 
         return str.matches("-?\\d+(\\.\\d+)?");
-      }
+    }
+
+    private void dotOperator(SimpleNode node) {
+        if (node.next(2).index == JmmParserConstants.LENGTH) {
+            tab();
+            write("aload_");
+            write(find(node.previous()));
+            nl();
+            tab();
+            write("arraylength");
+            nl();
+            return;
+        }
+
+        functionCall(node.previous(), node.next());
+    }
+
+    private void functionCall(SimpleNode caller, SimpleNode call) {
+        SimpleNode parameters = call.next(2);
+        SimpleNode param;
+        String callerId = find(caller);
+
+        if (callerId != "404") {
+            tab();
+            write("aload_");
+            write(find(caller));
+            nl();
+        }
+
+        while((param = parameters.next()) != null) {
+            handle(param);
+        }
+
+        parameters.reset();
+
+        tab();
+        if (callerId == "404")
+            write("invokestatic " + caller.getName() + "/" + call.previous().getName() + "(");
+        else
+            write("invokevirtual " + JmmParser.getInstance().getMethod(this.method).getSymbolType(caller.getName()) + "/" + call.previous().getName() + "(");
+
+        while((param = parameters.next()) != null) {
+            String name = param.getName();
+            if (isNumeric(name))
+                write(getType("int"));
+            else if (name == "true" || name == "false")
+                write(getType("boolean"));
+            else if (find(param) != "404") {
+                write(getType(JmmParser.getInstance().getMethod(this.method).getSymbolType(param.getName())));
+            }
+        }
+
+        write(")");
+        SymbolTable method = JmmParser.getInstance().getMethod(call.same().getName());
+        if (method != null)
+            write(getType(method.getType()));
+        else
+            write(getType(findReturnType(call)));
+        nl();
+    }
+
+    private String findReturnType(SimpleNode call) {
+        SimpleNode parentElement = (SimpleNode) call.jjtGetParent().jjtGetParent();
+        String parentName = parentElement.getName();
+        if (parentName.equals("+") || parentName.equals("-") || parentName.equals("*") || parentName.equals("/")) {
+            return "int";
+        }
+        else if (parentName.equals("&&") || parentName.equals("<")) {
+            return "boolean";
+        }
+        else if (parentName.equals("=")) {
+            return JmmParser.getInstance().getMethod(this.method).getSymbol(((SimpleNode) parentElement.children[0]).getName()).getType();
+        }
+
+        return "void";
+    }
 
     private void generateFunctionFooter(SimpleNode func){
         SimpleNode n = func.next();
@@ -340,6 +418,8 @@ public class CodeGenerator {
                 return "I";
             case "boolean":
                 return "Z";
+            case "void":
+                return "V";
         }
 
         return "L" + type + ";";
