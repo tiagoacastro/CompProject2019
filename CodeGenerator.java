@@ -12,7 +12,7 @@ public class CodeGenerator {
     private String store;
     private String classe;
     private ArrayList<String> globals = new ArrayList<>();
-    private String[] locals = new String[10]; //hardcoded
+    private String[] locals = new String[999];
     private int localNum = 0;
     private String method;
 
