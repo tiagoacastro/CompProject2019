@@ -1,7 +1,7 @@
 .class public Checkpoint2
 .super java/lang/Object
 
-.field public olaglobal Ltype;
+.field public olaglobal I
 
 .method public <init>()V
 .limit stack 1
@@ -18,8 +18,14 @@
 .var 0 is this LCheckpoint2;
 .var 1 is f I
 .var 2 is j I
+	aload_0
+	iconst_1
+	putfield Checkpoint2/olaglobal I
 	iload_1
 	iload_2
+	iadd
+	aload_0
+	getfield Checkpoint2/olaglobal I
 	iadd
 	ireturn
 .end method
@@ -51,13 +57,15 @@
 	iload_2
 	iconst_2
 	imul
+	iload_1
+	iadd
 	istore_1
 	new Checkpoint2
 	dup
 	invokespecial Checkpoint2/<init>()V
 	astore_3
 	aload_3
-	iconst_1
+	iload_1
 	iconst_1
 	invokevirtual Checkpoint2/ola(II)I
 	istore_1
