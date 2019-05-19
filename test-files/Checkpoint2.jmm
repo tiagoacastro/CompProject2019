@@ -1,4 +1,6 @@
 class Checkpoint2 {
+    int olaglobal;
+    
     public int ola(int f, int j) {
         return f + j;
     }

@@ -1,6 +1,8 @@
 .class public Checkpoint2
 .super java/lang/Object
 
+.field public olaglobal Ltype;
+
 .method public <init>()V
 .limit stack 1
 .limit locals 1

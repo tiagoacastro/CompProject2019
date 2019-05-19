@@ -2,6 +2,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class CodeGenerator {
@@ -10,6 +11,7 @@ public class CodeGenerator {
     private StringBuilder builder;
     private String store;
     private String classe;
+    private ArrayList<String> globals = new ArrayList<>();
     private String[] locals = new String[10]; //hardcoded
     private int localNum = 0;
     private String method;
@@ -67,6 +69,7 @@ public class CodeGenerator {
 
         while((global = this.root.next()) != null && global.getName().equals("varDeclaration")) {
             generateGlobalDeclaration(global);
+            globals.add(global.next().getName());
             has = true;
         }  
         
