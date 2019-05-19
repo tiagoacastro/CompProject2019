@@ -2,6 +2,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class CodeGenerator {
@@ -10,6 +11,7 @@ public class CodeGenerator {
     private StringBuilder builder;
     private String store;
     private String classe;
+    private ArrayList<String> globals = new ArrayList<>();
     private String[] locals = new String[10]; //hardcoded
     private int localNum = 0;
     private String method;
@@ -67,6 +69,7 @@ public class CodeGenerator {
 
         while((global = this.root.next()) != null && global.getName().equals("varDeclaration")) {
             generateGlobalDeclaration(global);
+            globals.add(global.next().getName());
             has = true;
         }  
         
@@ -81,7 +84,8 @@ public class CodeGenerator {
         write(var.next(2).getName());
 
         space();
-        write(getType(var.previous().getName()));
+
+        write(getType(var.previous().next().getName()));
 
         nl();
     }
@@ -233,11 +237,15 @@ public class CodeGenerator {
             switch(node.getName()){
                 case "=":
                     String idx = find(node.next());
-                    handle(node.next());
-                    tab();
-                    write(getType2(JmmParser.getInstance().getMethod(this.method).getSymbolType(node.previous().getName())));
-                    write("store_");
-                    write(idx);
+                    if(globals.contains(node.same().getName())){
+                        globalStore(node);
+                    } else {
+                        handle(node.next());
+                        tab();
+                        write(getType2(JmmParser.getInstance().getMethod(this.method).getSymbolType(node.previous().getName())));
+                        write("store_");
+                        write(idx);
+                    }
                     nl();
                     break;
                 case "+":
@@ -298,10 +306,14 @@ public class CodeGenerator {
                     dotOperator(node);
                     break;
                 default:
-                    tab();
-                    write(getType2(JmmParser.getInstance().getMethod(this.method).getSymbolType(node.getName()))); 
-                    write("load_"); 
-                    write(find(node));
+                    if(globals.contains(node.getName())){
+                        globalLoad(node);
+                    } else {
+                        tab(); 
+                        write(getType2(JmmParser.getInstance().getMethod(this.method).getSymbolType(node.getName()))); 
+                        write("load_");
+                        write(find(node));
+                    }
                     nl();
                     break;
             }
@@ -315,6 +327,33 @@ public class CodeGenerator {
             }
         }
         return "404";
+    }
+
+    private void globalStore(SimpleNode node){
+        tab();
+        write("aload_0");
+        nl();
+        handle(node.next());
+        tab();
+        write("putfield ");
+        write(classe);
+        write("/");
+        write(node.previous().getName());
+        space();
+        write(getType(JmmParser.getInstance().getMethod(this.method).getSymbolType(node.same().getName())));
+    }
+
+    private void globalLoad(SimpleNode node){
+        tab();
+        write("aload_0");
+        nl();
+        tab();
+        write("getfield ");
+        write(classe);
+        write("/");
+        write(node.getName());
+        space();
+        write(getType(JmmParser.getInstance().getMethod(this.method).getSymbolType(node.getName())));
     }
 
     private static boolean isNumeric(String str) { 

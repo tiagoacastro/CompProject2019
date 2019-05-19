@@ -110,7 +110,13 @@ public class SymbolTable {
      * @return returns symbol type, null if it isn't defined
      */
     public String getSymbolType(String identifier){
-        return symbols.get(identifier).getType();
+        if (symbols.containsKey(identifier))
+            return symbols.get(identifier).getType();
+        
+        if (parent != null)
+            return parent.getSymbol(identifier).getType();
+
+        return null;
     }
 
     /**
@@ -119,7 +125,13 @@ public class SymbolTable {
      * @return returns symbol access type, null if it isn't defined
      */
     public Symbol.Access getSymbolAccess(String identifier){
-        return symbols.get(identifier).getAccess();
+        if (symbols.containsKey(identifier))
+            return symbols.get(identifier).getAccess();
+
+        if (parent != null)
+            return parent.getSymbol(identifier).getAccess();
+
+        return null;
     }
 
     public ArrayList<Symbol> getParameters() {
