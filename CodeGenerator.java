@@ -95,12 +95,23 @@ public class CodeGenerator {
 
         SimpleNode method;
 
+        StringBuilder save = this.builder;
+
         while((method = this.root.next()) != null) {
             nl();
             method = method.next();
+
             generateFunctionHeader(method);
 		    generateFunctionBody(method);
             generateFunctionFooter(method);
+
+            StringBuilder buffer = this.builder;
+            this.builder = save;
+            write(".limit locals ");
+            write("" + (this.localNum+1));
+            nl();
+            write(buffer.toString());
+            nl();
         }
     }
 
@@ -136,11 +147,10 @@ public class CodeGenerator {
         nl();
 
         //hardcoded
-        write(".limit stack 10");
+        write(".limit stack 100");
         nl();
 
-        write(".limit locals 10");
-        nl();
+        this.builder = new StringBuilder();
 
         Arrays.fill(this.locals, null);
         this.localNum = 0;

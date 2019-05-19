@@ -13,8 +13,8 @@
 .end method
 
 .method public ola(II)I
-.limit stack 10
-.limit locals 10
+.limit stack 100
+.limit locals 3
 .var 0 is this LCheckpoint2;
 .var 1 is f I
 .var 2 is j I
@@ -30,9 +30,10 @@
 	ireturn
 .end method
 
+
 .method public check()Z
-.limit stack 10
-.limit locals 10
+.limit stack 100
+.limit locals 2
 .var 0 is this LCheckpoint2;
 .var 1 is b Z
 	iconst_1
@@ -41,9 +42,10 @@
 	ireturn
 .end method
 
+
 .method public static main([Ljava/lang/String;)V
-.limit stack 10
-.limit locals 10
+.limit stack 100
+.limit locals 4
 .var 0 is args [Ljava/lang/String;
 .var 1 is i I
 .var 2 is j I
@@ -73,4 +75,5 @@
 	invokestatic io/println(I)V
 	return
 .end method
+
 
