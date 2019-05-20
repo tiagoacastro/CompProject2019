@@ -15,6 +15,7 @@ public class CodeGenerator {
     private String[] locals = new String[999];
     private int localNum = 0;
     private String method;
+    private int ifCounter = 0;
 
     public CodeGenerator(SimpleNode root) {
         this.root = root.getChild(0);
@@ -331,6 +332,35 @@ public class CodeGenerator {
                 case ".":
                     dotOperator(node);
                     break;
+                case "if":
+                    handle(node.next());
+                    handle(node.next());
+                    tab();
+                    write("goto endif" + ifCounter);
+                    nl();
+                    break;
+                case "condition":
+                    SimpleNode cmp = node.next();
+                    handle(cmp.next());
+                    handle(cmp.next());
+                    getCondition(cmp);
+                    break;
+                case "else":
+                    tab();
+                    write("else" + ifCounter + ":");
+                    nl();
+                    handle(node.next());
+                    tab();
+                    write("endif" + ifCounter + ":");
+                    nl();
+                    ifCounter++;
+                    break;
+                case "body":
+                    SimpleNode child;
+                    while ((child = node.next()) != null) {
+                        handle(child);
+                    }
+                    break;
                 default:
                     if(globals.contains(node.getName())){
                         globalLoad(node);
@@ -459,6 +489,14 @@ public class CodeGenerator {
         }
 
         return "void";
+    }
+
+    private void getCondition(SimpleNode node) {
+        tab();
+        if (node.getName().equals("<")) {
+            write("if_icmpge else" + ifCounter);
+        }
+        nl();
     }
 
     private void generateFunctionFooter(SimpleNode func){

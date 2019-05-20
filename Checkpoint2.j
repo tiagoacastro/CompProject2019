@@ -46,15 +46,11 @@
 
 .method public static main([Ljava/lang/String;)V
 .limit stack 100
-.limit locals 5
+.limit locals 4
 .var 0 is args [Ljava/lang/String;
 .var 1 is i I
 .var 2 is j I
 .var 3 is t LCheckpoint2;
-.var 4 is f [I
-	iconst_5
-	newarray_int
-	astore_4
 	iconst_5
 	istore_2
 	iload_2
@@ -78,6 +74,20 @@
 	istore_1
 	iload_1
 	invokestatic io/println(I)V
+	iconst_3
+	istore_1
+	iconst_2
+	istore_2
+	iload_1
+	iload_2
+	if_icmpge else0
+	iconst_1
+	invokestatic io/println(I)V
+	goto endif0
+	else0:
+	iconst_2
+	invokestatic io/println(I)V
+	endif0:
 	return
 .end method
 
