@@ -78,6 +78,11 @@
 	istore_1
 	iconst_2
 	istore_2
+	iload_1
+	iload_2
+	if_icmpge else0
+	iload_1
+	iload_2
 	if_icmpge else0
 	iconst_1
 	invokestatic io/println(I)V

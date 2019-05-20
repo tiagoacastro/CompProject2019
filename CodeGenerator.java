@@ -494,11 +494,17 @@ public class CodeGenerator {
     }
 
     private void getCondition(SimpleNode node, String jump) {
-        tab();
         if (node.getName().equals("<")) {
+            handle(node.next());
+            handle(node.next());
+            tab();
             write("if_icmpge " + jump);
+            nl();
         }
-        nl();
+        else if (node.getName().equals("&&")) {
+            getCondition(node.next(), jump);
+            getCondition(node.next(), jump);
+        }
     }
 
     private void generateFunctionFooter(SimpleNode func){
