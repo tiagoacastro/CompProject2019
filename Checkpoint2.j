@@ -31,25 +31,30 @@
 .end method
 
 
-.method public check()Z
+.method public check([I)Z
 .limit stack 100
-.limit locals 2
+.limit locals 3
 .var 0 is this LCheckpoint2;
-.var 1 is b Z
+.var 1 is a [I
+.var 2 is b Z
 	iconst_1
-	istore_1
-	iload_1
+	istore_2
+	iload_2
 	ireturn
 .end method
 
 
 .method public static main([Ljava/lang/String;)V
 .limit stack 100
-.limit locals 4
+.limit locals 5
 .var 0 is args [Ljava/lang/String;
 .var 1 is i I
 .var 2 is j I
 .var 3 is t LCheckpoint2;
+.var 4 is f [I
+	iconst_5
+	newarray_int
+	astore_4
 	iconst_5
 	istore_2
 	iload_2

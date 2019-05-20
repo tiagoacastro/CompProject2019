@@ -85,7 +85,10 @@ public class CodeGenerator {
 
         space();
 
-        write(getType(var.previous().next().getName()));
+        if(var.previous().jjtGetNumChildren() >= 3)
+            write("[");
+
+        write(getType(var.same().next().getName()));
 
         nl();
     }
@@ -176,6 +179,8 @@ public class CodeGenerator {
                 space();
                 node = node.previous();
                 node.reset();
+                if(node.jjtGetNumChildren() >= 3)
+                    write("[");
                 write(getType(node.next().getName()));
                 nl();
                 this.locals[this.localNum] = id;
@@ -201,12 +206,16 @@ public class CodeGenerator {
         SimpleNode arg;
         write("(");
         while((arg = func.next()) != null && arg.getName().equals("parameterDeclaration")){
-            write(getType(arg.next().next().getName()));
+            if(arg.next().jjtGetNumChildren() >= 3)
+                write("[");
+            write(getType(arg.same().next().getName()));
         }
         func.reset();
         write(")");
 
-        this.store = func.next().next().getName();
+        if(func.next().jjtGetNumChildren() >= 3)
+            write("[");
+        this.store = func.same().next().getName();
         write(getType(this.store));
     }
 
@@ -224,7 +233,9 @@ public class CodeGenerator {
                 write(" is ");
                 write(node.next(2).getName());
                 space();
-                write(getType(node.previous().next().getName()));
+                if(node.previous().jjtGetNumChildren() >= 3)
+                    write("[");
+                write(getType(node.same().next().getName()));
                 nl();
                 this.locals[this.localNum] = node.next().getName();
                 this.localNum++;
@@ -309,6 +320,11 @@ public class CodeGenerator {
                         write("invokespecial ");
                         write(classe);
                         write("/<init>()V");
+                        nl();
+                    } else if(node.same().getName().equals("array")){
+                        handle(node.same().next(2));
+                        tab();
+                        write("newarray_int");
                         nl();
                     }
                     break;
@@ -469,6 +485,8 @@ public class CodeGenerator {
                 return "Z";
             case "void":
                 return "V";
+            case "int[]":
+                return "[I";
         }
 
         return "L" + type + ";";

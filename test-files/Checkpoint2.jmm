@@ -6,7 +6,7 @@ class Checkpoint2 {
         return f + j + olaglobal;
     }
 
-    public boolean check(){
+    public boolean check(int[] a){
         boolean b;
 
         b = true;
@@ -18,7 +18,9 @@ class Checkpoint2 {
         int i;
         int j;
         Checkpoint2 t;
+        int[] f;
 
+        f = new int[5];
         j = 5;  
         i = j + 1;
         i = j * 2 + i;
