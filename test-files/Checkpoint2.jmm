@@ -17,6 +17,7 @@ class Checkpoint2 {
     public static void main(String[] args) {
         int i;
         int j;
+        boolean bool
         Checkpoint2 t;
 
         j = 5;  
@@ -29,6 +30,13 @@ class Checkpoint2 {
         i = 3;
         j = 2;
         if (i < j) {
+            io.println(1);
+        }
+        else {
+            io.println(2);
+        }
+
+        if (!bool) {
             io.println(1);
         }
         else {

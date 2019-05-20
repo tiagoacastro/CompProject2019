@@ -340,10 +340,12 @@ public class CodeGenerator {
                     nl();
                     break;
                 case "condition":
-                    SimpleNode cmp = node.next();
-                    handle(cmp.next());
-                    handle(cmp.next());
-                    getCondition(cmp);
+                    if (((SimpleNode) node.parent).index == JmmParserConstants.IF) {
+                        getCondition(node.next(), "else"+ifCounter);
+                    }
+                    else {
+                        // getCondition(node.next(), "endwhile" + whileCounter);
+                    }
                     break;
                 case "else":
                     tab();
@@ -491,10 +493,10 @@ public class CodeGenerator {
         return "void";
     }
 
-    private void getCondition(SimpleNode node) {
+    private void getCondition(SimpleNode node, String jump) {
         tab();
         if (node.getName().equals("<")) {
-            write("if_icmpge else" + ifCounter);
+            write("if_icmpge " + jump);
         }
         nl();
     }
