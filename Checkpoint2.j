@@ -90,14 +90,18 @@
 	istore_1
 	iload_1
 	invokestatic io/println(I)V
+	bipush 22
+	istore_2
 	while0:
-	iload_1
 	iload_2
-	if_icmpge endwhile0
 	iload_1
+	if_icmpge endwhile0
+	iload_2
 	iconst_1
 	iadd
-	istore_1
+	istore_2
+	iload_2
+	invokestatic io/println(I)V
 	goto while0
 	endwhile0:
 	iconst_3
