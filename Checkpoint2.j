@@ -50,39 +50,15 @@
 .var 0 is args [Ljava/lang/String;
 .var 1 is i I
 .var 2 is j I
-.var 3 is t LCheckpoint2;
-	iconst_5
-	istore_2
-	iload_2
-	iconst_1
-	iadd
-	istore_1
-	iload_2
-	iconst_2
-	imul
-	iload_1
-	iadd
-	istore_1
-	new Checkpoint2
-	dup
-	invokespecial Checkpoint2/<init>()V
-	astore_3
-	aload_3
-	iload_1
-	iconst_1
-	invokevirtual Checkpoint2/ola(II)I
-	istore_1
-	iload_1
-	invokestatic io/println(I)V
+.var 3 is b Z
 	iconst_3
 	istore_1
 	iconst_2
 	istore_2
-	iload_1
+	iconst_1
+	istore_3
 	iload_2
-	if_icmpge else0
 	iload_1
-	iload_2
 	if_icmpge else0
 	iconst_1
 	invokestatic io/println(I)V
@@ -91,6 +67,47 @@
 	iconst_2
 	invokestatic io/println(I)V
 	endif0:
+	iload_2
+	iload_1
+	if_icmpge else1
+	iload_3
+	ifeq else1
+	iconst_1
+	invokestatic io/println(I)V
+	goto endif1
+	else1:
+	iconst_2
+	invokestatic io/println(I)V
+	endif1:
+	iconst_1
+	ifeq else2
+	iconst_1
+	invokestatic io/println(I)V
+	goto endif2
+	else2:
+	iconst_2
+	invokestatic io/println(I)V
+	endif2:
+	iload_3
+	ifeq else3
+	iconst_1
+	invokestatic io/println(I)V
+	goto endif3
+	else3:
+	iconst_2
+	invokestatic io/println(I)V
+	endif3:
+	iconst_0
+	istore_3
+	iload_3
+	ifne else4
+	iconst_1
+	invokestatic io/println(I)V
+	goto endif4
+	else4:
+	iconst_2
+	invokestatic io/println(I)V
+	endif4:
 	return
 .end method
 

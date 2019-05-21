@@ -17,18 +17,42 @@ class Checkpoint2 {
     public static void main(String[] args) {
         int i;
         int j;
-        Checkpoint2 t;
-
-        j = 5;  
-        i = j + 1;
-        i = j * 2 + i;
-        t = new Checkpoint2();
-        i = t.ola(i, 1);
-        io.println(i);
+        boolean b;
 
         i = 3;
         j = 2;
-        if (i < j && i < j) {
+        b = true;
+
+        if (j < i) {
+            io.println(1);
+        }
+        else {
+            io.println(2);
+        }
+
+        if (j < i && b) {
+            io.println(1);
+        }
+        else {
+            io.println(2);
+        }
+
+        if (true) {
+            io.println(1);
+        }
+        else {
+            io.println(2);
+        }
+
+        if (b) {
+            io.println(1);
+        }
+        else {
+            io.println(2);
+        }
+
+        b = false;
+        if (!b) {
             io.println(1);
         }
         else {
