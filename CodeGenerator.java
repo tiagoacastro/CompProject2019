@@ -698,4 +698,14 @@ public class CodeGenerator {
     private void dec(){
         this.temp--;
     }
+
+    private void add(int add){
+        this.temp += add;
+        if(this.temp > this.stack)
+            this.stack = this.temp;
+    }
+
+    private void sub(int sub){
+        this.temp -= sub;
+    }
 }
