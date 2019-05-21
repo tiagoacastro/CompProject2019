@@ -333,7 +333,7 @@ public class CodeGenerator {
                         getCondition(node.next(), "else"+ifCounter, false);
                     }
                     else {
-                        getCondition(node.next(), "endwhile" + whileCounter);
+                        getCondition(node.next(), "endwhile" + whileCounter, false);
                     }
                     break;
                 case "else":

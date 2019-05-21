@@ -61,11 +61,12 @@
 
 .method public static main([Ljava/lang/String;)V
 .limit stack 100
-.limit locals 4
+.limit locals 5
 .var 0 is args [Ljava/lang/String;
 .var 1 is i I
 .var 2 is j I
-.var 3 is t LCheckpoint2;
+.var 3 is b Z
+.var 4 is t LCheckpoint2;
 	iconst_5
 	istore_2
 	iload_2
@@ -81,8 +82,8 @@
 	new Checkpoint2
 	dup
 	invokespecial Checkpoint2/<init>()V
-	astore_3
-	aload_3
+	astore 4
+	aload 4
 	iload_1
 	iconst_1
 	invokevirtual Checkpoint2/ola(II)I
