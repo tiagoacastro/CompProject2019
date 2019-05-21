@@ -17,6 +17,7 @@ public class CodeGenerator {
     private String method;
     private int ifCounter = 0;
     private int whileCounter = 0;
+    private int boolOpCounter = 0;
 
     public CodeGenerator(SimpleNode root) {
         this.root = root.getChild(0);
@@ -334,6 +335,14 @@ public class CodeGenerator {
                     write("iaload");
                     nl();
                     break;
+                case "<": case "&&":
+                    getCondition(node, "boolOp"+boolOpCounter, false);
+                    boolOp();
+                    break;
+                case "!":
+                    getCondition(node, "boolOp"+boolOpCounter, true);
+                    boolOp();
+                    break;
                 case "if":
                     handle(node.next());
                     handle(node.next());
@@ -353,6 +362,7 @@ public class CodeGenerator {
                     tab();
                     write("endwhile" + whileCounter + ":");
                     nl();
+                    whileCounter++;
                     break;
                 case "condition":
                     if (((SimpleNode) node.parent).index == JmmParserConstants.IF) {
@@ -539,10 +549,12 @@ public class CodeGenerator {
         if (!callerId.equals("404"))
             handle(caller);
 
-        while((param = parameters.next()) != null)
-            handle(param);
-        
-        parameters.reset();
+        if (parameters != null){
+            while((param = parameters.next()) != null)
+                handle(param);
+            
+            parameters.reset();
+        }
 
         tab();
         if (callerId.equals("404"))
@@ -550,14 +562,16 @@ public class CodeGenerator {
         else
             write("invokevirtual " + JmmParser.getInstance().getMethod(this.method).getSymbolType(caller.getName()) + "/" + call.previous().getName() + "(");
 
-        while((param = parameters.next()) != null) {
-            String name = param.getName();
-            if (isNumeric(name))
-                write(getType("int"));
-            else if (name.equals("true") || name.equals("false"))
-                write(getType("boolean"));
-            else if (! (""+find(param)).equals("404")) {
-                write(getType(JmmParser.getInstance().getMethod(this.method).getSymbolType(param.getName())));
+        if (parameters != null) {
+            while((param = parameters.next()) != null) {
+                String name = param.getName();
+                if (isNumeric(name))
+                    write(getType("int"));
+                else if (name.equals("true") || name.equals("false"))
+                    write(getType("boolean"));
+                else if (! (""+find(param)).equals("404")) {
+                    write(getType(JmmParser.getInstance().getMethod(this.method).getSymbolType(param.getName())));
+                }
             }
         }
 
@@ -584,6 +598,25 @@ public class CodeGenerator {
         }
 
         return "void";
+    }
+
+    private void boolOp() {
+        tab();
+        write("iconst_1");
+        nl();
+        tab();
+        write("goto endBoolOp" + boolOpCounter);
+        nl();
+        tab();
+        write("boolOp" + boolOpCounter + ":");
+        nl();
+        tab();
+        write("iconst_0");
+        nl();
+        tab();
+        write("endBoolOp" + boolOpCounter + ":");
+        nl();
+        boolOpCounter++;
     }
 
     private void getCondition(SimpleNode node, String jump, boolean invert) {

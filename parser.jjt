@@ -194,7 +194,7 @@ void statement() #void : {Token t;}
     (<LEFTBRACKET> (statement())* <RIGHTBRACKET>)
     | ifStatement()
     | whileStatement()
-    | (expression() [t=<EQUALS> expression2() {jjtThis.index = t.kind;}#EQUALS(2)] <SEMICOLON>)
+    | (expression() [t=<EQUALS> expression() {jjtThis.index = t.kind;}#EQUALS(2)] <SEMICOLON>)
 }
 
 void ifStatement() #void : {Token t;}

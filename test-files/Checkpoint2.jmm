@@ -9,10 +9,22 @@ class Checkpoint2 {
         return f + j + olaglobal + ar[0];
     }
 
-    public boolean check(int[] a){
+    public boolean check(){
         boolean b;
+        boolean t;
+        int i;
+        int j;
 
-        b = true;
+        i = 0;
+        j = 2;
+        t = i < j;
+        b = t && j < i;
+        if (b) {
+            io.println(1);
+        }
+        else {
+            io.println(0);
+        }
 
         return b;
     }
@@ -24,11 +36,11 @@ class Checkpoint2 {
         Checkpoint2 t;
 
         j = 1 * (1 + 7 * (2 - 1));
-        io.println(j);
         j = 5;
         i = j + 1;
         i = j * 2 + i;
         t = new Checkpoint2();
+        b = t.check();
         i = t.ola(i, 1);
         io.println(i);
         j = 22;
