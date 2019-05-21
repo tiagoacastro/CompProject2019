@@ -46,7 +46,7 @@
 .end method
 
 
-.method public check([I)Z
+.method public check()Z
 .limit stack 100
 .limit locals 4
 .var 0 is this LCheckpoint2;
@@ -54,12 +54,33 @@
 .var 2 is b Z
 .var 3 is n I
 	iconst_1
+	goto endBoolOp0
+	boolOp0:
+	iconst_0
+	endBoolOp0:
 	istore_2
 	iconst_1
 	iconst_2
 	invokestatic this/ola(II)I
 	istore_3
 	iload_2
+	ifeq boolOp1
+	iconst_1
+	goto endBoolOp1
+	boolOp1:
+	iconst_0
+	endBoolOp1:
+	istore_1
+	iload_1
+	ifeq else0
+	iconst_1
+	invokestatic io/println(I)V
+	goto endif0
+	else0:
+	iconst_0
+	invokestatic io/println(I)V
+	endif0:
+	iload_1
 	ireturn
 .end method
 
@@ -83,8 +104,6 @@
 	iconst_1
 	imul
 	istore_2
-	iload_2
-	invokestatic io/println(I)V
 	iconst_5
 	istore_2
 	iconst_1
@@ -101,6 +120,9 @@
 	dup
 	invokespecial Checkpoint2/<init>()V
 	astore 4
+	aload 4
+	invokevirtual Checkpoint2/check()Z
+	istore_3
 	aload 4
 	iload_1
 	iconst_1
@@ -132,20 +154,7 @@
 	iload_1
 	iload_2
 	swap
-	if_icmpge else0
-	iconst_1
-	invokestatic io/println(I)V
-	goto endif0
-	else0:
-	iconst_2
-	invokestatic io/println(I)V
-	endif0:
-	iload_1
-	iload_2
-	swap
 	if_icmpge else1
-	iload_3
-	ifeq else1
 	iconst_1
 	invokestatic io/println(I)V
 	goto endif1
@@ -153,7 +162,11 @@
 	iconst_2
 	invokestatic io/println(I)V
 	endif1:
-	iconst_1
+	iload_1
+	iload_2
+	swap
+	if_icmpge else2
+	iload_3
 	ifeq else2
 	iconst_1
 	invokestatic io/println(I)V
@@ -162,7 +175,7 @@
 	iconst_2
 	invokestatic io/println(I)V
 	endif2:
-	iload_3
+	iconst_1
 	ifeq else3
 	iconst_1
 	invokestatic io/println(I)V
@@ -171,10 +184,8 @@
 	iconst_2
 	invokestatic io/println(I)V
 	endif3:
-	iconst_0
-	istore_3
 	iload_3
-	ifne else4
+	ifeq else4
 	iconst_1
 	invokestatic io/println(I)V
 	goto endif4
