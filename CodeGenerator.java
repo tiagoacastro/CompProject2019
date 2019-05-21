@@ -15,6 +15,8 @@ public class CodeGenerator {
     private String[] locals = new String[999];
     private int localNum = 0;
     private String method;
+    private int ifCounter = 0;
+    private int whileCounter = 0;
 
     public CodeGenerator(SimpleNode root) {
         this.root = root.getChild(0);
@@ -304,7 +306,54 @@ public class CodeGenerator {
                     handle(node.next());
                     tab();
                     write("iaload");
+                case "if":
+                    handle(node.next());
+                    handle(node.next());
+                    tab();
+                    write("goto endif" + ifCounter);
                     nl();
+                    break;
+                case "while":
+                    tab();
+                    write("while" + whileCounter + ":");
+                    nl();
+                    handle(node.next());
+                    handle(node.next());
+                    tab();
+                    write("goto while" + whileCounter);
+                    nl();
+                    tab();
+                    write("endwhile" + whileCounter + ":");
+                    nl();
+                    break;
+                case "condition":
+                    if (((SimpleNode) node.parent).index == JmmParserConstants.IF) {
+                        getCondition(node.next(), "else"+ifCounter);
+                    }
+                    else {
+                        getCondition(node.next(), "endwhile" + whileCounter);
+                    }
+                    break;
+                case "else":
+                    tab();
+                    write("else" + ifCounter + ":");
+                    nl();
+                    handle(node.next());
+                    tab();
+                    write("endif" + ifCounter + ":");
+                    nl();
+                    ifCounter++;
+                    break;
+                case "endwhile":
+                    tab();
+                    write("endwhile" + whileCounter + ":");
+                    nl();
+                    break;
+                case "body":
+                    SimpleNode child;
+                    while ((child = node.next()) != null) {
+                        handle(child);
+                    }
                     break;
                 default:
                     identifier(node);
@@ -501,6 +550,20 @@ public class CodeGenerator {
         }
 
         return "void";
+    }
+
+    private void getCondition(SimpleNode node, String jump) {
+        if (node.getName().equals("<")) {
+            handle(node.next());
+            handle(node.next());
+            tab();
+            write("if_icmpge " + jump);
+            nl();
+        }
+        else if (node.getName().equals("&&")) {
+            getCondition(node.next(), jump);
+            getCondition(node.next(), jump);
+        }
     }
 
     private void generateFunctionFooter(SimpleNode func){

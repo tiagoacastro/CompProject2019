@@ -89,6 +89,33 @@
 	istore_1
 	iload_1
 	invokestatic io/println(I)V
+	while0:
+	iload_1
+	iload_2
+	if_icmpge endwhile0
+	iload_1
+	iconst_1
+	iadd
+	istore_1
+	goto while0
+	endwhile0:
+	iconst_3
+	istore_1
+	iconst_2
+	istore_2
+	iload_1
+	iload_2
+	if_icmpge else0
+	iload_1
+	iload_2
+	if_icmpge else0
+	iconst_1
+	invokestatic io/println(I)V
+	goto endif0
+	else0:
+	iconst_2
+	invokestatic io/println(I)V
+	endif0:
 	return
 .end method
 
