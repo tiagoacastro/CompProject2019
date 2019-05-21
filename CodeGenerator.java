@@ -563,9 +563,15 @@ public class CodeGenerator {
 
         write(")");
         SymbolTable method = JmmParser.getInstance().getMethod(call.same().getName());
-        if (method != null)
-            write(getType(method.getType()));
-        else
+        if (method != null) {
+            String type = getType(method.getType());
+            write(type);
+            if(type != "V" && findReturnType(call) == "void"){
+                nl();
+                tab();
+                write("pop");
+            }
+        } else
             write(getType(findReturnType(call)));
         nl();
     }

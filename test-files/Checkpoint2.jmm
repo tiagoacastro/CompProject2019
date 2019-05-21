@@ -11,8 +11,11 @@ class Checkpoint2 {
 
     public boolean check(int[] a){
         boolean b;
+        int n;
 
         b = true;
+
+        n = this.ola(1,2);
 
         return b;
     }

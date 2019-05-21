@@ -48,12 +48,17 @@
 
 .method public check([I)Z
 .limit stack 100
-.limit locals 3
+.limit locals 4
 .var 0 is this LCheckpoint2;
 .var 1 is a [I
 .var 2 is b Z
+.var 3 is n I
 	iconst_1
 	istore_2
+	iconst_1
+	iconst_2
+	invokestatic this/ola(II)I
+	istore_3
 	iload_2
 	ireturn
 .end method
