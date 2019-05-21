@@ -31,8 +31,8 @@
 	iconst_0
 	bipush 6
 	iastore
-	iload_1
 	iload_2
+	iload_1
 	iadd
 	aload_0
 	getfield Checkpoint2/olaglobal I
@@ -67,14 +67,27 @@
 .var 2 is j I
 .var 3 is b Z
 .var 4 is t LCheckpoint2;
-	iconst_5
-	istore_2
-	iload_2
+	iconst_1
+	iconst_2
+	swap
+	isub
+	bipush 7
+	imul
 	iconst_1
 	iadd
-	istore_1
+	iconst_1
+	imul
+	istore_2
 	iload_2
+	invokestatic io/println(I)V
+	iconst_5
+	istore_2
+	iconst_1
+	iload_2
+	iadd
+	istore_1
 	iconst_2
+	iload_2
 	imul
 	iload_1
 	iadd
@@ -93,11 +106,12 @@
 	bipush 22
 	istore_2
 	while0:
-	iload_2
 	iload_1
-	if_icmpge endwhile0
 	iload_2
+	swap
+	if_icmpge endwhile0
 	iconst_1
+	iload_2
 	iadd
 	istore_2
 	iload_2
@@ -110,8 +124,9 @@
 	istore_2
 	iconst_1
 	istore_3
-	iload_2
 	iload_1
+	iload_2
+	swap
 	if_icmpge else0
 	iconst_1
 	invokestatic io/println(I)V
@@ -120,8 +135,9 @@
 	iconst_2
 	invokestatic io/println(I)V
 	endif0:
-	iload_2
 	iload_1
+	iload_2
+	swap
 	if_icmpge else1
 	iload_3
 	ifeq else1

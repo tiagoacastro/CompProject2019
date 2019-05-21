@@ -258,29 +258,55 @@ public class CodeGenerator {
                     attribution(node);
                     break;
                 case "+":
-                    handle(node.next());
-                    handle(node.next());
+                    if(isOp(node.next())){
+                        handle(node.same());
+                        handle(node.next());
+                    } else {
+                        handle(node.next());
+                        handle(node.previous());
+                    }
                     tab();
                     write("iadd");
                     nl();
                     break;
                 case "-":
-                    handle(node.next());
-                    handle(node.next());
+                    if(isOp(node.next())){
+                        handle(node.same());
+                        handle(node.next());
+                    } else {
+                        handle(node.next());
+                        handle(node.previous());
+                        tab();
+                        write("swap");
+                        nl();
+                    }
                     tab();
                     write("isub");
                     nl();
                     break;
                 case "*":
-                    handle(node.next());
-                    handle(node.next());
+                    if(isOp(node.next())){
+                        handle(node.same());
+                        handle(node.next());
+                    } else {
+                        handle(node.next());
+                        handle(node.previous());
+                    }
                     tab();
                     write("imul");
                     nl();
                     break;
                 case "/":
-                    handle(node.next());
-                    handle(node.next());
+                    if(isOp(node.next())){
+                        handle(node.same());
+                        handle(node.next());
+                    } else {
+                        handle(node.next());
+                        handle(node.previous());
+                        tab();
+                        write("swap");
+                        nl();
+                    }
                     tab();
                     write("idiv");
                     nl();
@@ -371,6 +397,12 @@ public class CodeGenerator {
             }
         }
         return 404;
+    }
+
+    private boolean isOp(SimpleNode node){
+        String name = node.getName();
+        return name.equals("+") || name.equals("-") || name.equals("*") || name.equals("/") || 
+               name.equals("<") || name.equals("&&") || name.equals("!");
     }
 
     private void identifier(SimpleNode node){
@@ -556,8 +588,16 @@ public class CodeGenerator {
 
     private void getCondition(SimpleNode node, String jump, boolean invert) {
         if (node.getName().equals("<")) {
-            handle(node.next());
-            handle(node.next());
+            if(isOp(node.next())){
+                handle(node.same());
+                handle(node.next());
+            } else {
+                handle(node.next());
+                handle(node.previous());
+                tab();
+                write("swap");
+                nl();
+            }
             tab();
             if (invert)
                 write("if_icmplt " + jump);
@@ -566,8 +606,16 @@ public class CodeGenerator {
             nl();
         }
         else if (node.getName().equals("&&")) {
-            getCondition(node.next(), jump, invert);
-            getCondition(node.next(), jump, invert);
+            if(isOp(node.next())){
+                getCondition(node.same(), jump, invert);
+                getCondition(node.next(), jump, invert);
+            } else {
+                getCondition(node.next(), jump, invert);
+                getCondition(node.previous(), jump, invert);
+                tab();
+                write("swap");
+                nl();
+            }
         }
         else if (node.getName().equals("!")) {
             getCondition(node.next(), jump, !invert);

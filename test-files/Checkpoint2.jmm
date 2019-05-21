@@ -23,6 +23,8 @@ class Checkpoint2 {
         boolean b;
         Checkpoint2 t;
 
+        j = 1 * (1 + 7 * (2 - 1));
+        io.println(j);
         j = 5;
         i = j + 1;
         i = j * 2 + i;
