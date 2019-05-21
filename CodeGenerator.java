@@ -17,6 +17,8 @@ public class CodeGenerator {
     private String method;
     private int ifCounter = 0;
     private int whileCounter = 0;
+    private int temp = 0;
+    private int stack = 0;
 
     public CodeGenerator(SimpleNode root) {
         this.root = root.getChild(0);
@@ -159,6 +161,8 @@ public class CodeGenerator {
 
         Arrays.fill(this.locals, null);
         this.localNum = 0;
+        this.temp = 0;
+        this.stack = 0;
 
         if(func.getName().equals("mainDeclaration")) {
             write(".var 0 is args [Ljava/lang/String;");
@@ -683,5 +687,15 @@ public class CodeGenerator {
 
     private void write(String content){
         this.builder.append(content);
+    }
+
+    private void inc(){
+        this.temp++;
+        if(this.temp > this.stack)
+            this.stack = this.temp;
+    }
+
+    private void dec(){
+        this.temp--;
     }
 }
