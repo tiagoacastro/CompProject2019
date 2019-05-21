@@ -330,7 +330,7 @@ public class CodeGenerator {
                     break;
                 case "condition":
                     if (((SimpleNode) node.parent).index == JmmParserConstants.IF) {
-                        getCondition(node.next(), "else"+ifCounter);
+                        getCondition(node.next(), "else"+ifCounter, false);
                     }
                     else {
                         getCondition(node.next(), "endwhile" + whileCounter);
@@ -554,17 +554,32 @@ public class CodeGenerator {
         return "void";
     }
 
-    private void getCondition(SimpleNode node, String jump) {
+    private void getCondition(SimpleNode node, String jump, boolean invert) {
         if (node.getName().equals("<")) {
             handle(node.next());
             handle(node.next());
             tab();
-            write("if_icmpge " + jump);
+            if (invert)
+                write("if_icmplt " + jump);
+            else
+                write("if_icmpge " + jump);
             nl();
         }
         else if (node.getName().equals("&&")) {
-            getCondition(node.next(), jump);
-            getCondition(node.next(), jump);
+            getCondition(node.next(), jump, invert);
+            getCondition(node.next(), jump, invert);
+        }
+        else if (node.getName().equals("!")) {
+            getCondition(node.next(), jump, !invert);
+        }
+        else {
+            handle(node);
+            tab();
+            if (invert)
+                write("ifne " + jump);
+            else
+                write("ifeq " + jump);
+            nl();
         }
     }
 

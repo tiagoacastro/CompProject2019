@@ -20,6 +20,7 @@ class Checkpoint2 {
     public static void main(String[] args) {
         int i;
         int j;
+        boolean b;
         Checkpoint2 t;
 
         j = 5;
@@ -35,7 +36,38 @@ class Checkpoint2 {
 
         i = 3;
         j = 2;
-        if (i < j && i < j) {
+        b = true;
+
+        if (j < i) {
+            io.println(1);
+        }
+        else {
+            io.println(2);
+        }
+
+        if (j < i && b) {
+            io.println(1);
+        }
+        else {
+            io.println(2);
+        }
+
+        if (true) {
+            io.println(1);
+        }
+        else {
+            io.println(2);
+        }
+
+        if (b) {
+            io.println(1);
+        }
+        else {
+            io.println(2);
+        }
+
+        b = false;
+        if (!b) {
             io.println(1);
         }
         else {
