@@ -248,26 +248,12 @@ public class CodeGenerator {
     }
 
     private void handle(SimpleNode node){
-        String name = node.getName();
-        if(isNumeric(name)) {
-            tab();
-            write("iconst_");
-            write(name);
-            nl();
+        if(isNumeric(node.getName())) {
+            constant(node);
         } else {
             switch(node.getName()){
                 case "=":
-                    String idx = find(node.next());
-                    if(globals.contains(node.same().getName())){
-                        globalStore(node);
-                    } else {
-                        handle(node.next());
-                        tab();
-                        write(getType2(JmmParser.getInstance().getMethod(this.method).getSymbolType(node.previous().getName())));
-                        write("store_");
-                        write(idx);
-                    }
-                    nl();
+                    attribution(node);
                     break;
                 case "+":
                     handle(node.next());
@@ -308,51 +294,115 @@ public class CodeGenerator {
                     nl();
                     break;
                 case "new":
-                    if(node.next().getName().equals(this.classe)) {
-                        tab();
-                        write("new ");
-                        write(classe);
-                        nl();
-                        tab();
-                        write("dup");
-                        nl();
-                        tab();
-                        write("invokespecial ");
-                        write(classe);
-                        write("/<init>()V");
-                        nl();
-                    } else if(node.same().getName().equals("array")){
-                        handle(node.same().next(2));
-                        tab();
-                        write("newarray_int");
-                        nl();
-                    }
+                    newOperator(node);
                     break;
                 case ".":
                     dotOperator(node);
                     break;
-                default:
-                    if(globals.contains(node.getName())){
-                        globalLoad(node);
-                    } else {
-                        tab(); 
-                        write(getType2(JmmParser.getInstance().getMethod(this.method).getSymbolType(node.getName()))); 
-                        write("load_");
-                        write(find(node));
-                    }
+                case "array":
+                    handle(node.next());
+                    handle(node.next());
+                    tab();
+                    write("iaload");
                     nl();
+                    break;
+                default:
+                    identifier(node);
                     break;
             }
         }
     }
 
-    private String find(SimpleNode node){
+    private int find(SimpleNode node){
         for(int i=1; i <= this.localNum; i++){
             if(this.locals[i-1].equals(node.getName())){
-                return ""+i;
+                return i;
             }
         }
-        return "404";
+        return 404;
+    }
+
+    private void identifier(SimpleNode node){
+        if(globals.contains(node.getName())){
+            globalLoad(node);
+        } else {
+            tab(); 
+            write(getType2(JmmParser.getInstance().getMethod(this.method).getSymbolType(node.getName()))); 
+            //if(((SimpleNode)node.jjtGetParent()).getName().equals("array"))
+            //    write("i");
+            int i = find(node);
+            if(i > 3)
+                write("load ");
+            else
+                write("load_");
+            write("" + i);
+        }
+        nl();
+    }
+
+    private void constant(SimpleNode node){
+        tab();
+        if(Integer.parseInt(node.getName()) > 32767)
+            write("ldc ");
+        else {
+            if(Integer.parseInt(node.getName()) > 127)
+                write("sipush ");
+            else{
+                if(Integer.parseInt(node.getName()) > 5)
+                    write("bipush ");
+                else
+                    write("iconst_");
+            }
+        }
+        write(node.getName());
+        nl();
+    }
+
+    private void newOperator(SimpleNode node){
+        if(node.next().getName().equals(this.classe)) {
+            tab();
+            write("new ");
+            write(classe);
+            nl();
+            tab();
+            write("dup");
+            nl();
+            tab();
+            write("invokespecial ");
+            write(classe);
+            write("/<init>()V");
+            nl();
+        } else if(node.same().getName().equals("array")){
+            handle(node.same().next(2));
+            tab();
+            write("newarray int");
+            nl();
+        }
+    }
+
+    private void attribution(SimpleNode node){
+        if(!node.next().getName().equals("array")){
+            int idx = find(node.same());
+            if(globals.contains(node.same().getName())){
+                globalStore(node);
+            } else {
+                handle(node.next());
+                tab();
+                write(getType2(JmmParser.getInstance().getMethod(this.method).getSymbolType(node.previous().getName())));
+                if(idx > 3)
+                    write("store ");
+                else
+                    write("store_");
+                write("" + idx);
+            }
+        } else {
+            handle(node.same().next());
+            handle(node.same().next());
+            handle(node.next());
+            tab();
+            write("iastore");
+        }
+        nl();
     }
 
     private void globalStore(SimpleNode node){
@@ -388,10 +438,7 @@ public class CodeGenerator {
 
     private void dotOperator(SimpleNode node) {
         if (node.next(2).index == JmmParserConstants.LENGTH) {
-            tab();
-            write("aload_");
-            write(find(node.previous()));
-            nl();
+            handle(node.previous());
             tab();
             write("arraylength");
             nl();
@@ -404,23 +451,18 @@ public class CodeGenerator {
     private void functionCall(SimpleNode caller, SimpleNode call) {
         SimpleNode parameters = call.next(2);
         SimpleNode param;
-        String callerId = find(caller);
+        String callerId = "" + find(caller);
 
-        if (callerId != "404") {
-            tab();
-            write("aload_");
-            write(find(caller));
-            nl();
-        }
+        if (!callerId.equals("404"))
+            handle(caller);
 
-        while((param = parameters.next()) != null) {
+        while((param = parameters.next()) != null)
             handle(param);
-        }
-
+        
         parameters.reset();
 
         tab();
-        if (callerId == "404")
+        if (callerId.equals("404"))
             write("invokestatic " + caller.getName() + "/" + call.previous().getName() + "(");
         else
             write("invokevirtual " + JmmParser.getInstance().getMethod(this.method).getSymbolType(caller.getName()) + "/" + call.previous().getName() + "(");
@@ -429,9 +471,9 @@ public class CodeGenerator {
             String name = param.getName();
             if (isNumeric(name))
                 write(getType("int"));
-            else if (name == "true" || name == "false")
+            else if (name.equals("true") || name.equals("false"))
                 write(getType("boolean"));
-            else if (find(param) != "404") {
+            else if (! (""+find(param)).equals("404")) {
                 write(getType(JmmParser.getInstance().getMethod(this.method).getSymbolType(param.getName())));
             }
         }

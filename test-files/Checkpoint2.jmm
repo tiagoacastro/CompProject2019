@@ -1,9 +1,12 @@
 class Checkpoint2 {
     int olaglobal;
+    int[] ar;
     
     public int ola(int f, int j) {
         olaglobal = 1;
-        return f + j + olaglobal;
+        ar = new int[5];
+        ar[0] = 6;
+        return f + j + olaglobal + ar[0];
     }
 
     public boolean check(int[] a){
@@ -18,10 +21,8 @@ class Checkpoint2 {
         int i;
         int j;
         Checkpoint2 t;
-        int[] f;
 
-        f = new int[5];
-        j = 5;  
+        j = 5;
         i = j + 1;
         i = j * 2 + i;
         t = new Checkpoint2();

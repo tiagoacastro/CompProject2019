@@ -2,6 +2,7 @@
 .super java/lang/Object
 
 .field public olaglobal I
+.field public ar [I
 
 .method public <init>()V
 .limit stack 1
@@ -21,11 +22,25 @@
 	aload_0
 	iconst_1
 	putfield Checkpoint2/olaglobal I
+	aload_0
+	iconst_5
+	newarray int
+	putfield Checkpoint2/ar [I
+	aload_0
+	getfield Checkpoint2/ar [I
+	iconst_0
+	bipush 6
+	iastore
 	iload_1
 	iload_2
 	iadd
 	aload_0
 	getfield Checkpoint2/olaglobal I
+	iadd
+	aload_0
+	getfield Checkpoint2/ar [I
+	iconst_0
+	iaload
 	iadd
 	ireturn
 .end method
@@ -46,15 +61,11 @@
 
 .method public static main([Ljava/lang/String;)V
 .limit stack 100
-.limit locals 5
+.limit locals 4
 .var 0 is args [Ljava/lang/String;
 .var 1 is i I
 .var 2 is j I
 .var 3 is t LCheckpoint2;
-.var 4 is f [I
-	iconst_5
-	newarray_int
-	astore_4
 	iconst_5
 	istore_2
 	iload_2
