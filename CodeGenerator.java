@@ -509,7 +509,7 @@ public class CodeGenerator {
             getCondition(node.next(), jump, invert);
         }
         else if (node.getName().equals("!")) {
-            getCondition(node.next(), jump, true);
+            getCondition(node.next(), jump, !invert);
         }
         else {
             handle(node);
