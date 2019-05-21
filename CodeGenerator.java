@@ -612,9 +612,6 @@ public class CodeGenerator {
             } else {
                 getCondition(node.next(), jump, invert);
                 getCondition(node.previous(), jump, invert);
-                tab();
-                write("swap");
-                nl();
             }
         }
         else if (node.getName().equals("!")) {
