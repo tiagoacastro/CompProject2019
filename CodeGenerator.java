@@ -250,9 +250,9 @@ public class CodeGenerator {
     }
 
     private void handle(SimpleNode node){
-        if(isNumeric(node.getName())) {
+        if(isNumeric(node.getName()))
             constant(node);
-        } else {
+        else {
             switch(node.getName()){
                 case "=":
                     attribution(node);
@@ -306,6 +306,8 @@ public class CodeGenerator {
                     handle(node.next());
                     tab();
                     write("iaload");
+                    nl();
+                    break;
                 case "if":
                     handle(node.next());
                     handle(node.next());
