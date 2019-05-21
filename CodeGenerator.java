@@ -18,6 +18,8 @@ public class CodeGenerator {
     private int ifCounter = 0;
     private int whileCounter = 0;
     private int boolOpCounter = 0;
+    private int temp = 0;
+    private int stack = 0;
 
     public CodeGenerator(SimpleNode root) {
         this.root = root.getChild(0);
@@ -160,6 +162,8 @@ public class CodeGenerator {
 
         Arrays.fill(this.locals, null);
         this.localNum = 0;
+        this.temp = 0;
+        this.stack = 0;
 
         if(func.getName().equals("mainDeclaration")) {
             write(".var 0 is args [Ljava/lang/String;");
@@ -577,9 +581,15 @@ public class CodeGenerator {
 
         write(")");
         SymbolTable method = JmmParser.getInstance().getMethod(call.same().getName());
-        if (method != null)
-            write(getType(method.getType()));
-        else
+        if (method != null) {
+            String type = getType(method.getType());
+            write(type);
+            if(type != "V" && findReturnType(call) == "void"){
+                nl();
+                tab();
+                write("pop");
+            }
+        } else
             write(getType(findReturnType(call)));
         nl();
     }
@@ -639,13 +649,8 @@ public class CodeGenerator {
             nl();
         }
         else if (node.getName().equals("&&")) {
-            if(isOp(node.next())){
-                getCondition(node.same(), jump, invert);
-                getCondition(node.next(), jump, invert);
-            } else {
-                getCondition(node.next(), jump, invert);
-                getCondition(node.previous(), jump, invert);
-            }
+            getCondition(node.next(), jump, invert);
+            getCondition(node.next(), jump, invert);
         }
         else if (node.getName().equals("!")) {
             getCondition(node.next(), jump, !invert);
@@ -715,5 +720,25 @@ public class CodeGenerator {
 
     private void write(String content){
         this.builder.append(content);
+    }
+
+    private void inc(){
+        this.temp++;
+        if(this.temp > this.stack)
+            this.stack = this.temp;
+    }
+
+    private void dec(){
+        this.temp--;
+    }
+
+    private void add(int add){
+        this.temp += add;
+        if(this.temp > this.stack)
+            this.stack = this.temp;
+    }
+
+    private void sub(int sub){
+        this.temp -= sub;
     }
 }

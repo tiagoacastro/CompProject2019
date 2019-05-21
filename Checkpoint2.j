@@ -48,30 +48,21 @@
 
 .method public check()Z
 .limit stack 100
-.limit locals 5
+.limit locals 4
 .var 0 is this LCheckpoint2;
-.var 1 is b Z
-.var 2 is t Z
-.var 3 is i I
-.var 4 is j I
-	iconst_0
-	istore_3
-	iconst_2
-	istore 4
-	iload 4
-	iload_3
-	swap
-	if_icmpge boolOp0
+.var 1 is a [I
+.var 2 is b Z
+.var 3 is n I
 	iconst_1
 	goto endBoolOp0
 	boolOp0:
 	iconst_0
 	endBoolOp0:
 	istore_2
-	iload_3
-	iload 4
-	swap
-	if_icmpge boolOp1
+	iconst_1
+	iconst_2
+	invokestatic this/ola(II)I
+	istore_3
 	iload_2
 	ifeq boolOp1
 	iconst_1
@@ -202,10 +193,20 @@
 	iconst_2
 	invokestatic io/println(I)V
 	endif4:
-	iconst_0
-	istore_3
 	iload_3
-	ifne else5
+	ifeq else5
+	iload_3
+	ifeq else5
+	iconst_1
+	iconst_1
+	iadd
+	iconst_1
+	imul
+	iconst_2
+	iadd
+	iload_2
+	swap
+	if_icmplt else5
 	iconst_1
 	invokestatic io/println(I)V
 	goto endif5
