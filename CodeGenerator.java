@@ -16,6 +16,7 @@ public class CodeGenerator {
     private int localNum = 0;
     private String method;
     private int ifCounter = 0;
+    private int whileCounter = 0;
 
     public CodeGenerator(SimpleNode root) {
         this.root = root.getChild(0);
@@ -339,12 +340,25 @@ public class CodeGenerator {
                     write("goto endif" + ifCounter);
                     nl();
                     break;
+                case "while":
+                    tab();
+                    write("while" + whileCounter + ":");
+                    nl();
+                    handle(node.next());
+                    handle(node.next());
+                    tab();
+                    write("goto while" + whileCounter);
+                    nl();
+                    tab();
+                    write("endwhile" + whileCounter + ":");
+                    nl();
+                    break;
                 case "condition":
                     if (((SimpleNode) node.parent).index == JmmParserConstants.IF) {
                         getCondition(node.next(), "else"+ifCounter);
                     }
                     else {
-                        // getCondition(node.next(), "endwhile" + whileCounter);
+                        getCondition(node.next(), "endwhile" + whileCounter);
                     }
                     break;
                 case "else":
@@ -356,6 +370,11 @@ public class CodeGenerator {
                     write("endif" + ifCounter + ":");
                     nl();
                     ifCounter++;
+                    break;
+                case "endwhile":
+                    tab();
+                    write("endwhile" + whileCounter + ":");
+                    nl();
                     break;
                 case "body":
                     SimpleNode child;

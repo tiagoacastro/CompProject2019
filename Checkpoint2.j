@@ -74,6 +74,16 @@
 	istore_1
 	iload_1
 	invokestatic io/println(I)V
+	while0:
+	iload_1
+	iload_2
+	if_icmpge endwhile0
+	iload_1
+	iconst_1
+	iadd
+	istore_1
+	goto while0
+	endwhile0:
 	iconst_3
 	istore_1
 	iconst_2

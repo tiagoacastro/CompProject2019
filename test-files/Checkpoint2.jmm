@@ -26,6 +26,10 @@ class Checkpoint2 {
         i = t.ola(i, 1);
         io.println(i);
 
+        while (i < j) {
+            i = i + 1;
+        }
+
         i = 3;
         j = 2;
         if (i < j && i < j) {
