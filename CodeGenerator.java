@@ -606,13 +606,8 @@ public class CodeGenerator {
             nl();
         }
         else if (node.getName().equals("&&")) {
-            if(isOp(node.next())){
-                getCondition(node.same(), jump, invert);
-                getCondition(node.next(), jump, invert);
-            } else {
-                getCondition(node.next(), jump, invert);
-                getCondition(node.previous(), jump, invert);
-            }
+            getCondition(node.next(), jump, invert);
+            getCondition(node.next(), jump, invert);
         }
         else if (node.getName().equals("!")) {
             getCondition(node.next(), jump, !invert);

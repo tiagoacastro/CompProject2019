@@ -77,5 +77,12 @@ class Checkpoint2 {
         else {
             io.println(2);
         }
+
+        if (b && !(!b && (j < (2 + 1 * (1 + 1))))) {
+            io.println(1);
+        }
+        else {
+            io.println(2);
+        }
     }
 }

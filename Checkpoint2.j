@@ -177,6 +177,27 @@
 	iconst_2
 	invokestatic io/println(I)V
 	endif4:
+	iload_3
+	ifeq else5
+	iload_3
+	ifeq else5
+	iconst_1
+	iconst_1
+	iadd
+	iconst_1
+	imul
+	iconst_2
+	iadd
+	iload_2
+	swap
+	if_icmplt else5
+	iconst_1
+	invokestatic io/println(I)V
+	goto endif5
+	else5:
+	iconst_2
+	invokestatic io/println(I)V
+	endif5:
 	return
 .end method
 
