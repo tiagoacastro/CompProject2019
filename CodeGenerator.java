@@ -264,12 +264,14 @@ public class CodeGenerator {
                     attribution(node);
                     break;
                 case "+":
-                    if(isOp(node.next())){
-                        handle(node.same());
+                    if(!isOp(node.next()) && isOp(node.next())){
+                        node.reset();
+                        handle(node.next());
                         handle(node.next());
                     } else {
+                        node.reset();
                         handle(node.next());
-                        handle(node.previous());
+                        handle(node.next());
                     }
                     tab();
                     write("iadd");
@@ -277,12 +279,14 @@ public class CodeGenerator {
                     nl();
                     break;
                 case "-":
-                    if(isOp(node.next())){
-                        handle(node.same());
+                    if(!isOp(node.next()) && isOp(node.next())){
+                        node.reset();
+                        handle(node.next());
                         handle(node.next());
                     } else {
+                        node.reset();
                         handle(node.next());
-                        handle(node.previous());
+                        handle(node.next());
                         tab();
                         write("swap");
                         nl();
@@ -293,12 +297,14 @@ public class CodeGenerator {
                     nl();
                     break;
                 case "*":
-                    if(isOp(node.next())){
-                        handle(node.same());
+                    if(!isOp(node.next()) && isOp(node.next())){
+                        node.reset();
+                        handle(node.next());
                         handle(node.next());
                     } else {
+                        node.reset();
                         handle(node.next());
-                        handle(node.previous());
+                        handle(node.next());
                     }
                     tab();
                     write("imul");
@@ -306,12 +312,14 @@ public class CodeGenerator {
                     nl();
                     break;
                 case "/":
-                    if(isOp(node.next())){
-                        handle(node.same());
+                    if(!isOp(node.next()) && isOp(node.next())){
+                        node.reset();
+                        handle(node.next());
                         handle(node.next());
                     } else {
+                        node.reset();
                         handle(node.next());
-                        handle(node.previous());
+                        handle(node.next());
                         tab();
                         write("swap");
                         nl();
@@ -642,12 +650,14 @@ public class CodeGenerator {
 
     private void getCondition(SimpleNode node, String jump, boolean invert) {
         if (node.getName().equals("<")) {
-            if(isOp(node.next())){
-                handle(node.same());
+            if(!isOp(node.next()) && isOp(node.next())){
+                node.reset();
+                handle(node.next());
                 handle(node.next());
             } else {
+                node.reset();
                 handle(node.next());
-                handle(node.previous());
+                handle(node.next());
                 tab();
                 write("swap");
                 nl();
