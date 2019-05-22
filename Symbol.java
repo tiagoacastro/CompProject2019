@@ -68,7 +68,7 @@ public class Symbol {
     public String getIdentifier() {return this.identifier;} 
     
     /**
-     * Setter for access (TODO: retirar?)
+     * Setter for access
      * @param access
      */
     public void setAccess(Access access) {this.access = access;} 
