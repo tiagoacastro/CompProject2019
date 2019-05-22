@@ -120,6 +120,8 @@ public class CodeGenerator {
             nl();
             write(buffer.toString());
             nl();
+            System.out.println("Temp: " + this.temp);
+            System.out.println("Stack: " + this.stack + "\n");
         }
     }
 
@@ -255,8 +257,10 @@ public class CodeGenerator {
     }
 
     private void handle(SimpleNode node){
-        if(isNumeric(node.getName()))
+        if(isNumeric(node.getName())) {
             constant(node);
+            inc();
+        }
         else {
             switch(node.getName()){
                 case "=":
@@ -272,6 +276,7 @@ public class CodeGenerator {
                     }
                     tab();
                     write("iadd");
+                    dec();
                     nl();
                     break;
                 case "-":
@@ -287,6 +292,7 @@ public class CodeGenerator {
                     }
                     tab();
                     write("isub");
+                    dec();
                     nl();
                     break;
                 case "*":
@@ -299,6 +305,7 @@ public class CodeGenerator {
                     }
                     tab();
                     write("imul");
+                    dec();
                     nl();
                     break;
                 case "/":
@@ -314,16 +321,19 @@ public class CodeGenerator {
                     }
                     tab();
                     write("idiv");
+                    dec();
                     nl();
                     break;
                 case "true":
                     tab();
                     write("iconst_1");
+                    inc();
                     nl();
                     break;
                 case "false":
                     tab();
                     write("iconst_0");
+                    inc();
                     nl();
                     break;
                 case "new":
@@ -337,6 +347,7 @@ public class CodeGenerator {
                     handle(node.next());
                     tab();
                     write("iaload");
+                    dec();
                     nl();
                     break;
                 case "<": case "&&":
@@ -386,11 +397,6 @@ public class CodeGenerator {
                     nl();
                     ifCounter++;
                     break;
-                case "endwhile":
-                    tab();
-                    write("endwhile" + whileCounter + ":");
-                    nl();
-                    break;
                 case "body":
                     SimpleNode child;
                     while ((child = node.next()) != null) {
@@ -399,6 +405,7 @@ public class CodeGenerator {
                     break;
                 default:
                     identifier(node);
+                    inc();
                     break;
             }
         }
@@ -425,8 +432,7 @@ public class CodeGenerator {
         } else {
             tab(); 
             write(getType2(JmmParser.getInstance().getMethod(this.method).getSymbolType(node.getName()))); 
-            //if(((SimpleNode)node.jjtGetParent()).getName().equals("array"))
-            //    write("i");
+
             int i = find(node);
             if(i > 3)
                 write("load ");
@@ -491,6 +497,7 @@ public class CodeGenerator {
                 else
                     write("store_");
                 write("" + idx);
+                dec();
             }
         } else {
             handle(node.same().next());
@@ -498,6 +505,7 @@ public class CodeGenerator {
             handle(node.next());
             tab();
             write("iastore");
+            sub(3);
         }
         nl();
     }
@@ -505,10 +513,12 @@ public class CodeGenerator {
     private void globalStore(SimpleNode node){
         tab();
         write("aload_0");
+        inc();
         nl();
         handle(node.next());
         tab();
         write("putfield ");
+        sub(2);
         write(classe);
         write("/");
         write(node.previous().getName());
@@ -577,14 +587,17 @@ public class CodeGenerator {
                     write(getType(JmmParser.getInstance().getMethod(this.method).getSymbolType(param.getName())));
                 }
             }
+            sub(parameters.children.length);
         }
 
         write(")");
         SymbolTable method = JmmParser.getInstance().getMethod(call.same().getName());
         if (method != null) {
             String type = getType(method.getType());
+            if(!type.equals("V"))
+                inc();
             write(type);
-            if(type != "V" && findReturnType(call) == "void"){
+            if(!type.equals("V") && findReturnType(call).equals("void")){
                 nl();
                 tab();
                 write("pop");
@@ -627,6 +640,7 @@ public class CodeGenerator {
         write("endBoolOp" + boolOpCounter + ":");
         nl();
         boolOpCounter++;
+        inc();
     }
 
     private void getCondition(SimpleNode node, String jump, boolean invert) {
@@ -647,6 +661,7 @@ public class CodeGenerator {
             else
                 write("if_icmpge " + jump);
             nl();
+            sub(2);
         }
         else if (node.getName().equals("&&")) {
             getCondition(node.next(), jump, invert);
@@ -663,6 +678,7 @@ public class CodeGenerator {
             else
                 write("ifeq " + jump);
             nl();
+            dec();
         }
     }
 
@@ -675,7 +691,8 @@ public class CodeGenerator {
         } else{
             tab();
         }
-		write("return");
+        write("return");
+        dec();
         nl();
         
 		write(".end method");
