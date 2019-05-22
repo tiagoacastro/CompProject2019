@@ -27,8 +27,6 @@ class Checkpoint2 {
             io.println(0);
         }
 
-        n = this.ola(1,2);
-
         return b;
     }
 

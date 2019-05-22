@@ -115,13 +115,14 @@ public class CodeGenerator {
 
             StringBuilder buffer = this.builder;
             this.builder = save;
+            write(".limit stack ");
+            write("" + this.stack);
+            nl();
             write(".limit locals ");
             write("" + (this.localNum+1));
             nl();
             write(buffer.toString());
             nl();
-            System.out.println("Temp: " + this.temp);
-            System.out.println("Stack: " + this.stack + "\n");
         }
     }
 
@@ -154,10 +155,6 @@ public class CodeGenerator {
             generateMainHeader(func);
         else
             generateMethodHeader(func);
-        nl();
-
-        //hardcoded
-        write(".limit stack 100");
         nl();
 
         this.builder = new StringBuilder();
