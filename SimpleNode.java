@@ -77,11 +77,17 @@ public class SimpleNode implements Node {
     }
 
     public SimpleNode same() {         
+        if(children == null)
+            return null;
+
         return (SimpleNode) this.children[this.idx];
     }
 
     public SimpleNode next(int times) {
         SimpleNode n = null;
+
+        if(children == null)
+            return null;
 
         for(int i=0; i<times; i++)
             n = next();
@@ -91,6 +97,9 @@ public class SimpleNode implements Node {
 
     public SimpleNode next() {
         SimpleNode n = null;
+
+        if(children == null)
+            return null;
 
         while(n == null || n.getName() == null || n.getName() == "") {
             this.idx++;
@@ -105,6 +114,9 @@ public class SimpleNode implements Node {
     public SimpleNode previous(int times) {
         SimpleNode n = null;
 
+        if(children == null)
+            return null;
+
         for(int i=0; i<times; i++)
             n = previous();
 
@@ -113,6 +125,9 @@ public class SimpleNode implements Node {
     
     public SimpleNode previous() {       
         SimpleNode n = null;
+
+        if(children == null)
+            return null;
 
         while(n == null || n.getName() == null || n.getName() == "") {
             this.idx--;

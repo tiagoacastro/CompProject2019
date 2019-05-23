@@ -223,6 +223,9 @@ public class CodeGenerator {
             write("[");
         this.store = func.same().next().getName();
         write(getType(this.store));
+
+        if(func.same().jjtGetNumChildren() >= 3)
+            this.store = "int[]";
     }
 
     private void generateFunctionBody(SimpleNode func){
@@ -231,25 +234,23 @@ public class CodeGenerator {
             body = func.next();
         } while(!body.getName().equals("methodBody"));
 
-        if(body.children != null){
-            SimpleNode node;
-            while((node = body.next()) != null && node.getName().equals("varDeclaration")) {
-                write(".var ");
-                write(""+(this.localNum+1));
-                write(" is ");
-                write(node.next(2).getName());
-                space();
-                if(node.previous().jjtGetNumChildren() >= 3)
-                    write("[");
-                write(getType(node.same().next().getName()));
-                nl();
-                this.locals[this.localNum] = node.next().getName();
-                this.localNum++;
-            }
-            body.previous();
-            while((node = body.next()) != null) {
-                handle(node);
-            }
+        SimpleNode node;
+        while((node = body.next()) != null && node.getName().equals("varDeclaration")) {
+            write(".var ");
+            write(""+(this.localNum+1));
+            write(" is ");
+            write(node.next(2).getName());
+            space();
+            if(node.previous().jjtGetNumChildren() >= 3)
+                write("[");
+            write(getType(node.same().next().getName()));
+            nl();
+            this.locals[this.localNum] = node.next().getName();
+            this.localNum++;
+        }
+        body.previous();
+        while((node = body.next()) != null) {
+            handle(node);
         }
     }
 
@@ -265,9 +266,8 @@ public class CodeGenerator {
                     break;
                 case "+":
                     if(!isOp(node.next()) && isOp(node.next())){
-                        node.reset();
-                        handle(node.next());
-                        handle(node.next());
+                        handle(node.same());
+                        handle(node.previous());
                     } else {
                         node.reset();
                         handle(node.next());
@@ -280,16 +280,15 @@ public class CodeGenerator {
                     break;
                 case "-":
                     if(!isOp(node.next()) && isOp(node.next())){
-                        node.reset();
-                        handle(node.next());
-                        handle(node.next());
+                        handle(node.same());
+                        handle(node.previous());
+                        tab();
+                        write("swap");
+                        nl();
                     } else {
                         node.reset();
                         handle(node.next());
                         handle(node.next());
-                        tab();
-                        write("swap");
-                        nl();
                     }
                     tab();
                     write("isub");
@@ -298,9 +297,8 @@ public class CodeGenerator {
                     break;
                 case "*":
                     if(!isOp(node.next()) && isOp(node.next())){
-                        node.reset();
-                        handle(node.next());
-                        handle(node.next());
+                        handle(node.same());
+                        handle(node.previous());
                     } else {
                         node.reset();
                         handle(node.next());
@@ -313,16 +311,12 @@ public class CodeGenerator {
                     break;
                 case "/":
                     if(!isOp(node.next()) && isOp(node.next())){
-                        node.reset();
-                        handle(node.next());
-                        handle(node.next());
+                        handle(node.same());
+                        handle(node.previous());
                     } else {
                         node.reset();
                         handle(node.next());
                         handle(node.next());
-                        tab();
-                        write("swap");
-                        nl();
                     }
                     tab();
                     write("idiv");
@@ -581,6 +575,7 @@ public class CodeGenerator {
         else
             write("invokevirtual " + JmmParser.getInstance().getMethod(this.method).getSymbolType(caller.getName()) + "/" + call.previous().getName() + "(");
 
+        SymbolTable method;
         if (parameters != null) {
             while((param = parameters.next()) != null) {
                 String name = param.getName();
@@ -588,28 +583,42 @@ public class CodeGenerator {
                     write(getType("int"));
                 else if (name.equals("true") || name.equals("false"))
                     write(getType("boolean"));
-                else if (! (""+find(param)).equals("404")) {
+                else if (! (""+find(param)).equals("404"))
                     write(getType(JmmParser.getInstance().getMethod(this.method).getSymbolType(param.getName())));
+                else if (name.equals(".")){
+                    param.reset();
+                    param.next(2).reset();
+                    if(param.same().getName().equals("length")){
+                        write("I");
+                    } else {
+                        method = JmmParser.getInstance().getMethod(param.same().next().getName());
+                        returns(method, param.previous(), false);
+                    }
                 }
             }
             sub(parameters.children.length);
         }
 
         write(")");
-        SymbolTable method = JmmParser.getInstance().getMethod(call.same().getName());
+        method = JmmParser.getInstance().getMethod(call.same().getName());
+        returns(method, call, true);
+        nl();
+    }
+
+    private void returns(SymbolTable method, SimpleNode call, boolean pop){
+        String parentName = ((SimpleNode) call.jjtGetParent().jjtGetParent()).getName();
         if (method != null) {
             String type = getType(method.getType());
             if(!type.equals("V"))
                 inc();
-            write(type);
-            if(!type.equals("V") && findReturnType(call).equals("void")){
+                write(type);
+            if(!parentName.equals("parameters") && pop && !type.equals("V") && findReturnType(call).equals("void")){
                 nl();
                 tab();
                 write("pop");
             }
         } else
             write(getType(findReturnType(call)));
-        nl();
     }
 
     private String findReturnType(SimpleNode call) {
@@ -624,7 +633,18 @@ public class CodeGenerator {
         else if (parentName.equals("=")) {
             return JmmParser.getInstance().getMethod(this.method).getSymbol(((SimpleNode) parentElement.children[0]).getName()).getType();
         }
+        /*
+        else if (parentName.equals("parameters")) {
+            SimpleNode cll = (SimpleNode) ((SimpleNode) parentElement.jjtGetParent()).children[0];
+            ArrayList<Symbol> params = JmmParser.getInstance().getMethod(cll.getName()).getParameters();
 
+            for(Symbol param : params){
+                if(param.getIdentifier().equals())
+            }
+            
+            return 
+        }
+        */
         return "void";
     }
 
@@ -651,16 +671,15 @@ public class CodeGenerator {
     private void getCondition(SimpleNode node, String jump, boolean invert) {
         if (node.getName().equals("<")) {
             if(!isOp(node.next()) && isOp(node.next())){
-                node.reset();
-                handle(node.next());
-                handle(node.next());
+                handle(node.same());
+                handle(node.previous());
+                tab();
+                write("swap");
+                nl();
             } else {
                 node.reset();
                 handle(node.next());
                 handle(node.next());
-                tab();
-                write("swap");
-                nl();
             }
             tab();
             if (invert)
