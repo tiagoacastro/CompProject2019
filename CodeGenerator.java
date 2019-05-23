@@ -135,7 +135,7 @@ public class CodeGenerator {
         nl();
         write(".limit locals 1");
         nl();
-        write(".var 0 is this L");
+        write(".var 0 is 'this' L");
         write(this.classe);
         write(";");
         nl();
@@ -618,7 +618,7 @@ public class CodeGenerator {
             if(!type.equals("V"))
                 inc();
                 write(type);
-            if(!parentName.equals("parameters") && pop && !type.equals("V") && findReturnType(call).equals("void")){
+            if(!parentName.equals("parameters") && !parentName.equals("return") && !parentName.equals("condition") && pop && !type.equals("V") && findReturnType(call).equals("void")){
                 nl();
                 tab();
                 write("pop");
@@ -637,9 +637,6 @@ public class CodeGenerator {
             return "boolean";
         }
         else if (parentName.equals("=")) {
-            System.out.println("\n");
-            System.out.println(this.method);
-            System.out.println("\n");
             if(((SimpleNode) parentElement.children[0]).getName().equals("array"))
                 return JmmParser.getInstance().getMethod(this.method).getSymbol(((SimpleNode)((SimpleNode) parentElement.children[0]).children[0]).getName()).getType();
             else
