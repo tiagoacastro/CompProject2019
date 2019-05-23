@@ -86,7 +86,9 @@ public class CodeGenerator {
     private void generateGlobalDeclaration(SimpleNode var) {
         write(".field public ");
 
+        write("'");
         write(var.next(2).getName());
+        write("'");
 
         space();
 
@@ -181,7 +183,9 @@ public class CodeGenerator {
                 write(""+(this.localNum+1));
                 write(" is ");
                 String id = node.next(2).getName();
+                write("'");
                 write(id);
+                write("'");
                 space();
                 node = node.previous();
                 node.reset();
@@ -239,7 +243,9 @@ public class CodeGenerator {
             write(".var ");
             write(""+(this.localNum+1));
             write(" is ");
+            write("'");
             write(node.next(2).getName());
+            write("'");
             space();
             if(node.previous().jjtGetNumChildren() >= 3)
                 write("[");
@@ -631,20 +637,14 @@ public class CodeGenerator {
             return "boolean";
         }
         else if (parentName.equals("=")) {
-            return JmmParser.getInstance().getMethod(this.method).getSymbol(((SimpleNode) parentElement.children[0]).getName()).getType();
+            System.out.println("\n");
+            System.out.println(this.method);
+            System.out.println("\n");
+            if(((SimpleNode) parentElement.children[0]).getName().equals("array"))
+                return JmmParser.getInstance().getMethod(this.method).getSymbol(((SimpleNode)((SimpleNode) parentElement.children[0]).children[0]).getName()).getType();
+            else
+                return JmmParser.getInstance().getMethod(this.method).getSymbol(((SimpleNode) parentElement.children[0]).getName()).getType();
         }
-        /*
-        else if (parentName.equals("parameters")) {
-            SimpleNode cll = (SimpleNode) ((SimpleNode) parentElement.jjtGetParent()).children[0];
-            ArrayList<Symbol> params = JmmParser.getInstance().getMethod(cll.getName()).getParameters();
-
-            for(Symbol param : params){
-                if(param.getIdentifier().equals())
-            }
-            
-            return 
-        }
-        */
         return "void";
     }
 
