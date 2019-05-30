@@ -268,17 +268,7 @@ void expression5() #void: {}
 void expression6() #void: {Token t, t1;}
 {
     expression7() |
-    t=<EXCLAMATION> expression7() {jjtThis.index = t.kind;}#EXCLAMATION(1)
-}
-
-void functionCall() : {Token t;}
-{
-    t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER <LEFTPARENTHESES> (parameters())? <RIGHTPARENTHESES>
-}
-
-void parameters() : {}
-{
-    expression() (<COLON> expression())*
+    t=<EXCLAMATION> expression6() {jjtThis.index = t.kind;}#EXCLAMATION(1)
 }
 
 void expression7() #void: {Token t, t1;}
@@ -290,6 +280,16 @@ void expression7() #void: {Token t, t1;}
         )
         {jjtThis.index = t.kind;}#DOT(2)
     )*
+}
+
+void functionCall() : {Token t;}
+{
+    t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER <LEFTPARENTHESES> (parameters())? <RIGHTPARENTHESES>
+}
+
+void parameters() : {}
+{
+    expression() (<COLON> expression())*
 }
 
 void expressionfinal() #void: {Token t, t1;}
