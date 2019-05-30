@@ -659,7 +659,7 @@ public class CodeGenerator {
             if(!type.equals("V"))
                 inc();
                 write(type);
-            if(!parentName.equals("parameters") && !parentName.equals("return") && !parentName.equals("condition") && pop && !type.equals("V") && findReturnType(call).equals("void")){
+            if(!parentName.equals("!") && !parentName.equals("parameters") && !parentName.equals("return") && !parentName.equals("condition") && pop && !type.equals("V") && findReturnType(call).equals("void")){
                 nl();
                 tab();
                 write("pop");

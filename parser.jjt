@@ -267,13 +267,8 @@ void expression5() #void: {}
 
 void expression6() #void: {Token t, t1;}
 {
-    expressionfinal() (
-        t=<DOT> (
-            (t1=<LENGTH> {jjtThis.index = t1.kind;}#LENGTH)
-            | (functionCall())
-        )
-        {jjtThis.index = t.kind;}#DOT(2)
-    )*
+    expression7() |
+    t=<EXCLAMATION> expression7() {jjtThis.index = t.kind;}#EXCLAMATION(1)
 }
 
 void functionCall() : {Token t;}
@@ -286,6 +281,17 @@ void parameters() : {}
     expression() (<COLON> expression())*
 }
 
+void expression7() #void: {Token t, t1;}
+{
+    expressionfinal() (
+        t=<DOT> (
+            (t1=<LENGTH> {jjtThis.index = t1.kind;}#LENGTH)
+            | (functionCall())
+        )
+        {jjtThis.index = t.kind;}#DOT(2)
+    )*
+}
+
 void expressionfinal() #void: {Token t, t1;}
 {
     (t=<INTEGER> {jjtThis.name = t.image;}#INTEGER)|
@@ -293,7 +299,6 @@ void expressionfinal() #void: {Token t, t1;}
     (t=<FALSE> {jjtThis.index = t.kind;}#FALSE) |
     (t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER) |
     (t=<THIS> {jjtThis.index = t.kind;}#THIS) |
-    (t=<EXCLAMATION> expressionfinal() {jjtThis.index = t.kind;}#EXCLAMATION(1)) |
     (<LEFTPARENTHESES> expression() <RIGHTPARENTHESES>) |
     (t1=<NEW> (((t=<INT> {jjtThis.index = t.kind;}#INT) array() #array(2) {jjtThis.index = t1.kind;}#NEW(1)) | ((t=<IDENTIFIER> {jjtThis.name = t.image;}#IDENTIFIER) {jjtThis.index = t1.kind;}#NEW(1) <LEFTPARENTHESES> <RIGHTPARENTHESES>) ))
 }
