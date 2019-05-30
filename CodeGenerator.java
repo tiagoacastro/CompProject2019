@@ -621,12 +621,17 @@ public class CodeGenerator {
         if (parameters != null) {
             while((param = parameters.next()) != null) {
                 String name = param.getName();
+                if(name.equals("array")){
+                    param.reset();
+                    write("I");
+                    continue;
+                }
                 if (isNumeric(name) || isOp(param))
                     write(getType("int"));
                 else if (name.equals("true") || name.equals("false"))
                     write(getType("boolean"));
-                else if (! (""+find(param)).equals("404"))
-                    write(getType(JmmParser.getInstance().getMethod(this.method).getSymbolType(param.getName())));
+                else if (!(""+find(param)).equals("404") || globals.contains(name))
+                    write(getType(JmmParser.getInstance().getMethod(this.method).getSymbolType(name)));
                 else if (name.equals(".")){
                     param.reset();
                     param.next(2).reset();
