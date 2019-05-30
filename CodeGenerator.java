@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Stack;
 
 public class CodeGenerator {
     private SimpleNode root;
@@ -16,6 +17,7 @@ public class CodeGenerator {
     private int localNum = 0;
     private String method;
     private int ifCounter = 0;
+    private Stack<Integer> ifs = new Stack<>();
     private int whileCounter = 0;
     private int boolOpCounter = 0;
     private int temp = 0;
@@ -115,6 +117,8 @@ public class CodeGenerator {
 		    generateFunctionBody(method);
             generateFunctionFooter(method);
 
+            ifs.empty();
+
             StringBuilder buffer = this.builder;
             this.builder = save;
             write(".limit stack ");
@@ -170,7 +174,7 @@ public class CodeGenerator {
             write(".var 0 is args [Ljava/lang/String;");
             nl();
         }else{
-            write(".var 0 is this L");
+            write(".var 0 is 'this' L");
             write(this.classe);
             write(";");
             nl();
@@ -364,10 +368,13 @@ public class CodeGenerator {
                     boolOp();
                     break;
                 case "if":
+                    int j = ifCounter;
+                    ifs.push(new Integer(ifCounter));
+                    ifCounter++;
                     handle(node.next());
                     handle(node.next());
                     tab();
-                    write("goto endif" + ifCounter);
+                    write("goto endif" + j);
                     nl();
                     break;
                 case "while":
@@ -386,7 +393,7 @@ public class CodeGenerator {
                     break;
                 case "condition":
                     if (((SimpleNode) node.parent).index == JmmParserConstants.IF) {
-                        getCondition(node.next(), "else"+ifCounter, false);
+                        getCondition(node.next(), "else"+ifs.peek(), false);
                     }
                     else {
                         getCondition(node.next(), "endwhile" + whileCounter, false);
@@ -394,13 +401,13 @@ public class CodeGenerator {
                     break;
                 case "else":
                     tab();
-                    write("else" + ifCounter + ":");
+                    int jump = ifs.pop();
+                    write("else" + jump + ":");
                     nl();
                     handle(node.next());
                     tab();
-                    write("endif" + ifCounter + ":");
+                    write("endif" + jump + ":");
                     nl();
-                    ifCounter++;
                     break;
                 case "body":
                     SimpleNode child;
@@ -422,6 +429,10 @@ public class CodeGenerator {
                 return i;
             }
         }
+
+        if(node.getName().equals("this"))
+            return 0;
+
         return 404;
     }
 
@@ -436,7 +447,12 @@ public class CodeGenerator {
             globalLoad(node);
         } else {
             tab(); 
-            write(getType2(JmmParser.getInstance().getMethod(this.method).getSymbolType(node.getName()))); 
+
+            if(node.getName().equals("this")){
+                write("a");
+            } else {
+                write(getType2(JmmParser.getInstance().getMethod(this.method).getSymbolType(node.getName()))); 
+            }
 
             int i = find(node);
             if(i > 3)
@@ -565,8 +581,15 @@ public class CodeGenerator {
         SimpleNode param;
         String callerId = "" + find(caller);
 
-        if (!callerId.equals("404"))
-            handle(caller);
+        if(caller.getName().equals("new")){
+            newOperator(caller);
+            caller.reset();
+            caller = caller.next();
+            callerId = "new";
+        } else {
+            if (!callerId.equals("404"))
+                handle(caller);
+        }
 
         if (parameters != null){
             while((param = parameters.next()) != null)
@@ -576,16 +599,29 @@ public class CodeGenerator {
         }
 
         tab();
-        if (callerId.equals("404"))
-            write("invokestatic " + caller.getName() + "/" + call.previous().getName() + "(");
-        else
-            write("invokevirtual " + JmmParser.getInstance().getMethod(this.method).getSymbolType(caller.getName()) + "/" + call.previous().getName() + "(");
+        switch(callerId){
+            case "404":
+                write("invokestatic " + caller.getName() + "/" + call.previous().getName() + "(");
+                break;
+            case "new":
+                write("invokevirtual " + caller.getName() + "/" + call.previous().getName() + "(");
+                break;
+            default:
+                write("invokevirtual ");
+                if(caller.getName().equals("this"))
+                    write(this.classe);
+                else
+                    write(JmmParser.getInstance().getMethod(this.method).getSymbolType(caller.getName()));
+                write("/" + call.previous().getName() + "(");
+                break;
+        }
+            
 
         SymbolTable method;
         if (parameters != null) {
             while((param = parameters.next()) != null) {
                 String name = param.getName();
-                if (isNumeric(name))
+                if (isNumeric(name) || isOp(param))
                     write(getType("int"));
                 else if (name.equals("true") || name.equals("false"))
                     write(getType("boolean"));
