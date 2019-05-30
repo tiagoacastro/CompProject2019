@@ -1,4 +1,4 @@
-class Quicksort {
+class QuickSort {
     public static void main(String[] a) {
         int[] L;
         int i;
@@ -13,7 +13,7 @@ class Quicksort {
             i = i + 1;
         }
 
-        q = new Quicksort();
+        q = new QuickSort();
 
         q.quicksort(L);
         q.printL(L);
