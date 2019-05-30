@@ -170,6 +170,8 @@ public class CodeGenerator {
         this.temp = 0;
         this.stack = 0;
 
+        System.out.println("zeroed");
+
         if(func.getName().equals("mainDeclaration")) {
             write(".var 0 is args [Ljava/lang/String;");
             nl();
@@ -487,14 +489,17 @@ public class CodeGenerator {
             tab();
             write("new ");
             write(classe);
+            inc();
             nl();
             tab();
             write("dup");
+            inc();
             nl();
             tab();
             write("invokespecial ");
             write(classe);
             write("/<init>()V");
+            dec();
             nl();
         } else if(node.same().getName().equals("array")){
             handle(node.same().next(2));
@@ -605,6 +610,7 @@ public class CodeGenerator {
                 break;
             case "new":
                 write("invokevirtual " + caller.getName() + "/" + call.previous().getName() + "(");
+                dec();
                 break;
             default:
                 write("invokevirtual ");
@@ -613,9 +619,9 @@ public class CodeGenerator {
                 else
                     write(JmmParser.getInstance().getMethod(this.method).getSymbolType(caller.getName()));
                 write("/" + call.previous().getName() + "(");
+                dec();
                 break;
-        }
-            
+        }           
 
         SymbolTable method;
         if (parameters != null) {
@@ -627,9 +633,9 @@ public class CodeGenerator {
                     continue;
                 }
                 if (isNumeric(name) || isOp(param))
-                    write(getType("int"));
+                    write("I");
                 else if (name.equals("true") || name.equals("false"))
-                    write(getType("boolean"));
+                    write("Z");
                 else if (!(""+find(param)).equals("404") || globals.contains(name))
                     write(getType(JmmParser.getInstance().getMethod(this.method).getSymbolType(name)));
                 else if (name.equals(".")){
@@ -654,18 +660,24 @@ public class CodeGenerator {
 
     private void returns(SymbolTable method, SimpleNode call, boolean pop){
         String parentName = ((SimpleNode) call.jjtGetParent().jjtGetParent()).getName();
+        String type;
         if (method != null) {
-            String type = getType(method.getType());
+            type = getType(method.getType());
             if(!type.equals("V"))
                 inc();
-                write(type);
+            write(type);
             if(!parentName.equals("!") && !parentName.equals("parameters") && !parentName.equals("return") && !parentName.equals("condition") && pop && !type.equals("V") && findReturnType(call).equals("void")){
                 nl();
                 tab();
+                dec();
                 write("pop");
             }
-        } else
-            write(getType(findReturnType(call)));
+        } else {
+            type = getType(findReturnType(call));
+            if(!type.equals("V"))
+                inc();
+            write(type);
+        }
     }
 
     private String findReturnType(SimpleNode call) {
@@ -752,11 +764,11 @@ public class CodeGenerator {
             handle(n.next());
             tab();
             write(getType2(this.store));
+            dec();
         } else{
             tab();
         }
         write("return");
-        dec();
         nl();
         
 		write(".end method");
