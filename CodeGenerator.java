@@ -170,8 +170,6 @@ public class CodeGenerator {
         this.temp = 0;
         this.stack = 0;
 
-        System.out.println("zeroed");
-
         if(func.getName().equals("mainDeclaration")) {
             write(".var 0 is args [Ljava/lang/String;");
             nl();
