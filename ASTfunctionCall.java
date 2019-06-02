@@ -13,39 +13,32 @@ class ASTfunctionCall extends SimpleNode {
     }
 
     public void applySemanticAnalysis(SymbolTable table) {
-        String methodName = ((SimpleNode) children[0]).name;
-        if (!JmmParser.getInstance().containsMethod(methodName)) {
+        String methodName = ((SimpleNode) children[0]).name + "(";
+
+        if (children.length == 1) {
+            methodName += ")";
+
+            if (JmmParser.getInstance().containsMethod(methodName)) return;
+
             System.out.println("Not a valid method on line " + this.getLine());
             System.exit(0);
         }
 
-        ArrayList<Symbol> parameterSymbols = JmmParser.getInstance().getMethod(methodName).getParameters();
-
-        if (children.length == 1) {
-            if (parameterSymbols.size() == 0) 
-                return;
-            else {
-                System.out.println("Parameters don't match method definition on line " + this.getLine());
-                System.exit(0);
-            }
-        }
-
         Node[] parameters = ((SimpleNode) children[1]).children;
 
-        if (parameterSymbols.size() != parameters.length) {
-            System.out.println("Parameters don't match method definition on line " + this.getLine());
-            System.exit(0);
+        for (int i = 0; i < parameters.length; i++) {
+            methodName += getParameterType(((SimpleNode) parameters[i]), table);
         }
 
-        for (int i = 0; i < parameters.length; i++) {
-            if (!checkParameter((SimpleNode) parameters[i], parameterSymbols.get(i), table)) {
-                System.out.println("Parameters don't match method definition on line " + this.getLine());
-                System.exit(0);
-            }
-        }
+        methodName += ")";
+
+        if (JmmParser.getInstance().containsMethod(methodName)) return;
+
+        System.out.println("Not a valid method on line " + this.getLine());
+        System.exit(0);
     }
 
-    public boolean checkParameter(SimpleNode parameter, Symbol parameterSymbol, SymbolTable table) {
+    public String getParameterType(SimpleNode parameter, SymbolTable table) {
         if (parameter.name != null) {
             Symbol s = table.getSymbol(parameter.name);
             if (s != null) {
@@ -53,35 +46,35 @@ class ASTfunctionCall extends SimpleNode {
                     System.out.println("Variable " + parameter.name + " not initialized on line " + parameter.getLine());
                     System.exit(0);
                 }
-                if (s.getType().equals(parameterSymbol.getType())) return true;
-                
-                return false;
+
+                return s.getType();
             }
 
             try { 
                 Integer.parseInt(parameter.name);
-                if (parameterSymbol.getType().equals("int")) return true;
-                else return false;
-            } catch(NumberFormatException | NullPointerException e) { 
-                return false;
+                return "int";
+            } catch(NumberFormatException | NullPointerException e) {
+                System.out.println("Parameters don't match method definition on line " + this.getLine());
+                System.exit(0);
             }
         }
 
-        if ((parameter instanceof ASTTRUE || parameter instanceof ASTFALSE) && parameterSymbol.getType().equals("boolean")) return true; 
+        if (parameter instanceof ASTTRUE || parameter instanceof ASTFALSE) return "boolean"; 
 
-        if (parameter instanceof ASTarray && parameterSymbol.getType().equals("int")) {
+        if (parameter instanceof ASTarray) {
             parameter.applySemanticAnalysis(table);
-            return true;
+            return "int";
         }
 
         if (parameter instanceof ASTNEW) {
             SimpleNode type = (SimpleNode) parameter.children[0];
-            if (type instanceof ASTarray && parameterSymbol.getType().equals("int[]")) return true;
-            if (parameterSymbol.getType().equals(type.name)) return true;
-            return false;
+            if (type instanceof ASTarray) return "int[]";
+            return type.name;
         }
 
-        return false;
+        System.out.println("Parameters don't match method definition on line " + this.getLine());
+        System.exit(0);
+        return "";
     }
 }
 /* JavaCC - OriginalChecksum=5e1d15c247f9152e546f566a421852a0 (do not edit this line) */
