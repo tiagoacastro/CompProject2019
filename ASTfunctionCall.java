@@ -64,6 +64,39 @@ class ASTfunctionCall extends SimpleNode {
             }
         }
 
+        if (parameter instanceof ASTDOT) {
+            parameter.applySemanticAnalysis(table);
+            SimpleNode var = (SimpleNode) parameter.children[0];
+            SimpleNode rhs = (SimpleNode) parameter.children[1];
+
+            Symbol s = table.getSymbol(var.name);
+            if (rhs instanceof ASTfunctionCall && s != null) {
+                if (!s.getType().equals(JmmParser.getInstance().getClassTable().getType())) return;
+                String fName = ((SimpleNode) rhs.children[0]).name;
+                if (JmmParser.getInstance().containsMethod(fName)) {
+                    if (JmmParser.getInstance().getMethod(fName).getType().equals("int")) return;
+                    System.out.println("Incompatible type: " + fName + " return type not of type int on line " + parameter.getLine());
+                    System.exit(0);
+                }
+                System.out.println("Unknown method on line " + parameter.getLine());
+                System.exit(0);
+            }
+
+            if (rhs instanceof ASTfunctionCall && var instanceof ASTNEW) {
+                if (!JmmParser.getInstance().getClassTable().getType().equals(((SimpleNode) var.children[0]).name)) return;
+                String fName = ((SimpleNode) rhs.children[0]).name;
+                if (JmmParser.getInstance().containsMethod(fName)) {
+                    if (JmmParser.getInstance().getMethod(fName).getType().equals("int")) return;
+                    System.out.println("Incompatible type: " + fName + " return type not of type int on line " + parameter.getLine());
+                    System.exit(0);
+                }
+                System.out.println("Unknown method on line " + parameter.getLine());
+                System.exit(0);
+            }
+
+            return "int";
+        }
+
         if (parameter instanceof ASTTRUE || parameter instanceof ASTFALSE || parameter instanceof ASTCOMMERCIALE || parameter instanceof ASTMINOR) {
             parameter.applySemanticAnalysis(table);
             return "boolean";

@@ -15,7 +15,10 @@ class Checkpoint2 {
         int i;
         int j;
         int n;
+        int[] sim;
 
+        sim = new int[2];
+        i = this.ola(sim.length, 1);
         i = 0;
         j = 2;
         t = i < j;
