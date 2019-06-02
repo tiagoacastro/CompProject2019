@@ -213,9 +213,15 @@ public class CodeGenerator {
     private void generateMethodHeader(SimpleNode func){
         write(".method public ");
 
+        this.method = func.next(2).getName() + "(";
+        for (int i = 0; i < func.children.length; i++) {
+            if (func.children[i] instanceof ASTparameterDeclaration) {
+                this.method += ((ASTparameterDeclaration) func.children[i]).getType();
+            }
+        }
+        this.method += ")";
 
-        this.method = func.next(2).getName();
-        write(this.method);
+        write(func.next(2).getName());
 
         SimpleNode arg;
         write("(");

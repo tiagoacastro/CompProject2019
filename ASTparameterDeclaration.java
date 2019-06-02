@@ -20,5 +20,9 @@ class ASTparameterDeclaration extends SimpleNode {
         symbol.initialize();
         table.addSymbol(symbol);
     }
+
+    public String getType() {
+        return ((ASTtype) children[0]).getType();
+    }
 }
 /* JavaCC - OriginalChecksum=ec3eb58a405b8508a5c9b3f8b493977e (do not edit this line) */
