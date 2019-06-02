@@ -50,7 +50,12 @@ class ASTfunctionCall extends SimpleNode {
                 return s.getType();
             }
 
-            try { 
+            if (parameter instanceof ASTMULDIV || parameter instanceof ASTADDSUB) {
+                parameter.applySemanticAnalysis(table);
+                return "int";
+            }
+
+            try {
                 Integer.parseInt(parameter.name);
                 return "int";
             } catch(NumberFormatException | NullPointerException e) {
@@ -59,7 +64,10 @@ class ASTfunctionCall extends SimpleNode {
             }
         }
 
-        if (parameter instanceof ASTTRUE || parameter instanceof ASTFALSE) return "boolean"; 
+        if (parameter instanceof ASTTRUE || parameter instanceof ASTFALSE || parameter instanceof ASTCOMMERCIALE || parameter instanceof ASTMINOR) {
+            parameter.applySemanticAnalysis(table);
+            return "boolean";
+        }
 
         if (parameter instanceof ASTarray) {
             parameter.applySemanticAnalysis(table);
