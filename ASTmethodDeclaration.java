@@ -13,9 +13,17 @@ class ASTmethodDeclaration extends SimpleNode {
     public void createSymbolTable(SymbolTable table) {
         ASTtype typeNode = (ASTtype) children[0];
         SymbolTable methodTable = new SymbolTable(table, typeNode.getType());
-        JmmParser.getInstance().addMethod(((SimpleNode)children[1]).name, methodTable);
 
-        if (children == null) return;
+        String methodName = ((SimpleNode)children[1]).name + "(";
+
+        for (int i = 0; i < children.length; i++) {
+            if (children[i] instanceof ASTparameterDeclaration) {
+                methodName += ((ASTparameterDeclaration) children[i]).getType();
+            }
+        }
+
+        methodName += ")";
+        JmmParser.getInstance().addMethod(methodName, methodTable);
 
         for (int i = 0; i < children.length; i++) {
             ((SimpleNode) children[i]).createSymbolTable(methodTable);
@@ -23,7 +31,17 @@ class ASTmethodDeclaration extends SimpleNode {
     }
 
     public void applySemanticAnalysis(SymbolTable table) {
-        SymbolTable methodTable = JmmParser.getInstance().getMethods().get(((SimpleNode)children[1]).name);
+        String methodName = ((SimpleNode)children[1]).name + "(";
+
+        for (int i = 0; i < children.length; i++) {
+            if (children[i] instanceof ASTparameterDeclaration) {
+                methodName += ((ASTparameterDeclaration) children[i]).getType();
+            }
+        }
+
+        methodName += ")";
+
+        SymbolTable methodTable = JmmParser.getInstance().getMethods().get(methodName);
 
         if (children == null) return;
 

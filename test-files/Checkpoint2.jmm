@@ -30,6 +30,10 @@ class Checkpoint2 {
         return b;
     }
 
+    public boolean check(int i, int j){
+        return i < j;
+    }
+
     public static void main(String[] args) {
         int i;
         int j;
