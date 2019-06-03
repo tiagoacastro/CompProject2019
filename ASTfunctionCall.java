@@ -70,26 +70,18 @@ class ASTfunctionCall extends SimpleNode {
             SimpleNode rhs = (SimpleNode) parameter.children[1];
 
             Symbol s = table.getSymbol(var.name);
-            if (rhs instanceof ASTfunctionCall && s != null) {
-                if (!s.getType().equals(JmmParser.getInstance().getClassTable().getType())) return;
-                String fName = ((SimpleNode) rhs.children[0]).name;
-                if (JmmParser.getInstance().containsMethod(fName)) {
-                    if (JmmParser.getInstance().getMethod(fName).getType().equals("int")) return;
-                    System.out.println("Incompatible type: " + fName + " return type not of type int on line " + parameter.getLine());
-                    System.exit(0);
+            if (rhs instanceof ASTfunctionCall && (s != null || var instanceof ASTNEW)) {
+                String fName = ((SimpleNode) rhs.children[0]).name + "(";
+                Node[] parameters = ((SimpleNode) rhs.children[1]).children;
+                for (int i = 0; i < parameters.length; i++) {
+                    fName += getParameterType(((SimpleNode) parameters[i]), table);
                 }
-                System.out.println("Unknown method on line " + parameter.getLine());
-                System.exit(0);
-            }
+                fName += ")";
 
-            if (rhs instanceof ASTfunctionCall && var instanceof ASTNEW) {
-                if (!JmmParser.getInstance().getClassTable().getType().equals(((SimpleNode) var.children[0]).name)) return;
-                String fName = ((SimpleNode) rhs.children[0]).name;
                 if (JmmParser.getInstance().containsMethod(fName)) {
-                    if (JmmParser.getInstance().getMethod(fName).getType().equals("int")) return;
-                    System.out.println("Incompatible type: " + fName + " return type not of type int on line " + parameter.getLine());
-                    System.exit(0);
+                    return JmmParser.getInstance().getMethod(fName).getType();
                 }
+
                 System.out.println("Unknown method on line " + parameter.getLine());
                 System.exit(0);
             }

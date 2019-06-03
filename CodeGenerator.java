@@ -221,7 +221,7 @@ public class CodeGenerator {
         }
         this.method += ")";
 
-        write(func.next(2).getName());
+        write(func.same().getName());
 
         SimpleNode arg;
         write("(");

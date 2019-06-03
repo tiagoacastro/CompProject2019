@@ -33,8 +33,8 @@ class Checkpoint2 {
         return b;
     }
 
-    public boolean check(int i, int j){
-        return i < j;
+    public int intFunc(int i, int j){
+        return i + j;
     }
 
     public static void main(String[] args) {
@@ -49,7 +49,7 @@ class Checkpoint2 {
         i = j * 2 + i;
         t = new Checkpoint2();
         b = t.check();
-        i = t.ola(i, 1);
+        i = t.ola(i, t.intFunc(1, 2));
         io.println(i);
         j = 22;
         
