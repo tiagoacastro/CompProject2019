@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 public
 class ASTfunctionCall extends SimpleNode {
+    private String methodName;
+
     public ASTfunctionCall(int id) {
         super(id);
     }
@@ -12,8 +14,12 @@ class ASTfunctionCall extends SimpleNode {
         super(p, id);
     }
 
+    public String getMethodName() {
+        return methodName;
+    }
+
     public void applySemanticAnalysis(SymbolTable table) {
-        String methodName = ((SimpleNode) children[0]).name + "(";
+        methodName = ((SimpleNode) children[0]).name + "(";
 
         if (children.length == 1) {
             methodName += ")";
