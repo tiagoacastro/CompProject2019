@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 public
 class ASTfunctionCall extends SimpleNode {
+    private String methodName;
+
     public ASTfunctionCall(int id) {
         super(id);
     }
@@ -12,8 +14,12 @@ class ASTfunctionCall extends SimpleNode {
         super(p, id);
     }
 
+    public String getMethodName() {
+        return methodName;
+    }
+
     public void applySemanticAnalysis(SymbolTable table) {
-        String methodName = ((SimpleNode) children[0]).name + "(";
+        methodName = ((SimpleNode) children[0]).name + "(";
 
         if (children.length == 1) {
             methodName += ")";
@@ -62,6 +68,31 @@ class ASTfunctionCall extends SimpleNode {
                 System.out.println("Parameters don't match method definition on line " + this.getLine());
                 System.exit(0);
             }
+        }
+
+        if (parameter instanceof ASTDOT) {
+            parameter.applySemanticAnalysis(table);
+            SimpleNode var = (SimpleNode) parameter.children[0];
+            SimpleNode rhs = (SimpleNode) parameter.children[1];
+
+            Symbol s = table.getSymbol(var.name);
+            if (rhs instanceof ASTfunctionCall && (s != null || var instanceof ASTNEW)) {
+                String fName = ((SimpleNode) rhs.children[0]).name + "(";
+                Node[] parameters = ((SimpleNode) rhs.children[1]).children;
+                for (int i = 0; i < parameters.length; i++) {
+                    fName += getParameterType(((SimpleNode) parameters[i]), table);
+                }
+                fName += ")";
+
+                if (JmmParser.getInstance().containsMethod(fName)) {
+                    return JmmParser.getInstance().getMethod(fName).getType();
+                }
+
+                System.out.println("Unknown method on line " + parameter.getLine());
+                System.exit(0);
+            }
+
+            return "int";
         }
 
         if (parameter instanceof ASTTRUE || parameter instanceof ASTFALSE || parameter instanceof ASTCOMMERCIALE || parameter instanceof ASTMINOR) {

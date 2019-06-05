@@ -221,7 +221,7 @@ public class CodeGenerator {
         }
         this.method += ")";
 
-        write(func.next(2).getName());
+        write(func.same().getName());
 
         SimpleNode arg;
         write("(");
@@ -648,7 +648,7 @@ public class CodeGenerator {
                     if(param.same().getName().equals("length")){
                         write("I");
                     } else {
-                        method = JmmParser.getInstance().getMethod(param.same().next().getName());
+                        method = JmmParser.getInstance().getMethod(((ASTfunctionCall) param.same()).getMethodName());
                         returns(method, param.previous(), false);
                     }
                 }
@@ -657,7 +657,7 @@ public class CodeGenerator {
         }
 
         write(")");
-        method = JmmParser.getInstance().getMethod(call.same().getName());
+        method = JmmParser.getInstance().getMethod(((ASTfunctionCall) call).getMethodName());
         returns(method, call, true);
         nl();
     }
