@@ -58,7 +58,7 @@ public class BinaryOperator extends SimpleNode {
             Symbol s = table.getSymbol(var.name);
             if (rhs instanceof ASTfunctionCall && s != null) {
                 if (!s.getType().equals(JmmParser.getInstance().getClassTable().getType())) return;
-                String fName = ((SimpleNode) rhs.children[0]).name;
+                String fName = ((ASTfunctionCall) rhs).getMethodName();
                 if (JmmParser.getInstance().containsMethod(fName)) {
                     if (JmmParser.getInstance().getMethod(fName).getType().equals("int")) return;
                     System.out.println("Incompatible type: " + fName + " return type not of type int on line " + side.getLine());
@@ -70,7 +70,7 @@ public class BinaryOperator extends SimpleNode {
 
             if (rhs instanceof ASTfunctionCall && var instanceof ASTNEW) {
                 if (!JmmParser.getInstance().getClassTable().getType().equals(((SimpleNode) var.children[0]).name)) return;
-                String fName = ((SimpleNode) rhs.children[0]).name;
+                String fName = ((ASTfunctionCall) rhs).getMethodName();
                 if (JmmParser.getInstance().containsMethod(fName)) {
                     if (JmmParser.getInstance().getMethod(fName).getType().equals("int")) return;
                     System.out.println("Incompatible type: " + fName + " return type not of type int on line " + side.getLine());

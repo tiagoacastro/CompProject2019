@@ -1,4 +1,4 @@
-class Test extends Test2 {
+class Test {
     int[] ola;
     int adeus;
     boolean ateamanha;
