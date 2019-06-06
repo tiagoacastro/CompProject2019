@@ -37,6 +37,17 @@ public class JmmParser {
         // criação do objecto utilizando o constructor com argumento para
         // ler do standard input (teclado)
         try {
+            if(args.length != 1 || args.length != 3){
+                System.out.println("Error with args");
+                System.exit(-1);
+            }
+
+            int regs = -1;
+
+            if(args.length == 3)
+                if(args[1].equals("-r"))
+                    regs = Integer.parseInt(args[2]);
+                
             java.io.FileInputStream file = new java.io.FileInputStream("test-files/" + args[0]);
             JmmParser parser = new JmmParser(file);
             instance = parser;
