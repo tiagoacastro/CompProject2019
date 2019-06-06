@@ -43,7 +43,7 @@ class ASTDOT extends SimpleNode {
                 
                 return;
             }
-        }
+        } 
 
         if (lhs.index != -1) {
             if (lhs.index == JmmParserConstants.THIS) {
@@ -58,6 +58,9 @@ class ASTDOT extends SimpleNode {
 
             return;
         }
+
+        if(rhs instanceof ASTfunctionCall)
+            ((ASTfunctionCall)rhs).applySemanticAnalysisOnParameters(table);
 
         if (rhs.index != JmmParserConstants.LENGTH) return;
 

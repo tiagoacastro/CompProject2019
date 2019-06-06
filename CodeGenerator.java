@@ -12,6 +12,7 @@ public class CodeGenerator {
     private StringBuilder builder;
     private String store;
     private String classe;
+    private String extend;
     private ArrayList<String> globals = new ArrayList<>();
     private String[] locals = new String[999];
     private int localNum = 0;
@@ -62,6 +63,7 @@ public class CodeGenerator {
         if(extend.getName().equals("extends")){
             write(".super ");
             write(extend.next().getName());
+            this.extend = extend.same().getName();
         } else {
             this.root.previous();
             write(".super java/lang/Object");
@@ -147,7 +149,12 @@ public class CodeGenerator {
         write("aload_0");
         nl();
         tab();
-        write("invokespecial java/lang/Object/<init>()V");
+        write("invokespecial ");
+        if(this.extend == null)
+            write("java/lang/Object");
+        else
+            write(this.extend);
+        write("/<init>()V");
         nl();
         tab();
         write("return");
@@ -649,7 +656,7 @@ public class CodeGenerator {
                         write("I");
                     } else {
                         method = JmmParser.getInstance().getMethod(((ASTfunctionCall) param.same()).getMethodName());
-                        returns(method, param.previous(), false);
+                        returns(method, param.same(), false);
                     }
                 }
             }
@@ -695,7 +702,7 @@ public class CodeGenerator {
         }
         else if (parentName.equals("=")) {
             if(((SimpleNode) parentElement.children[0]).getName().equals("array"))
-                return JmmParser.getInstance().getMethod(this.method).getSymbol(((SimpleNode)((SimpleNode) parentElement.children[0]).children[0]).getName()).getType();
+                return "int";
             else
                 return JmmParser.getInstance().getMethod(this.method).getSymbol(((SimpleNode) parentElement.children[0]).getName()).getType();
         }

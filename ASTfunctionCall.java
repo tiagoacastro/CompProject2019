@@ -68,16 +68,16 @@ class ASTfunctionCall extends SimpleNode {
             parameter.applySemanticAnalysis(table);
             SimpleNode var = (SimpleNode) parameter.children[0];
             SimpleNode rhs = (SimpleNode) parameter.children[1];
-
             Symbol s = table.getSymbol(var.name);
             if (rhs instanceof ASTfunctionCall && (s != null || var instanceof ASTNEW)) {
                 String fName = ((SimpleNode) rhs.children[0]).name + "(";
-                Node[] parameters = ((SimpleNode) rhs.children[1]).children;
-                for (int i = 0; i < parameters.length; i++) {
-                    fName += getParameterType(((SimpleNode) parameters[i]), table);
+                if(rhs.children.length > 1){
+                    Node[] parameters = ((SimpleNode) rhs.children[1]).children;
+                    for (int i = 0; i < parameters.length; i++) {
+                        fName += getParameterType(((SimpleNode) parameters[i]), table);
+                    }
                 }
                 fName += ")";
-
                 if (JmmParser.getInstance().containsMethod(fName)) {
                     return JmmParser.getInstance().getMethod(fName).getType();
                 }
@@ -108,6 +108,17 @@ class ASTfunctionCall extends SimpleNode {
         System.out.println("Parameters don't match method definition on line " + this.getLine());
         System.exit(0);
         return "";
+    }
+
+    public void applySemanticAnalysisOnParameters(SymbolTable table) {
+        Node[] parameters = ((SimpleNode) children[1]).children;
+ 
+        for (int i = 0; i < parameters.length; i++) {
+            if(parameters[i] instanceof ASTDOT)
+                ((ASTDOT)parameters[i]).applySemanticAnalysis(table);
+        }
+ 
+        return;
     }
 }
 /* JavaCC - OriginalChecksum=5e1d15c247f9152e546f566a421852a0 (do not edit this line) */
