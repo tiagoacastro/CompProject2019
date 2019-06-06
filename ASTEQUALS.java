@@ -23,6 +23,7 @@ class ASTEQUALS extends SimpleNode {
             }
         } else if (lhs instanceof ASTarray) {
             lhs.applySemanticAnalysis(table);
+            rhs.applySemanticAnalysis(table);
             return;
         }
 

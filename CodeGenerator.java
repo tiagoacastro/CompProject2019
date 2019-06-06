@@ -658,7 +658,6 @@ public class CodeGenerator {
 
         write(")");
         method = JmmParser.getInstance().getMethod(((ASTfunctionCall) call).getMethodName());
-        System.out.println(((ASTfunctionCall) call).getMethodName());
         returns(method, call, true);
         nl();
     }
