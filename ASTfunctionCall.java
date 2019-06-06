@@ -19,6 +19,22 @@ class ASTfunctionCall extends SimpleNode {
     }
 
     public void applySemanticAnalysis(SymbolTable table) {
+        methodName = ((SimpleNode) children[0]).name + "(";
+ 
+        if (children.length == 1) {
+            methodName += ")";
+ 
+            return;
+        }
+ 
+        Node[] parameters = ((SimpleNode) children[1]).children;
+ 
+        for (int i = 0; i < parameters.length; i++) {
+            methodName += getParameterType(((SimpleNode) parameters[i]), table);
+        }
+ 
+        methodName += ")";
+ 
         return;
     }
 
