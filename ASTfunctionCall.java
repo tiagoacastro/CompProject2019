@@ -19,29 +19,7 @@ class ASTfunctionCall extends SimpleNode {
     }
 
     public void applySemanticAnalysis(SymbolTable table) {
-        methodName = ((SimpleNode) children[0]).name + "(";
-
-        if (children.length == 1) {
-            methodName += ")";
-
-            if (JmmParser.getInstance().containsMethod(methodName)) return;
-
-            System.out.println("Not a valid method on line " + this.getLine());
-            System.exit(0);
-        }
-
-        Node[] parameters = ((SimpleNode) children[1]).children;
-
-        for (int i = 0; i < parameters.length; i++) {
-            methodName += getParameterType(((SimpleNode) parameters[i]), table);
-        }
-
-        methodName += ")";
-
-        if (JmmParser.getInstance().containsMethod(methodName)) return;
-
-        System.out.println("Not a valid method on line " + this.getLine());
-        System.exit(0);
+        return;
     }
 
     public String getParameterType(SimpleNode parameter, SymbolTable table) {

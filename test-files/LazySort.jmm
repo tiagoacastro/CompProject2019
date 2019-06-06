@@ -1,9 +1,9 @@
-class Lazysort extends Quicksort {
+class LazySort extends QuickSort {
     public static void main(String[] a) {
         int[] L;
         int i;
 		boolean d;
-        Quicksort q;
+        QuickSort q;
 
         L = new int[10];
 
@@ -13,7 +13,7 @@ class Lazysort extends Quicksort {
             i = i + 1;
         }
 
-        q = new Lazysort();
+        q = new LazySort();
 
         q.quicksort(L);
         d = q.printL(L);
