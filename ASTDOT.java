@@ -36,11 +36,11 @@ class ASTDOT extends SimpleNode {
                     System.exit(0);
                 }
 
-                if (s.getType().equals(JmmParser.getInstance().getClassTable().getType())) {
+                if (s.getType().equals(JmmParser.getInstance().getClassTable().getType()) || parent instanceof ASTbody || parent instanceof ASTmethodBody) {
                     rhs.applySemanticAnalysis(table);
                     return;
                 }
-                
+
                 return;
             }
         } 

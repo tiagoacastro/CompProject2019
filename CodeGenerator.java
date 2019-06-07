@@ -694,10 +694,21 @@ public class CodeGenerator {
     private String findReturnType(SimpleNode call) {
         SimpleNode parentElement = (SimpleNode) call.jjtGetParent().jjtGetParent();
         String parentName = parentElement.getName();
-        if (parentName.equals("+") || parentName.equals("-") || parentName.equals("*") || parentName.equals("/")) {
+        if (parentName.equals("+") || parentName.equals("-") || parentName.equals("*") || parentName.equals("/") || parentName.equals("<")) {
             return "int";
+        } 
+        else if(parentName.equals("array")){
+            for(int i = 0; i < parentElement.children.length; i++){
+                SimpleNode node = (SimpleNode)parentElement.children[i];
+                if(node != null && node.getName().equals(".") && node.children[1] == call){
+                    if(i == 0)
+                        return "int[]";
+                    else
+                        return "int";
+                }
+            }
         }
-        else if (parentName.equals("&&") || parentName.equals("<")) {
+        else if (parentName.equals("&&") || parentName.equals("!") || parentName.equals("condition")) {
             return "boolean";
         }
         else if (parentName.equals("=")) {

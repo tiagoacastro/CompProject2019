@@ -111,7 +111,12 @@ class ASTfunctionCall extends SimpleNode {
     }
 
     public void applySemanticAnalysisOnParameters(SymbolTable table) {
-        Node[] parameters = ((SimpleNode) children[1]).children;
+        Node[] parameters;
+
+        if(children.length > 1)
+            parameters = ((SimpleNode) children[1]).children;
+        else
+            return;
  
         for (int i = 0; i < parameters.length; i++) {
             if(parameters[i] instanceof ASTDOT)
