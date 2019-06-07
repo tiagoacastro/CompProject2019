@@ -23,7 +23,12 @@ class ASTfunctionCall extends SimpleNode {
  
         if (children.length == 1) {
             methodName += ")";
- 
+            
+            if(extend == null && !JmmParser.getInstance().containsMethod(methodName)){
+                System.out.println("Not a valid method on line " + this.getLine());
+                System.exit(0);
+            }
+
             return;
         }
  
@@ -34,6 +39,11 @@ class ASTfunctionCall extends SimpleNode {
         }
  
         methodName += ")";
+
+        if(extend == null && !JmmParser.getInstance().containsMethod(methodName)){
+            System.out.println("Not a valid method on line " + this.getLine());
+            System.exit(0);
+        }
  
         return;
     }

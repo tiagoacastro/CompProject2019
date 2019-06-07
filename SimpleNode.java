@@ -13,6 +13,7 @@ public class SimpleNode implements Node {
     protected int idx = -1;
     protected String print;
     protected int line;
+    public static String extend = null;
 
     public SimpleNode(int i) {
         id = i;
@@ -199,6 +200,10 @@ public class SimpleNode implements Node {
 
     public void applySemanticAnalysis(SymbolTable table) {
         if (children == null) return;
+
+        if(print.equals("extends")){
+            extend = ((SimpleNode)children[0]).getName();
+        }
 
         for (int i = 0; i < children.length; i++) {
             ((SimpleNode) children[i]).applySemanticAnalysis(table);
