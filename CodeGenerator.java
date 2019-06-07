@@ -496,10 +496,15 @@ public class CodeGenerator {
     }
 
     private void newOperator(SimpleNode node){
-        if(node.next().getName().equals(this.classe)) {
+        if(node.next().getName().equals("array")){
+            handle(node.same().next(2));
+            tab();
+            write("newarray int");
+            nl();
+        } else {
             tab();
             write("new ");
-            write(classe);
+            write(node.same().getName());
             inc();
             nl();
             tab();
@@ -508,14 +513,9 @@ public class CodeGenerator {
             nl();
             tab();
             write("invokespecial ");
-            write(classe);
+            write(node.same().getName());
             write("/<init>()V");
             dec();
-            nl();
-        } else if(node.same().getName().equals("array")){
-            handle(node.same().next(2));
-            tab();
-            write("newarray int");
             nl();
         }
     }
