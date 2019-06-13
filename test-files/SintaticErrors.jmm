@@ -1,0 +1,17 @@
+classs SintaticErrors extends {          //class tem um 's' a mais e falta uma classe no extends
+    int i                                   //sem ;
+    int[ r;                                 //falta ']'
+
+    public void main(String[] args {        //falta static e ')'
+        SintaticErrors g;
+        g = new SintaticErrors();
+
+        g..metodo(j, 2);                 //1 ponto a mais e 1 argumento a mais
+    } 
+
+    public void metodo(int k int s)         //nao se pode ter metodos void, falta ',' e '{'
+        i = k + s * * r2];                  //falta identifier entre os '*' e falta '[' antes do 2 
+
+        return 2;
+    }
+}
