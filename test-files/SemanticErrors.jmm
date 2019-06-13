@@ -59,6 +59,7 @@ class SemanticErrors {
         boolVar1 = this.intFunction(1);
         boolVar1 = this.intFunction(1, 1, 1);
         boolVar1 = new SemanticErrors().intFunction(1, 1, 1);
+        boolVar1 = !smVar1.intFunction();
     }
 
     public int intFunction(int intParam, boolean boolParam, int[] arrParam) {
