@@ -27,7 +27,21 @@ class SemanticErrors {
             intVar2 = 2;
         }
 
-        if (localArr1[1]) {
+        if (localArr1[1] && true) {
+            intVar2 = 1;
+        }
+        else {
+            intVar2 = 2;
+        }
+
+        if (smVar1.intFunction() && true) {
+            intVar2 = 1;
+        }
+        else {
+            intVar2 = 2;
+        }
+
+        if (1 < irjvijer) {
             intVar2 = 1;
         }
         else {
@@ -39,13 +53,12 @@ class SemanticErrors {
         intVar2 = 1 * boolVar1;
         intVar2 = 1 / false;
         intVar2 = 1 - localArr1;
-        boolVar1 = 1 < irjvijer;
         intVar2 = smVar1.intFunction(1);
-        intVar2 = smVar1.intFunction() && true;
         boolVar1 = intVar1.length;
         boolVar1 = intVar1.intFunction();
         boolVar1 = this.intFunction(1);
         boolVar1 = this.intFunction(1, 1, 1);
+        boolVar1 = new SemanticErrors().intFunction(1, 1, 1);
     }
 
     public int intFunction(int intParam, boolean boolParam, int[] arrParam) {
