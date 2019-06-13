@@ -1,4 +1,4 @@
-classs SintaticErrors extends {          //class tem um 's' a mais e falta uma classe no extends
+classs SintaticErrors extends {             //class tem um 's' a mais e falta uma classe no extends
     int i                                   //sem ;
     int[ r;                                 //falta ']'
 
@@ -6,7 +6,7 @@ classs SintaticErrors extends {          //class tem um 's' a mais e falta uma c
         SintaticErrors g;
         g = new SintaticErrors();
 
-        g..metodo(1, 2);                 //1 ponto a mais e 1 argumento a mais
+        g..metodo(1, 2);                    //1 ponto a mais
     } 
 
     public void metodo(int k int s)         //nao se pode ter metodos void, falta ',' e '{'
