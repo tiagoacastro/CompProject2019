@@ -4,6 +4,7 @@ class SemanticErrors {
     public static void main(String[] args) {
         int intVar1;
         boolean boolVar1;
+        boolean boolVar2;
         int intVar2;
         SemanticErrors smVar1;
         int[] localArr1;
@@ -12,7 +13,21 @@ class SemanticErrors {
         localArr1 = new int[2];
         smVar1 = new SemanticErrors();
 
-        if (intVar1 < 1 && boolVar1 < 1 && localArr1[1] && boolVar1) {
+        if (intVar1 < 1) {
+            intVar2 = 1;
+        }
+        else {
+            intVar2 = 2;
+        }
+
+        if (boolVar1 < 1) {
+            intVar2 = 1;
+        }
+        else {
+            intVar2 = 2;
+        }
+
+        if (localArr1[1]) {
             intVar2 = 1;
         }
         else {
