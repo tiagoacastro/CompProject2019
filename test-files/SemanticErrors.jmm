@@ -1,0 +1,52 @@
+class SemanticErrors {
+    int intgvar1;
+
+    public static void main(String[] args) {
+        int intVar1;
+        boolean boolVar1;
+        int intVar2;
+        SemanticErrors smVar1;
+        int[] localArr1;
+
+        boolVar1 = true;
+        localArr1 = new int[2];
+        smVar1 = new SemanticErrors();
+
+        if (intVar1 < 1 && boolVar1 < 1 && localArr1[1] && boolVar1) {
+            intVar2 = 1;
+        }
+        else {
+            intVar2 = 2;
+        }
+
+        intVar2 = 1 + intVar1;
+        intVar2 = 1 + true;
+        intVar2 = 1 * boolVar1;
+        intVar2 = 1 / false;
+        intVar2 = 1 - localArr1;
+        boolVar1 = 1 < irjvijer;
+        intVar2 = smVar1.intFunction(1);
+        intVar2 = smVar1.intFunction() && true;
+        boolVar1 = intVar1.length;
+        boolVar1 = intVar1.intFunction();
+    }
+
+    public int intFunction(int intParam, boolean boolParam, int[] arrParam) {
+        boolean local;
+        if (boolParam) {
+            local = intParam < arrParam[0];
+        }
+        else {
+            local = arrParam[0] < intParam;
+        }
+        return 1;
+    }
+
+    public int intFunction() {
+        return intgvar1 + 1;
+    }
+
+    public boolean boolFunction(boolean boolParam1, boolean boolParam2) {
+        return boolParam1 && boolParam2;
+    }
+}
