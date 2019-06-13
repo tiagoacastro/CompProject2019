@@ -6,12 +6,15 @@ classs SintaticErrors extends {          //class tem um 's' a mais e falta uma c
         SintaticErrors g;
         g = new SintaticErrors();
 
-        g..metodo(j, 2);                 //1 ponto a mais e 1 argumento a mais
+        g..metodo(1, 2);                 //1 ponto a mais e 1 argumento a mais
     } 
 
     public void metodo(int k int s)         //nao se pode ter metodos void, falta ',' e '{'
+        r = new int[];                      //falta tamanho do array
+        r[2] = 1;
+
         i = k + s * * r2];                  //falta identifier entre os '*' e falta '[' antes do 2 
 
-        return 2;
+        return i;
     }
 }
