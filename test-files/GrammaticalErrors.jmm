@@ -1,0 +1,15 @@
+classs GrammaticalErrors extends {          //class tem um 's' a mais e falta uma classe no extends
+    int i                                   //sem ;
+    imt j;                                  //tipo errado
+    int[ r;                                 //falta ']'
+
+    public void main(String[] args {        //falta static e '('
+        GrammaticalErrors g;
+
+        g..metodo(j, 2, r);                 //1 ponto a mais e 1 argumento a mais
+    } 
+
+    public void metodo(int k int s)         //nao se pode ter metodos void, falta ',' e '{'
+        i = k + s * * r2];                  //falta identifier entre os '*' e falta '[' antes do 2 
+    }
+}
