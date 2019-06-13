@@ -1,4 +1,4 @@
-classs GrammaticalErrors extends {
+classs GrammaticalErrors extends {          //class tem um 's' a mais e falta uma classe no extends
     int i                                   //sem ;
     imt j;                                  //tipo errado
     int[ r;                                 //falta ']'
